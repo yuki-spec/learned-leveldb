@@ -1,0 +1,3 @@
+"C:\Program Files (x86)\JetBrains\CLion 2017.1\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\bloom_test.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\bloom_test.dir/objects.a @CMakeFiles\bloom_test.dir\objects1.rsp
+C:\TDM-GCC-64\bin\g++.exe  -g   -Wl,--whole-archive CMakeFiles\bloom_test.dir/objects.a -Wl,--no-whole-archive  -o bloom_test.exe -Wl,--out-implib,libbloom_test.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\bloom_test.dir\linklibs.rsp

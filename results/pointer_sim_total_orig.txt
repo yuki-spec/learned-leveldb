@@ -1,0 +1,76 @@
+1024 685496150 0
+Timer 4: 685496150
+1024 660547889 1
+Timer 4: 660547889
+1024 646941858 2
+Timer 4: 646941858
+1024 640438849 3
+Timer 4: 640438849
+1024 643193845 4
+Timer 4: 643193845
+1024 : Time Average for Timer 0 : 0
+1024 : Time Average for Timer 1 : 0
+1024 : Time Average for Timer 2 : 0
+1024 : Time Average for Timer 3 : 0
+1024 : Time Average for Timer 4 : 655323718
+1024 : Time Average for Timer 5 : 0
+1024 : Time Average for Timer 6 : 0
+1024 : Time Average for Timer 7 : 0
+1024 : Time Average for Timer 8 : 0
+2048 677095944 0
+Timer 4: 677095944
+2048 676801607 1
+Timer 4: 676801607
+2048 670236301 2
+Timer 4: 670236301
+2048 674471028 3
+Timer 4: 674471028
+2048 674330872 4
+Timer 4: 674330872
+2048 : Time Average for Timer 0 : 0
+2048 : Time Average for Timer 1 : 0
+2048 : Time Average for Timer 2 : 0
+2048 : Time Average for Timer 3 : 0
+2048 : Time Average for Timer 4 : 674587150
+2048 : Time Average for Timer 5 : 0
+2048 : Time Average for Timer 6 : 0
+2048 : Time Average for Timer 7 : 0
+2048 : Time Average for Timer 8 : 0
+4096 712110257 0
+Timer 4: 712110257
+4096 704337958 1
+Timer 4: 704337958
+4096 709796452 2
+Timer 4: 709796452
+4096 709487984 3
+Timer 4: 709487984
+4096 704916148 4
+Timer 4: 704916148
+4096 : Time Average for Timer 0 : 0
+4096 : Time Average for Timer 1 : 0
+4096 : Time Average for Timer 2 : 0
+4096 : Time Average for Timer 3 : 0
+4096 : Time Average for Timer 4 : 708129759
+4096 : Time Average for Timer 5 : 0
+4096 : Time Average for Timer 6 : 0
+4096 : Time Average for Timer 7 : 0
+4096 : Time Average for Timer 8 : 0
+8192 755368481 0
+Timer 4: 755368481
+8192 769896906 1
+Timer 4: 769896906
+8192 760548716 2
+Timer 4: 760548716
+8192 750771911 3
+Timer 4: 750771911
+8192 756200548 4
+Timer 4: 756200548
+8192 : Time Average for Timer 0 : 0
+8192 : Time Average for Timer 1 : 0
+8192 : Time Average for Timer 2 : 0
+8192 : Time Average for Timer 3 : 0
+8192 : Time Average for Timer 4 : 758557312
+8192 : Time Average for Timer 5 : 0
+8192 : Time Average for Timer 6 : 0
+8192 : Time Average for Timer 7 : 0
+8192 : Time Average for Timer 8 : 0

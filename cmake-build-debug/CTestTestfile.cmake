@@ -1,0 +1,37 @@
+# CMake generated Testfile for 
+# Source directory: C:/Users/daiyi/Desktop/Research/temp/leveldb
+# Build directory: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+add_test(c_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/c_test.exe")
+add_test(read "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/read.exe")
+add_test(fault_injection_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/fault_injection_test.exe")
+add_test(issue178_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue178_test.exe")
+add_test(issue200_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue200_test.exe")
+add_test(issue320_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue320_test.exe")
+add_test(env_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/env_test.exe")
+add_test(status_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/status_test.exe")
+add_test(no_destructor_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/no_destructor_test.exe")
+add_test(autocompact_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/autocompact_test.exe")
+add_test(corruption_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/corruption_test.exe")
+add_test(db_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/db_test.exe")
+add_test(dbformat_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/dbformat_test.exe")
+add_test(filename_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/filename_test.exe")
+add_test(log_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/log_test.exe")
+add_test(recovery_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/recovery_test.exe")
+add_test(skiplist_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/skiplist_test.exe")
+add_test(version_edit_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/version_edit_test.exe")
+add_test(version_set_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/version_set_test.exe")
+add_test(write_batch_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/write_batch_test.exe")
+add_test(memenv_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/memenv_test.exe")
+add_test(filter_block_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/filter_block_test.exe")
+add_test(table_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/table_test.exe")
+add_test(arena_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/arena_test.exe")
+add_test(bloom_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/bloom_test.exe")
+add_test(cache_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/cache_test.exe")
+add_test(coding_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/coding_test.exe")
+add_test(crc32c_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/crc32c_test.exe")
+add_test(hash_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/hash_test.exe")
+add_test(logging_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/logging_test.exe")
+add_test(env_posix_test "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/env_posix_test.exe")
