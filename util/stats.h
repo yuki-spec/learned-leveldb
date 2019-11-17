@@ -9,13 +9,23 @@
 #include <cstdint>
 #include <map>
 #include <vector>
+#include <cstring>
+
+using std::string;
+using std::to_string;
 
 namespace adgMod {
-    extern bool MOD;
+    extern int MOD;
+    extern bool string_mode;
+    extern uint32_t model_error;
+    extern int block_restart_interval;
+    extern uint32_t test_num_level_segments;
+    extern uint32_t test_num_file_segments;
+    extern int key_size;
+    extern int value_size;
 
     class Timer;
     class Stats {
-
     private:
         static Stats* singleton;
         Stats();
@@ -37,9 +47,30 @@ namespace adgMod {
         ~Stats();
     };
 
+    class LearnedIndexData {
+    private:
+        bool string_mode;
+        uint32_t error;
 
+        std::vector<std::pair<uint64_t, uint64_t>> segments;
+        std::vector<std::pair<string, uint64_t>> string_segments;
+        std::vector<string> string_keys;
+    public:
+        LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error) {};
+        void AddSegment(string&& x, uint64_t y);
+        uint64_t GetPosition(const string& target_x) const;
+        uint64_t MaxPosition() const;
+        size_t SegmentSize() const;
+        uint32_t GetError() const;
+        void AddKey(string&& key);
+        void Learn();
+    };
 
-
+    string ExtractString(const char* pos, size_t size);
+    uint64_t ExtractInteger(const char* pos, size_t size);
+    bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);
+    string generate_key(uint64_t key);
+    string generate_value(uint64_t value);
 
 }
 

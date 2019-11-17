@@ -1127,6 +1127,7 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
     // First look in the memtable, then in the immutable memtable (if any).
     LookupKey lkey(key, snapshot);
     if (mem->Get(lkey, value, &s)) {
+
 #ifdef RECORD_LEVEL_INFO
       instance->RecordLevel(8);
 #endif
@@ -1137,7 +1138,9 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
 #endif
       // Done
     } else {
+      instance->StartTimer(6);
       s = current->Get(options, lkey, value, &stats);
+      instance->PauseTimer(6);
       have_stat_update = true;
     }
     mutex_.Lock();
@@ -1556,7 +1559,11 @@ Status DestroyDB(const std::string& dbname, const Options& options) {
 }
 
 void DBImpl::PrintFileInfo() const {
-    versions_->current()->PrintAll();
+  versions_->current()->PrintAll();
+}
+
+void DBImpl::Learn(const ReadOptions& options) {
+  versions_->current()->Learn(options);
 }
 
 

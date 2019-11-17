@@ -116,6 +116,8 @@ class Version {
 
   void PrintAll() const;
 
+  void Learn(const ReadOptions& options);
+
  private:
   friend class Compaction;
   friend class VersionSet;
@@ -164,6 +166,10 @@ class Version {
   // are initialized by Finalize().
   double compaction_score_;
   int compaction_level_;
+
+  std::vector<uint64_t> num_entries_accumulated_[config::kNumLevels];
+  adgMod::LearnedIndexData learned_index_data_[config::kNumLevels];
+  adgMod::LearnedIndexData learned_index_data_file_only_[config::kNumLevels];
 };
 
 class VersionSet {

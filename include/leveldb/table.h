@@ -6,6 +6,7 @@
 #define STORAGE_LEVELDB_INCLUDE_TABLE_H_
 
 #include <stdint.h>
+#include <db/version_edit.h>
 
 #include "leveldb/export.h"
 #include "leveldb/iterator.h"
@@ -71,10 +72,12 @@ class LEVELDB_EXPORT Table {
   // that key is not present.
   Status InternalGet(const ReadOptions&, const Slice& key, void* arg,
                      void (*handle_result)(void* arg, const Slice& k,
-                                           const Slice& v));
+                                           const Slice& v), FileMetaData* meta = nullptr, uint64_t position = 0);
 
   void ReadMeta(const Footer& footer);
   void ReadFilter(const Slice& filter_handle_value);
+
+  void Learn(const ReadOptions& options, FileMetaData* meta);
 
   Rep* const rep_;
 };

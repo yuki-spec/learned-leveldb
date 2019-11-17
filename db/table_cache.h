@@ -15,6 +15,7 @@
 #include "leveldb/cache.h"
 #include "leveldb/table.h"
 #include "port/port.h"
+#include "version_edit.h"
 
 namespace leveldb {
 
@@ -39,10 +40,12 @@ class TableCache {
   // call (*handle_result)(arg, found_key, found_value).
   Status Get(const ReadOptions& options, uint64_t file_number,
              uint64_t file_size, const Slice& k, void* arg,
-             void (*handle_result)(void*, const Slice&, const Slice&));
+             void (*handle_result)(void*, const Slice&, const Slice&), FileMetaData* meta = nullptr, uint64_t position = 0);
 
   // Evict any entry for the specified file number
   void Evict(uint64_t file_number);
+
+  void Learn(const ReadOptions& options, FileMetaData* meta);
 
  private:
   Status FindTable(uint64_t file_number, uint64_t file_size, Cache::Handle**);

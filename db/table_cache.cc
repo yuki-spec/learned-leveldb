@@ -101,7 +101,7 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
 Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
                        uint64_t file_size, const Slice& k, void* arg,
                        void (*handle_result)(void*, const Slice&,
-                                             const Slice&)) {
+                                             const Slice&), FileMetaData* meta, uint64_t position) {
   Cache::Handle* handle = nullptr;
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
 #ifdef INTERNAL_TIMER
@@ -113,7 +113,7 @@ Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
 #endif
   if (s.ok()) {
     Table* t = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-    s = t->InternalGet(options, k, arg, handle_result);
+    s = t->InternalGet(options, k, arg, handle_result, meta, position);
     cache_->Release(handle);
   }
   return s;
@@ -123,6 +123,16 @@ void TableCache::Evict(uint64_t file_number) {
   char buf[sizeof(file_number)];
   EncodeFixed64(buf, file_number);
   cache_->Erase(Slice(buf, sizeof(buf)));
+}
+
+void TableCache::Learn(const ReadOptions& options, FileMetaData *meta) {
+  Cache::Handle* handle = nullptr;
+  Status status = FindTable(meta->number, meta->file_size, &handle);
+
+  assert(status.ok());
+  Table* table = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
+  table->Learn(options, meta);
+  cache_->Release(handle);
 }
 
 }  // namespace leveldb

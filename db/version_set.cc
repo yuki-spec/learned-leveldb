@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <util/stats.h>
+#include <iostream>
 
 #include "db/filename.h"
 #include "db/log_reader.h"
@@ -348,6 +349,8 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
 
     // Get the list of files to search in this level
     FileMetaData* const* files = &files_[level][0];
+    uint64_t position_in_file = 0;
+
 #ifdef INTERNAL_TIMER
     instance->StartTimer(0);
 #endif
@@ -373,22 +376,48 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       files = &tmp[0];
       num_files = tmp.size();
     } else {
-      // Binary search to find earliest index whose largest key >= ikey.
-      uint32_t index = FindFile(vset_->icmp_, files_[level], ikey);
-      if (index >= num_files) {
-        files = nullptr;
-        num_files = 0;
+
+      if (adgMod::MOD == 1) {
+        adgMod::LearnedIndexData& learned_this_level = learned_index_data_[level];
+        uint64_t pos = learned_this_level.GetPosition(std::string(user_key.data(), user_key.size()));
+        size_t index;
+        if (pos <= learned_this_level.MaxPosition()
+              && adgMod::SearchNumEntriesArray(num_entries_accumulated_[level], pos, &index, &position_in_file)) {
+          files = &files_[level][index];
+          num_files = 1;
+        } else {
+          files = nullptr;
+          num_files = 0;
+        }
+      } else if (adgMod::MOD == 3) {
+        adgMod::LearnedIndexData& learned_this_level = learned_index_data_file_only_[level];
+        uint64_t pos = learned_this_level.GetPosition(std::string(user_key.data(), user_key.size()));
+        if (pos <= learned_this_level.MaxPosition()) {
+          files = &files_[level][pos];
+          num_files = 1;
+        } else {
+          files = nullptr;
+          num_files = 0;
+        }
       } else {
-        tmp2 = files[index];
-        if (ucmp->Compare(user_key, tmp2->smallest.user_key()) < 0) {
-          // All of "tmp2" is past any data for user_key
+        // Binary search to find earliest index whose largest key >= ikey.
+        uint32_t index = FindFile(vset_->icmp_, files_[level], ikey);
+        if (index >= num_files) {
           files = nullptr;
           num_files = 0;
         } else {
-          files = &tmp2;
-          num_files = 1;
+          tmp2 = files[index];
+          if (ucmp->Compare(user_key, tmp2->smallest.user_key()) < 0) {
+            // All of "tmp2" is past any data for user_key
+            files = nullptr;
+            num_files = 0;
+          } else {
+            files = &tmp2;
+            num_files = 1;
+          }
         }
       }
+
     }
 #ifdef INTERNAL_TIMER
     instance->PauseTimer(0);
@@ -409,8 +438,15 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       saver.ucmp = ucmp;
       saver.user_key = user_key;
       saver.value = value;
-      s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                   &saver, SaveValue);
+
+      if (level == 0 || adgMod::MOD == 0) {
+        s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
+                                      &saver, SaveValue);
+      } else {
+        s = vset_->table_cache_->Get(options, f->number, f->file_size, user_key,
+                                     &saver, SaveValue, f, position_in_file);
+      }
+
       if (!s.ok()) {
         return s;
       }
@@ -1597,29 +1633,68 @@ void Compaction::ReleaseInputs() {
   }
 }
 
-char* ExtractString(const char* data, size_t size) {
-    char* result = new char[size + 1];
-    memcpy(result, data, size);
-    result[size] = '\0';
-    return result;
-}
 
 void Version::PrintAll() const {
-    for (int i = 0; i < config::kNumLevels; ++i) {
-        printf("Level %d\n", i);
+    for (int i = 1; i < config::kNumLevels; ++i) {
         for (int j = 0; j < files_[i].size(); ++j) {
+            if (j == 0) printf("Level %d\n", i);
             FileMetaData* file = files_[i][j];
-            char* small_key = ExtractString(file->smallest.user_key().data(), file->smallest.user_key().size());
-            char* large_key = ExtractString(file->largest.user_key().data(), file->largest.user_key().size());
+            string small_key = adgMod::ExtractString(file->smallest.user_key().data(), file->smallest.user_key().size());
+            string large_key = adgMod::ExtractString(file->largest.user_key().data(), file->largest.user_key().size());
             printf("File %d in level %d:\n"
                            "\tNumber: %lu\n"
                            "\tSize: %lu\n"
-                           "\tKey Range: %s to %s\n", j, i, file->number, file->file_size,
-                           small_key, large_key);
-            delete[] small_key;
-            delete[] large_key;
+                           "\tNumEntries: %lu\n"
+                           "\tKey Range: %s to %s\n", j, i, file->number, file->file_size, adgMod::MOD ? file->num_entries_accumulated.back() : 0,
+                           small_key.c_str(), large_key.c_str());
         }
     }
+}
+
+void Version::Learn(const ReadOptions& options) {
+  for (int i = 1; i < config::kNumLevels; ++i) {
+    for (int j = 0; j < files_[i].size(); ++j) {
+      adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[i].size();
+      vset_->table_cache_->Learn(options, files_[i][j]);
+    }
+  }
+
+  std::cout << "cp1" << std::endl;
+
+  for (int i = 1; i < config::kNumLevels; ++i) {
+    for (int j = 0; j < files_[i].size(); ++j) {
+      uint64_t current_total = num_entries_accumulated_[i].empty() ? 0 : num_entries_accumulated_[i].back();
+      num_entries_accumulated_[i].push_back((uint64_t) (current_total + files_[i][j]->num_entries_accumulated.back()));
+    }
+  }
+
+  std::cout << "cp2" << std::endl;
+
+  // TODO: Test Only
+  for (int i = 1; i < config::kNumLevels; ++i) {
+    if (files_[i].empty()) continue;
+
+    uint64_t start = adgMod::ExtractInteger(files_[i].front()->smallest.user_key().data(), files_[i].front()->smallest.user_key().size());
+    uint64_t end = adgMod::ExtractInteger(files_[i].back()->largest.user_key().data(), files_[i].back()->largest.user_key().size());
+    uint64_t interval = (end - start) / adgMod::test_num_level_segments;
+    for (int j = 0; j < adgMod::test_num_level_segments; ++j) {
+      learned_index_data_[i].AddSegment(adgMod::generate_key(start + interval * j), interval * j);
+    }
+    learned_index_data_[i].AddSegment(adgMod::generate_key(end), end - start);
+    std::cout << learned_index_data_[i].SegmentSize() << std::endl;
+  }
+
+
+  for (int i = 0; i < config::kNumLevels; ++i) {
+    if (files_[i].empty()) continue;
+
+    for (int j = 0; j < files_[i].size(); ++j) {
+        const Slice& smallest_key = files_[i][j]->smallest.user_key();
+        learned_index_data_file_only_[i].AddSegment(std::string(smallest_key.data(), smallest_key.size()), (uint64_t) j);
+    }
+    const Slice& largest_key = files_[i].back()->largest.user_key();
+    learned_index_data_file_only_[i].AddSegment(std::string(largest_key.data(), largest_key.size()), (uint64_t) files_[i].size() - 1);
+  }
 }
 
 

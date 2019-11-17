@@ -2,12 +2,14 @@
 #include <chrono>
 #include <iostream>
 #include "leveldb/db.h"
+#include "leveldb/comparator.h"
 #include <cstring>
 #include "cxxopts.hpp"
 #include <gperftools/profiler.h>
+#include <unistd.h>
 
-using namespace std::chrono;
 using namespace leveldb;
+using namespace adgMod;
 using std::string;
 using std::cout;
 using std::endl;
@@ -17,25 +19,27 @@ using std::map;
 
 using std::string;
 
-int key_size;
-int value_size;
 int num_pairs_base = 1024;
 
-string generate_key(int key) {
-    string key_string = to_string(key);
-    string result = string(key_size - key_string.length(), '0') + key_string;
-    return std::move(result);
-}
-
-string generate_value(int value) {
-    string value_string = to_string(value);
-    string result = string(value_size - value_string.length(), '0') + value_string;
-    return std::move(result);
-}
+class NumericalComparator : public Comparator {
+public:
+    NumericalComparator() = default;
+    virtual const char* Name() const {return "adgMod:NumericalComparator";}
+    virtual int Compare(const Slice& a, const Slice& b) const {
+        uint64_t ia = adgMod::ExtractInteger(a.data(), a.size());
+        uint64_t ib = adgMod::ExtractInteger(b.data(), b.size());
+        if (ia < ib) return -1;
+        else if (ia == ib) return 0;
+        else return 1;
+    }
+    virtual void FindShortestSeparator(std::string* start, const Slice& limit) const { return; };
+    virtual void FindShortSuccessor(std::string* key) const { return; };
+};
 
 
 int main(int argc, char *argv[]) {
     int num_gets, num_iteration;
+    float test_num_segments_base;
     float num_pair_lower, num_pair_upper, num_pair_step;
     string db_location, profiler_out;
     bool print_single_timing, print_file_info;
@@ -47,14 +51,17 @@ int main(int argc, char *argv[]) {
             ("u,upper_bound", "the upper bound of the loop of the size of db", cxxopts::value<float>(num_pair_upper)->default_value("10"))
             ("s,step", "the step of the loop of the size of db", cxxopts::value<float>(num_pair_step)->default_value("1"))
             ("i,iteration", "the number of iterations of a same size", cxxopts::value<int>(num_iteration)->default_value("1"))
-            ("m,modification", "if set, run our modified version", cxxopts::value<bool>(adgMod::MOD)->default_value("false"))
+            ("m,modification", "if set, run our modified version", cxxopts::value<int>(adgMod::MOD)->default_value("0"))
             ("h,help", "print help message", cxxopts::value<bool>()->default_value("false"))
             ("d,directory", "the directory of db", cxxopts::value<string>(db_location)->default_value("/tmp/testdb"))
-            ("k,key_size", "the size of key", cxxopts::value<int>(key_size)->default_value("8"))
-            ("v,value_size", "the size of value", cxxopts::value<int>(value_size)->default_value("120"))
+            ("k,key_size", "the size of key", cxxopts::value<int>(adgMod::key_size)->default_value("8"))
+            ("v,value_size", "the size of value", cxxopts::value<int>(adgMod::value_size)->default_value("120"))
             ("single_timing", "print the time of every single get", cxxopts::value<bool>(print_single_timing)->default_value("false"))
             ("p,profile_out", "the file for profiler output", cxxopts::value<string>(profiler_out)->default_value("/tmp/profiler.out"))
-            ("file_info", "print the file structure info", cxxopts::value<bool>(print_file_info)->default_value("false"));
+            ("file_info", "print the file structure info", cxxopts::value<bool>(print_file_info)->default_value("false"))
+            ("test_num_segments", "test: number of segments per level", cxxopts::value<float>(test_num_segments_base)->default_value("1"))
+            ("string_mode", "test: use string or int in model", cxxopts::value<bool>(adgMod::string_mode)->default_value("false"))
+            ("e, model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("10"));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -64,6 +71,7 @@ int main(int argc, char *argv[]) {
     std::default_random_engine e1;
     num_gets *= 1024;
 
+
     vector<float> num_pairs;
     for (float i = num_pair_lower; i <= num_pair_upper; i+= num_pair_step) {
         num_pairs.push_back((float) pow(2, i));
@@ -71,7 +79,7 @@ int main(int argc, char *argv[]) {
 
     for (size_t outer = 0; outer < num_pairs.size(); ++outer) {
         vector<size_t> time_sums(9, 0);
-        
+        adgMod::test_num_level_segments =  (uint32_t) floor(num_pairs[outer] *  test_num_segments_base);
         for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
             DB* db;
             Options options;
@@ -79,7 +87,9 @@ int main(int argc, char *argv[]) {
             WriteOptions write_options;
 
             options.create_if_missing = true;
-            options.paranoid_checks = true;
+            //options.comparator = new NumericalComparator;
+            adgMod::block_restart_interval = options.block_restart_interval =
+                adgMod::MOD ? 1 : adgMod::block_restart_interval;
             read_options.fill_cache = false;
             write_options.sync = false;
 
@@ -92,12 +102,19 @@ int main(int argc, char *argv[]) {
                 status = db->Put(write_options, key, value);
                 assert(status.ok() && "Put Error");
             }
-            
-            std::uniform_int_distribution<int> uniform_dist(0, (int) floor(num_pairs[outer] * num_pairs_base) - 1);
+
+            cout << "Put Complete" << endl;
+            sleep(10);
+            if (MOD > 0) db->Learn(read_options);
+            cout << "Learn Complete" << endl;
+            if (print_file_info && iteration == 0) db->PrintFileInfo();
+
+            std::uniform_int_distribution<uint64_t > uniform_dist(0, (uint64_t) floor(num_pairs[outer] * num_pairs_base) - 1);
             for (int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
                 string value;
                 string key = generate_key(i);
                 status = db->Get(read_options, key, &value);
+                //cout << "Get " << i << " Done" << endl;
                 assert(status.ok() && "Get Error");
             }
 
@@ -129,7 +146,7 @@ int main(int argc, char *argv[]) {
             cout << num_pairs[outer] << " " << instance->ReportTime(4) << " " << iteration << endl;
             instance->ReportTime();
             instance->ReportLevelStats();
-            if (print_file_info && iteration == 0) db->PrintFileInfo();
+
             for (int s = 0; s < time_sums.size(); ++s) {
                 time_sums[s] += instance->ReportTime(s);
             }

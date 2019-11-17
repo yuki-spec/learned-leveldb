@@ -11,12 +11,14 @@
 
 #include "db/dbformat.h"
 
+using std::vector;
+
 namespace leveldb {
 
 class VersionSet;
 
 struct FileMetaData {
-  FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0) {}
+  FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0), num_entries_accumulated() {}
 
   int refs;
   int allowed_seeks;  // Seeks allowed until compaction
@@ -24,6 +26,9 @@ struct FileMetaData {
   uint64_t file_size;    // File size in bytes
   InternalKey smallest;  // Smallest internal key served by table
   InternalKey largest;   // Largest internal key served by table
+
+  vector<uint64_t> num_entries_accumulated;
+  adgMod::LearnedIndexData learned_index_data;
 };
 
 class VersionEdit {
