@@ -126,7 +126,7 @@ namespace adgMod {
 
 
 
-    void LearnedIndexData::AddSegment(string&& x, uint64_t y) {
+    void LearnedIndexData::AddSegment(string&& x, float y) {
         if (string_mode) {
             string_segments.push_back(std::make_pair(std::move(x), y));
         } else {
@@ -155,8 +155,8 @@ namespace adgMod {
 
             else {
                 uint64_t target_int = SliceToInteger(target_x);
-                if (target_x > string_segments.back().first) return std::make_pair(string_keys.size(), string_keys.size());
-                if (target_x < string_segments.front().first) return std::make_pair(string_keys.size(), string_keys.size());
+                if (target_x > string_keys.back()) return std::make_pair(string_keys.size(), string_keys.size());
+                if (target_x < string_keys.front()) return std::make_pair(string_keys.size(), string_keys.size());
 
                 uint32_t left = 0, right = (uint32_t) string_segments.size() - 1;
                 while (left != right - 1) {
@@ -166,8 +166,8 @@ namespace adgMod {
                 }
 
                 uint64_t x1 = stoull(string_segments[left].first), x2 = stoull(string_segments[right].first);
-                uint64_t y1 = string_segments[left].second, y2 = string_segments[right].second;
-                uint64_t result = y1 + (y2 - y1) * (target_int - x1) / (x2 - x1);
+                float y1 = string_segments[left].second, y2 = string_segments[right].second;
+                float result = y1 + (y2 - y1) * (target_int - x1) / (x2 - x1);
                 return std::make_pair(result > error ? std::floor(result - error) : 0, std::ceil(result + error));
             }
         } else {

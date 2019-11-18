@@ -55,12 +55,12 @@ namespace adgMod {
         float error;
 
         std::vector<std::pair<uint64_t, uint64_t>> segments;
-        std::vector<std::pair<string, uint64_t>> string_segments;
+        std::vector<std::pair<string, float>> string_segments;
     public:
         std::vector<string> string_keys;
 
         LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error) {};
-        void AddSegment(string&& x, uint64_t y);
+        void AddSegment(string&& x, float y);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
         float GetError() const;
