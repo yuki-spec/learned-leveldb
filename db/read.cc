@@ -7,6 +7,7 @@
 #include "cxxopts.hpp"
 #include <gperftools/profiler.h>
 #include <unistd.h>
+#include <fstream>
 
 using namespace leveldb;
 using namespace adgMod;
@@ -16,7 +17,7 @@ using std::endl;
 using std::to_string;
 using std::vector;
 using std::map;
-
+using std::ifstream;
 using std::string;
 
 int num_pairs_base = 1024;
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]) {
     int num_gets, num_iteration;
     float test_num_segments_base;
     float num_pair_lower, num_pair_upper, num_pair_step;
-    string db_location, profiler_out;
+    string db_location, profiler_out, input_filename;
     bool print_single_timing, print_file_info;
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
@@ -61,7 +62,8 @@ int main(int argc, char *argv[]) {
             ("file_info", "print the file structure info", cxxopts::value<bool>(print_file_info)->default_value("false"))
             ("test_num_segments", "test: number of segments per level", cxxopts::value<float>(test_num_segments_base)->default_value("1"))
             ("string_mode", "test: use string or int in model", cxxopts::value<bool>(adgMod::string_mode)->default_value("false"))
-            ("e, model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("10"));
+            ("e,model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("10"))
+            ("f,input_file", "the filename of input file", cxxopts::value<string>(input_filename)->default_value(""));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -96,12 +98,23 @@ int main(int argc, char *argv[]) {
             Status status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
 
-            for(int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
-                string key = generate_key(i);
-                string value = generate_value(i);
-                status = db->Put(write_options, key, value);
-                assert(status.ok() && "Put Error");
+            if (input_filename.empty()) {
+                for(int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
+                    string key = generate_key(i);
+                    string value = generate_value(i);
+                    status = db->Put(write_options, key, value);
+                    assert(status.ok() && "Put Error");
+                }
+            } else {
+                ifstream input(input_filename);
+                string key;
+                while (input >> key) {
+                    string value = "00000000";
+                    status = db->Put(write_options, key, value);
+                    assert(status.ok() && "File Put Error");
+                }
             }
+
 
             cout << "Put Complete" << endl;
             sleep(10);

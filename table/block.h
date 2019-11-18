@@ -254,6 +254,44 @@ public:
     }
 
 private:
+    inline void Seek(uint32_t left, uint32_t right, const Slice& target) {
+        while (left < right) {
+            uint32_t mid = (left + right + 1) / 2;
+            uint32_t region_offset = GetRestartPoint(mid);
+            uint32_t shared, non_shared, value_length;
+            const char *key_ptr =
+                    DecodeEntry(data_ + region_offset, data_ + restarts_, &shared,
+                                &non_shared, &value_length);
+            if (key_ptr == nullptr || (shared != 0)) {
+                CorruptionError();
+                return;
+            }
+            Slice mid_key(key_ptr, non_shared);
+            int comp = Compare(mid_key, target);
+            if (comp < 0) {
+                // Key at "mid" is smaller than "target".  Therefore all
+                // blocks before "mid" are uninteresting.
+                left = mid;
+            } else if (comp == 0) {
+                left = mid;
+                break;
+            } else {
+                // Key at "mid" is >= "target".  Therefore all blocks at or
+                // after "mid" are uninteresting.
+                right = mid - 1;
+            }
+        }
+
+        // Linear search (within restart block) for first key >= target
+        SeekToRestartPoint(left);
+        while (true) {
+            if (!ParseNextKey() || Compare(key_, target) >= 0) {
+                return;
+            }
+        }
+    }
+
+
     void CorruptionError() {
         current_ = restarts_;
         restart_index_ = num_restarts_;

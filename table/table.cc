@@ -217,18 +217,19 @@ Iterator* Table::NewIterator(const ReadOptions& options) const {
 
 Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
                           void (*handle_result)(void*, const Slice&,
-                                                const Slice&), FileMetaData* meta, uint64_t position) {
+                                                const Slice&), FileMetaData* meta, uint64_t lower, uint64_t upper) {
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   Status s;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
+  ParsedInternalKey parsed_key;
+  ParseInternalKey(k, &parsed_key);
 
-  if (adgMod::MOD == 1 && meta != nullptr) {
+  if ((adgMod::MOD == 1 || adgMod::MOD == 4) && meta != nullptr) {
 #ifdef INTERNAL_TIMER
       instance->StartTimer(2);
 #endif
-    size_t index, pos_in_block;
-    bool result = adgMod::SearchNumEntriesArray(meta->num_entries_accumulated, position, &index, &pos_in_block);
-    assert(result);
+    size_t index, pos_lower, pos_upper;
+    meta->num_entries_accumulated.Search(parsed_key.user_key, lower, upper, &index, &pos_lower, &pos_upper);
     Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
     index_iter->SeekToRestartPoint((uint32_t) index);
     index_iter->ParseNextKey();
@@ -243,18 +244,10 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
 #endif
     //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
     //fflush(stdout);
-    block_iter->SeekToRestartPoint((uint32_t) pos_in_block / adgMod::block_restart_interval);
-    while (true) {
-      if (!block_iter->ParseNextKey() || block_iter->Compare(block_iter->key_, k) >= 0) {
+    block_iter->Seek((uint32_t) pos_lower, (uint32_t) pos_upper, k);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(3);
 #endif
-        break;
-      }
-    }
-
-    //printf("num_blocks: %u\n", index_iter->num_restarts_);
-
     if (block_iter->Valid()) {
       (*handle_result)(arg, block_iter->key(), block_iter->value());
     }
@@ -270,20 +263,19 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
 
 
 
-  else if ((adgMod::MOD == 2 || adgMod::MOD == 3) && meta != nullptr) {
+  else if (adgMod::MOD == 2 && meta != nullptr) {
 #ifdef INTERNAL_TIMER
     instance->StartTimer(2);
 #endif
-    size_t index = 0, pos_in_block = 0;
-    std::string key(k.data(), k.size());
-    uint64_t pos = meta->learned_index_data.GetPosition(key);
+    size_t index = 0, pos_block_lower = 0, pos_block_upper = 0;
+    auto bounds = meta->learned_index_data.GetPosition(parsed_key.user_key);
 
 //      printf("file_number: %d position: %d block_index: %d relative_pos: %d key: %s\n", meta->number, pos, index, pos_in_block, key.c_str());
 //      fflush(stdout);
 
-    assert(pos <= meta->learned_index_data.MaxPosition());
-    bool result = adgMod::SearchNumEntriesArray(meta->num_entries_accumulated, pos, &index, &pos_in_block);
-    assert(result);
+    //assert(pos <= meta->learned_index_data.MaxPosition());
+    bool result = meta->num_entries_accumulated.Search(parsed_key.user_key, bounds.first, bounds.second, &index, &pos_block_lower, &pos_block_upper);
+    //assert(result);
     Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
     index_iter->SeekToRestartPoint((uint32_t) index);
     index_iter->ParseNextKey();
@@ -296,17 +288,54 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
     instance->PauseTimer(5);
     instance->StartTimer(3);
 #endif
-
-    block_iter->SeekToRestartPoint((uint32_t) pos_in_block / adgMod::block_restart_interval);
-    while (true) {
-      if (!block_iter->ParseNextKey() || block_iter->Compare(block_iter->key_, k) >= 0) {
+    block_iter->Seek((uint32_t) pos_block_lower, (uint32_t) pos_block_upper, k);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(3);
 #endif
-        break;
+
+    if (block_iter->Valid()) {
+      (*handle_result)(arg, block_iter->key(), block_iter->value());
+    }
+    s = block_iter->status();
+    delete block_iter;
+    if (s.ok()) {
+      s = iiter->status();
+    }
+    delete iiter;
+  }
+
+
+
+
+  else if (adgMod::MOD == 3 && meta != nullptr) {
+#ifdef INTERNAL_TIMER
+    instance->StartTimer(2);
+#endif
+    size_t index, pos;
+    meta->num_entries_accumulated.SearchNoError(lower, &index, &pos);
+    Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
+    index_iter->SeekToRestartPoint((uint32_t) index);
+    index_iter->ParseNextKey();
+#ifdef INTERNAL_TIMER
+    instance->PauseTimer(2);
+    instance->StartTimer(5);
+#endif
+    Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
+#ifdef INTERNAL_TIMER
+    instance->PauseTimer(5);
+    instance->StartTimer(3);
+#endif
+    //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
+    //fflush(stdout);
+    block_iter->SeekToRestartPoint((uint32_t) pos / adgMod::block_restart_interval);
+    while (true) {
+      if (!block_iter->ParseNextKey() || block_iter->Compare(block_iter->key(), k) >= 0) {
+          break;
       }
     }
-
+#ifdef INTERNAL_TIMER
+    instance->PauseTimer(3);
+#endif
     if (block_iter->Valid()) {
       (*handle_result)(arg, block_iter->key(), block_iter->value());
     }
@@ -391,9 +420,14 @@ void Table::Learn(const ReadOptions& options, FileMetaData *meta) {
     index_iter->ParseNextKey();
     assert(index_iter->Valid());
     Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
+    ParsedInternalKey parsed_key;
+    for (block_iter->SeekToRestartPoint(0); block_iter->ParseNextKey();) {
+        assert(ParseInternalKey(block_iter->key(), &parsed_key));
+        meta->learned_index_data.string_keys.push_back(string(parsed_key.user_key.data(), parsed_key.user_key.size()));
+    }
     uint64_t num_entries_this_block = block_iter->num_restarts_ * adgMod::block_restart_interval;
-    uint64_t current_total = meta->num_entries_accumulated.empty() ? 0 : meta->num_entries_accumulated.back();
-    meta->num_entries_accumulated.push_back(current_total + num_entries_this_block);
+    uint64_t current_total = meta->num_entries_accumulated.NumEntries();
+    meta->num_entries_accumulated.Add(current_total + num_entries_this_block, std::string(parsed_key.user_key.data(), parsed_key.user_key.size()));
     delete block_iter;
   }
 

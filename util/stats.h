@@ -10,9 +10,11 @@
 #include <map>
 #include <vector>
 #include <cstring>
+#include "leveldb/slice.h"
 
 using std::string;
 using std::to_string;
+using leveldb::Slice;
 
 namespace adgMod {
     extern int MOD;
@@ -50,28 +52,41 @@ namespace adgMod {
     class LearnedIndexData {
     private:
         bool string_mode;
-        uint32_t error;
+        float error;
 
         std::vector<std::pair<uint64_t, uint64_t>> segments;
         std::vector<std::pair<string, uint64_t>> string_segments;
-        std::vector<string> string_keys;
     public:
+        std::vector<string> string_keys;
+
         LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error) {};
         void AddSegment(string&& x, uint64_t y);
-        uint64_t GetPosition(const string& target_x) const;
+        std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
-        size_t SegmentSize() const;
-        uint32_t GetError() const;
-        void AddKey(string&& key);
+        float GetError() const;
         void Learn();
     };
 
-    string ExtractString(const char* pos, size_t size);
+    class AccumulatedNumEntriesArray {
+    private:
+        std::vector<std::pair<uint64_t, string>> array;
+    public:
+        AccumulatedNumEntriesArray() = default;
+        void Add(uint64_t num_entries, string&& key);
+        bool Search(const Slice& key, uint64_t lower, uint64_t upper, size_t* index, uint64_t* relative_lower, uint64_t* relative_upper);
+        bool SearchNoError(uint64_t position, size_t* index, uint64_t* relative_position);
+        uint64_t NumEntries() const;
+    };
+
     uint64_t ExtractInteger(const char* pos, size_t size);
-    bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);
+    //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);
     string generate_key(uint64_t key);
     string generate_value(uint64_t value);
-
+    uint64_t SliceToInteger(const Slice& slice);
+    int compare(const Slice& slice, const string& string);
+    bool operator<(const Slice& slice, const string& string);
+    bool operator>(const Slice& slice, const string& string);
+    bool operator<=(const Slice& slice, const string& string);
 }
 
 
