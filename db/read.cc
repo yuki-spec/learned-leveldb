@@ -79,6 +79,17 @@ int main(int argc, char *argv[]) {
         num_pairs.push_back((float) pow(2, i));
     }
 
+    vector<string> keys;
+    if (!input_filename.empty()) {
+        ifstream input(input_filename);
+        string key;
+        while (input >> key) {
+            keys.push_back(std::move(key));
+        }
+        input.close();
+    }
+
+
     for (size_t outer = 0; outer < num_pairs.size(); ++outer) {
         vector<size_t> time_sums(9, 0);
         adgMod::test_num_level_segments =  (uint32_t) floor(num_pairs[outer] *  test_num_segments_base);
@@ -100,17 +111,16 @@ int main(int argc, char *argv[]) {
 
             if (input_filename.empty()) {
                 for(int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
-                    string key = generate_key(i);
-                    string value = generate_value(i);
-                    status = db->Put(write_options, key, value);
+                    //string key = generate_key(i);
+                    //string value = generate_value(i);
+                    status = db->Put(write_options, generate_key(i), generate_value(i));
                     assert(status.ok() && "Put Error");
                 }
             } else {
-                ifstream input(input_filename);
-                string key;
-                while (input >> key) {
-                    string value = "00000000";
-                    status = db->Put(write_options, key, value);
+                for (int i = 0; i < keys.size(); ++i) {
+                    string value = generate_value(i);
+                    assert(keys[i] == generate_key(i));
+                    status = db->Put(write_options, keys[i], value);
                     assert(status.ok() && "File Put Error");
                 }
             }
@@ -123,12 +133,24 @@ int main(int argc, char *argv[]) {
             if (print_file_info && iteration == 0) db->PrintFileInfo();
 
             std::uniform_int_distribution<uint64_t > uniform_dist(0, (uint64_t) floor(num_pairs[outer] * num_pairs_base) - 1);
-            for (int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
-                string value;
-                string key = generate_key(i);
-                status = db->Get(read_options, key, &value);
-                //cout << "Get " << i << " Done" << endl;
-                assert(status.ok() && "Get Error");
+            std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
+
+            if (input_filename.empty()) {
+                for (int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
+                    string value;
+                    string key = generate_key(i);
+                    status = db->Get(read_options, key, &value);
+                    //cout << "Get " << i << " Done" << endl;
+                    assert(status.ok() && "Get Error");
+                }
+            } else {
+                for (int i = 0; i < keys.size(); ++i) {
+                    string value;
+                    assert(keys[i] == generate_key(i));
+                    status = db->Get(read_options, keys[i], &value);
+                    //cout << "Get " << keys[i] << " Done" << endl;
+                    assert(status.ok() && "File Get Error");
+                }
             }
 
             adgMod::Stats* instance = adgMod::Stats::GetInstance();
@@ -137,18 +159,28 @@ int main(int argc, char *argv[]) {
 #ifdef PROFILER
             ProfilerStart(profiler_out.c_str());
 #endif
-            
-            for (int i = 0; i < num_gets; ++i) {
-                string value;
-                string key = generate_key(uniform_dist(e1));
-                uint64_t start_time = instance->ReportTime(4);
-                instance->StartTimer(4);
-                status = db->Get(read_options, key, &value);
-                instance->PauseTimer(4);
-                assert(status.ok() && "Get Error");
-                if (print_single_timing) {
-                    uint64_t time_elapse = instance->ReportTime(4) - start_time;
-                    printf("*** %lu\n", time_elapse);
+
+            if (input_filename.empty()) {
+                for (int i = 0; i < num_gets; ++i) {
+                    string value;
+                    string key = generate_key(uniform_dist(e1));
+                    uint64_t start_time = instance->ReportTime(4);
+                    instance->StartTimer(4);
+                    status = db->Get(read_options, key, &value);
+                    instance->PauseTimer(4);
+                    assert(status.ok() && "Get Error");
+                    if (print_single_timing) {
+                        uint64_t time_elapse = instance->ReportTime(4) - start_time;
+                        printf("*** %lu\n", time_elapse);
+                    }
+                }
+            } else {
+                for (int i = 0; i < num_gets; ++i) {
+                    string value;
+                    instance->StartTimer(4);
+                    status = db->Get(read_options, keys[uniform_dist_file(e1)], &value);
+                    instance->PauseTimer(4);
+                    assert(status.ok() && "File Get Error");
                 }
             }
 
