@@ -231,6 +231,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
     size_t index, pos_lower, pos_upper;
     meta->num_entries_accumulated.Search(parsed_key.user_key, lower, upper, &index, &pos_lower, &pos_upper);
     Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
+    //printf("%u %lu %lu %lu\n", index_iter->num_restarts_, index, pos_lower, pos_upper);
     index_iter->SeekToRestartPoint((uint32_t) index);
     index_iter->ParseNextKey();
 #ifdef INTERNAL_TIMER
@@ -244,6 +245,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
 #endif
     //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
     //fflush(stdout);
+    //printf("%u %u %lu %lu %lu\n", index_iter->num_restarts_, block_iter->num_restarts_, index, pos_lower, pos_upper);
     block_iter->Seek((uint32_t) pos_lower, (uint32_t) pos_upper, k);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(3);
@@ -432,14 +434,16 @@ void Table::Learn(const ReadOptions& options, FileMetaData *meta) {
   }
 
   // TODO: Test Only
-  uint64_t start = adgMod::ExtractInteger(meta->smallest.user_key().data(), meta->smallest.user_key().size());
-  uint64_t end = adgMod::ExtractInteger(meta->largest.user_key().data(), meta->largest.user_key().size());
-  assert(end > start);
-  uint64_t interval = (end - start) / adgMod::test_num_file_segments;
-  for (int j = 0; j < adgMod::test_num_file_segments; ++j) {
-    meta->learned_index_data.AddSegment(adgMod::generate_key(start + interval * j), interval * j);
-  }
-  meta->learned_index_data.AddSegment(adgMod::generate_key(end), end - start);
+//  uint64_t start = adgMod::ExtractInteger(meta->smallest.user_key().data(), meta->smallest.user_key().size());
+//  uint64_t end = adgMod::ExtractInteger(meta->largest.user_key().data(), meta->largest.user_key().size());
+//  assert(end > start);
+//  uint64_t interval = (end - start) / adgMod::test_num_file_segments;
+//  for (int j = 0; j < adgMod::test_num_file_segments; ++j) {
+//    meta->learned_index_data.AddSegment(adgMod::generate_key(start + interval * j), (interval * j) / adgMod::key_multiple);
+//  }
+//  meta->learned_index_data.AddSegment(adgMod::generate_key(end), (end - start) / adgMod::key_multiple);
+
+  meta->learned_index_data.Learn();
   delete index_iter;
 }
 

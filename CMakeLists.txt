@@ -184,6 +184,8 @@ target_sources(leveldb
     "${PROJECT_SOURCE_DIR}/util/status.cc"
     "${PROJECT_SOURCE_DIR}/util/stats.cpp"
     "${PROJECT_SOURCE_DIR}/util/stats.h"
+    "${PROJECT_SOURCE_DIR}/util/plr.h"
+    "${PROJECT_SOURCE_DIR}/util/plr.cpp"
 
   # Only CMake 3.3+ supports PUBLIC sources in targets exported by "install".
   $<$<VERSION_GREATER:CMAKE_VERSION,3.2>:PUBLIC>

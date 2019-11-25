@@ -41,6 +41,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/daiyi/Desktop/Research/temp/leveldb/util/hash.cc" "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/leveldb.dir/util/hash.cc.obj"
   "C:/Users/daiyi/Desktop/Research/temp/leveldb/util/logging.cc" "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/leveldb.dir/util/logging.cc.obj"
   "C:/Users/daiyi/Desktop/Research/temp/leveldb/util/options.cc" "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/leveldb.dir/util/options.cc.obj"
+  "C:/Users/daiyi/Desktop/Research/temp/leveldb/util/plr.cpp" "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/leveldb.dir/util/plr.cpp.obj"
   "C:/Users/daiyi/Desktop/Research/temp/leveldb/util/stats.cpp" "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/leveldb.dir/util/stats.cpp.obj"
   "C:/Users/daiyi/Desktop/Research/temp/leveldb/util/status.cc" "C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/leveldb.dir/util/status.cc.obj"
   )

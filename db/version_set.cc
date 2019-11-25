@@ -382,9 +382,14 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
         adgMod::LearnedIndexData& learned_this_level = learned_index_data_[level];
         std::pair<uint64_t, uint64_t> bounds = learned_this_level.GetPosition(user_key);
 
+        //printf("%lu %lu\n", bounds.first, bounds.second);
+
         size_t index;
         if (bounds.first <= learned_this_level.MaxPosition()) {
           assert(num_entries_accumulated_[level].Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper));
+
+          //printf("%lu %lu %lu\n", index, position_lower, position_upper);
+
           files = &files_[level][index];
           num_files = 1;
         } else {
@@ -1684,28 +1689,32 @@ void Version::Learn(const ReadOptions& options) {
 
 
   // TODO: Test Only
-  for (int i = 1; i < config::kNumLevels; ++i) {
-    if (files_[i].empty()) continue;
-
-    uint64_t start = adgMod::ExtractInteger(files_[i].front()->smallest.user_key().data(), files_[i].front()->smallest.user_key().size());
-    uint64_t end = adgMod::ExtractInteger(files_[i].back()->largest.user_key().data(), files_[i].back()->largest.user_key().size());
-    uint64_t interval = (end - start) / adgMod::test_num_level_segments;
-    for (int j = 0; j < adgMod::test_num_level_segments; ++j) {
-      learned_index_data_[i].AddSegment(adgMod::generate_key(start + interval * j), interval * j);
-    }
-    learned_index_data_[i].AddSegment(adgMod::generate_key(end), end - start);
-  }
-
+//  for (int i = 1; i < config::kNumLevels; ++i) {
+//    if (files_[i].empty()) continue;
+//
+//    uint64_t start = adgMod::ExtractInteger(files_[i].front()->smallest.user_key().data(), files_[i].front()->smallest.user_key().size());
+//    uint64_t end = adgMod::ExtractInteger(files_[i].back()->largest.user_key().data(), files_[i].back()->largest.user_key().size());
+//    uint64_t interval = (end - start) / adgMod::test_num_level_segments;
+//    for (int j = 0; j < adgMod::test_num_level_segments; ++j) {
+//      learned_index_data_[i].AddSegment(adgMod::generate_key(start + interval * j), (interval * j) / adgMod::key_multiple);
+//    }
+//    learned_index_data_[i].AddSegment(adgMod::generate_key(end), (end - start) / adgMod::key_multiple);
+//  }
+//
+//
+//  for (int i = 0; i < config::kNumLevels; ++i) {
+//    if (files_[i].empty()) continue;
+//
+//    for (int j = 0; j < files_[i].size(); ++j) {
+//        const Slice& smallest_key = files_[i][j]->smallest.user_key();
+//        learned_index_data_file_only_[i].AddSegment(std::string(smallest_key.data(), smallest_key.size()), (uint64_t) j);
+//    }
+//    const Slice& largest_key = files_[i].back()->largest.user_key();
+//    learned_index_data_file_only_[i].AddSegment(std::string(largest_key.data(), largest_key.size()), (uint64_t) files_[i].size() - 1);
+//  }
 
   for (int i = 0; i < config::kNumLevels; ++i) {
-    if (files_[i].empty()) continue;
-
-    for (int j = 0; j < files_[i].size(); ++j) {
-        const Slice& smallest_key = files_[i][j]->smallest.user_key();
-        learned_index_data_file_only_[i].AddSegment(std::string(smallest_key.data(), smallest_key.size()), (uint64_t) j);
-    }
-    const Slice& largest_key = files_[i].back()->largest.user_key();
-    learned_index_data_file_only_[i].AddSegment(std::string(largest_key.data(), largest_key.size()), (uint64_t) files_[i].size() - 1);
+    learned_index_data_[i].Learn();
   }
 }
 

@@ -2248,6 +2248,12 @@
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/options.cc">
 			<Option target="leveldb"/>
 		</Unit>
+		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/plr.cpp">
+			<Option target="leveldb"/>
+		</Unit>
+		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/plr.h">
+			<Option target="leveldb"/>
+		</Unit>
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/posix_logger.h">
 			<Option target="leveldb"/>
 		</Unit>

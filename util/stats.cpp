@@ -6,12 +6,14 @@
 #include "stats.h"
 #include <ctime>
 #include <cmath>
+#include "plr.h"
 
 using std::stoull;
 
 namespace adgMod {
     int MOD = 0;
     bool string_mode = true;
+    uint64_t key_multiple = 1;
     uint32_t model_error = 10;
     int block_restart_interval = 16;
     uint32_t test_num_level_segments = 100;
@@ -126,11 +128,11 @@ namespace adgMod {
 
 
 
-    void LearnedIndexData::AddSegment(string&& x, float y) {
+    void LearnedIndexData::AddSegment(string&& x, double k, double b) {
         if (string_mode) {
-            string_segments.push_back(std::make_pair(std::move(x), y));
+            string_segments.push_back(Segment(x, k, b));
         } else {
-            segments.push_back(std::make_pair(stoull(x), y));
+            assert(false);
         }
     }
 
@@ -154,6 +156,8 @@ namespace adgMod {
             }
 
             else {
+                assert(string_segments.size() > 1);
+
                 uint64_t target_int = SliceToInteger(target_x);
                 if (target_x > string_keys.back()) return std::make_pair(string_keys.size(), string_keys.size());
                 if (target_x < string_keys.front()) return std::make_pair(string_keys.size(), string_keys.size());
@@ -161,14 +165,17 @@ namespace adgMod {
                 uint32_t left = 0, right = (uint32_t) string_segments.size() - 1;
                 while (left != right - 1) {
                     uint32_t mid = (right + left) / 2;
-                    if (target_x < string_segments[mid].first) right = mid;
+                    if (target_x < string_segments[mid].x) right = mid;
                     else left = mid;
                 }
 
-                uint64_t x1 = stoull(string_segments[left].first), x2 = stoull(string_segments[right].first);
-                float y1 = string_segments[left].second, y2 = string_segments[right].second;
-                float result = y1 + (y2 - y1) * (target_int - x1) / (x2 - x1);
-                return std::make_pair(result > error ? std::floor(result - error) : 0, std::ceil(result + error));
+                double result = target_int * string_segments[left].k + string_segments[left].b;
+                uint64_t lower = result - error> 0 ? (uint64_t) std::floor(result - error) : 0;
+                uint64_t upper = (uint64_t) std::ceil(result + error);
+
+//                printf("%s %s %s\n", string_keys[lower].c_str(), string(target_x.data(), target_x.size()).c_str(), string_keys[upper].c_str());
+//                assert(target_x >= string_keys[lower] && target_x <= string_keys[upper]);
+                return std::make_pair(lower, upper);
             }
         } else {
 //            uint64_t target_int = SliceToInteger(target_x);
@@ -193,11 +200,33 @@ namespace adgMod {
         return string_keys.size() - 1;
     }
 
-    float LearnedIndexData::GetError() const {
+    double LearnedIndexData::GetError() const {
         return error;
     }
 
     void LearnedIndexData::Learn() {
+        // FILL IN GAMMA (error)
+        PLR plr = PLR(error);
+
+        if (string_keys.empty()) return;
+
+        std::vector<struct point> points;
+        int i = 0;
+        for (string &s : string_keys) {
+            struct point p{ .x = (double) stoull(s), .y = (double) i};
+            points.push_back(p);
+            ++i;
+        }
+
+        std::vector<struct segment> segs = plr.train(points);
+        for (struct segment &s : segs) {
+            string_segments.push_back(Segment(generate_key((uint64_t) s.start), s.slope, s.intercept));
+        }
+        string_segments.push_back(Segment(string_keys.back(), 0, 0));
+
+        for (auto& str: string_segments) {
+            //printf("%s %f\n", str.first.c_str(), str.second);
+        }
         return;
     }
 
@@ -219,8 +248,8 @@ namespace adgMod {
                     if (key <= array[lower_pos].second) break;
                     lower = array[lower_pos].first;
                     ++lower_pos;
-                    upper = std::min(upper, array[lower_pos].first - 1);
                 }
+                upper = std::min(upper, array[lower_pos].first - 1);
                 *index = lower_pos;
                 *relative_lower = lower_pos > 0 ? lower - array[lower_pos - 1].first : lower;
                 *relative_upper = lower_pos > 0 ? upper - array[lower_pos - 1].first : upper;
@@ -245,9 +274,10 @@ namespace adgMod {
                     if (key <= array[left].second) break;
                     lower = array[left].first;
                     ++left;
-                    upper = std::min(upper, array[left].first - 1);
                 }
+                upper = std::min(upper, array[left].first - 1);
             }
+
 
             *index = left;
             *relative_lower = left > 0 ? lower - array[left - 1].first : lower;
@@ -343,6 +373,9 @@ namespace adgMod {
     }
     bool operator<=(const Slice& slice, const string& string) {
         return memcmp((void*) slice.data(), string.c_str(), slice.size()) <= 0;
+    }
+    bool operator>=(const Slice& slice, const string& string) {
+        return memcmp((void*) slice.data(), string.c_str(), slice.size()) >= 0;
     }
 }
 

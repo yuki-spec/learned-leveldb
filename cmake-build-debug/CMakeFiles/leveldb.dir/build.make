@@ -981,10 +981,35 @@ CMakeFiles/leveldb.dir/util/status.cc.obj.provides: CMakeFiles/leveldb.dir/util/
 CMakeFiles/leveldb.dir/util/status.cc.obj.provides.build: CMakeFiles/leveldb.dir/util/status.cc.obj
 
 
+CMakeFiles/leveldb.dir/util/plr.cpp.obj: CMakeFiles/leveldb.dir/flags.make
+CMakeFiles/leveldb.dir/util/plr.cpp.obj: CMakeFiles/leveldb.dir/includes_CXX.rsp
+CMakeFiles/leveldb.dir/util/plr.cpp.obj: ../util/plr.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/leveldb.dir/util/plr.cpp.obj"
+	C:\TDM-GCC-64\bin\g++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\leveldb.dir\util\plr.cpp.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\util\plr.cpp
+
+CMakeFiles/leveldb.dir/util/plr.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/leveldb.dir/util/plr.cpp.i"
+	C:\TDM-GCC-64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\daiyi\Desktop\Research\temp\leveldb\util\plr.cpp > CMakeFiles\leveldb.dir\util\plr.cpp.i
+
+CMakeFiles/leveldb.dir/util/plr.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/leveldb.dir/util/plr.cpp.s"
+	C:\TDM-GCC-64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\daiyi\Desktop\Research\temp\leveldb\util\plr.cpp -o CMakeFiles\leveldb.dir\util\plr.cpp.s
+
+CMakeFiles/leveldb.dir/util/plr.cpp.obj.requires:
+
+.PHONY : CMakeFiles/leveldb.dir/util/plr.cpp.obj.requires
+
+CMakeFiles/leveldb.dir/util/plr.cpp.obj.provides: CMakeFiles/leveldb.dir/util/plr.cpp.obj.requires
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.obj.provides.build
+.PHONY : CMakeFiles/leveldb.dir/util/plr.cpp.obj.provides
+
+CMakeFiles/leveldb.dir/util/plr.cpp.obj.provides.build: CMakeFiles/leveldb.dir/util/plr.cpp.obj
+
+
 CMakeFiles/leveldb.dir/util/env_posix.cc.obj: CMakeFiles/leveldb.dir/flags.make
 CMakeFiles/leveldb.dir/util/env_posix.cc.obj: CMakeFiles/leveldb.dir/includes_CXX.rsp
 CMakeFiles/leveldb.dir/util/env_posix.cc.obj: ../util/env_posix.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/leveldb.dir/util/env_posix.cc.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/leveldb.dir/util/env_posix.cc.obj"
 	C:\TDM-GCC-64\bin\g++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\leveldb.dir\util\env_posix.cc.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\util\env_posix.cc
 
 CMakeFiles/leveldb.dir/util/env_posix.cc.i: cmake_force
@@ -1009,7 +1034,7 @@ CMakeFiles/leveldb.dir/util/env_posix.cc.obj.provides.build: CMakeFiles/leveldb.
 CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj: CMakeFiles/leveldb.dir/flags.make
 CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj: CMakeFiles/leveldb.dir/includes_CXX.rsp
 CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj: ../helpers/memenv/memenv.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj"
 	C:\TDM-GCC-64\bin\g++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\leveldb.dir\helpers\memenv\memenv.cc.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\helpers\memenv\memenv.cc
 
 CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.i: cmake_force
@@ -1070,6 +1095,7 @@ leveldb_OBJECTS = \
 "CMakeFiles/leveldb.dir/util/logging.cc.obj" \
 "CMakeFiles/leveldb.dir/util/options.cc.obj" \
 "CMakeFiles/leveldb.dir/util/status.cc.obj" \
+"CMakeFiles/leveldb.dir/util/plr.cpp.obj" \
 "CMakeFiles/leveldb.dir/util/env_posix.cc.obj" \
 "CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj"
 
@@ -1113,11 +1139,12 @@ libleveldb.a: CMakeFiles/leveldb.dir/util/hash.cc.obj
 libleveldb.a: CMakeFiles/leveldb.dir/util/logging.cc.obj
 libleveldb.a: CMakeFiles/leveldb.dir/util/options.cc.obj
 libleveldb.a: CMakeFiles/leveldb.dir/util/status.cc.obj
+libleveldb.a: CMakeFiles/leveldb.dir/util/plr.cpp.obj
 libleveldb.a: CMakeFiles/leveldb.dir/util/env_posix.cc.obj
 libleveldb.a: CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj
 libleveldb.a: CMakeFiles/leveldb.dir/build.make
 libleveldb.a: CMakeFiles/leveldb.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Linking CXX static library libleveldb.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Linking CXX static library libleveldb.a"
 	$(CMAKE_COMMAND) -P CMakeFiles\leveldb.dir\cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\leveldb.dir\link.txt --verbose=$(VERBOSE)
 
@@ -1163,6 +1190,7 @@ CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/util/hash.cc.obj.require
 CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/util/logging.cc.obj.requires
 CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/util/options.cc.obj.requires
 CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/util/status.cc.obj.requires
+CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/util/plr.cpp.obj.requires
 CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/util/env_posix.cc.obj.requires
 CMakeFiles/leveldb.dir/requires: CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj.requires
 

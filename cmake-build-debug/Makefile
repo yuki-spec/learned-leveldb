@@ -2496,6 +2496,33 @@ util/options.cc.s:
 	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/options.cc.s
 .PHONY : util/options.cc.s
 
+util/plr.obj: util/plr.cpp.obj
+
+.PHONY : util/plr.obj
+
+# target to build an object file
+util/plr.cpp.obj:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.obj
+.PHONY : util/plr.cpp.obj
+
+util/plr.i: util/plr.cpp.i
+
+.PHONY : util/plr.i
+
+# target to preprocess a source file
+util/plr.cpp.i:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.i
+.PHONY : util/plr.cpp.i
+
+util/plr.s: util/plr.cpp.s
+
+.PHONY : util/plr.s
+
+# target to generate assembly for a file
+util/plr.cpp.s:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.s
+.PHONY : util/plr.cpp.s
+
 util/stats.obj: util/stats.cpp.obj
 
 .PHONY : util/stats.obj
@@ -3074,6 +3101,9 @@ help:
 	@echo ... util/options.obj
 	@echo ... util/options.i
 	@echo ... util/options.s
+	@echo ... util/plr.obj
+	@echo ... util/plr.i
+	@echo ... util/plr.s
 	@echo ... util/stats.obj
 	@echo ... util/stats.i
 	@echo ... util/stats.s

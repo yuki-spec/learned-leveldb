@@ -19,6 +19,7 @@ using leveldb::Slice;
 namespace adgMod {
     extern int MOD;
     extern bool string_mode;
+    extern uint64_t key_multiple;
     extern uint32_t model_error;
     extern int block_restart_interval;
     extern uint32_t test_num_level_segments;
@@ -49,21 +50,28 @@ namespace adgMod {
         ~Stats();
     };
 
+    class Segment {
+    public:
+        Segment(string _x, double _k, double _b) : x(_x), k(_k), b(_b) {}
+        string x;
+        double k;
+        double b;
+    };
+
     class LearnedIndexData {
     private:
         bool string_mode;
-        float error;
+        double error;
 
-        std::vector<std::pair<uint64_t, uint64_t>> segments;
-        std::vector<std::pair<string, float>> string_segments;
+        std::vector<Segment> string_segments;
     public:
         std::vector<string> string_keys;
 
         LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error) {};
-        void AddSegment(string&& x, float y);
+        void AddSegment(string&& x, double k, double b);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
-        float GetError() const;
+        double GetError() const;
         void Learn();
     };
 
@@ -87,6 +95,7 @@ namespace adgMod {
     bool operator<(const Slice& slice, const string& string);
     bool operator>(const Slice& slice, const string& string);
     bool operator<=(const Slice& slice, const string& string);
+    bool operator>=(const Slice& slice, const string& string);
 }
 
 

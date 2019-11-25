@@ -63,7 +63,8 @@ int main(int argc, char *argv[]) {
             ("test_num_segments", "test: number of segments per level", cxxopts::value<float>(test_num_segments_base)->default_value("1"))
             ("string_mode", "test: use string or int in model", cxxopts::value<bool>(adgMod::string_mode)->default_value("false"))
             ("e,model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("10"))
-            ("f,input_file", "the filename of input file", cxxopts::value<string>(input_filename)->default_value(""));
+            ("f,input_file", "the filename of input file", cxxopts::value<string>(input_filename)->default_value(""))
+            ("multiple", "test: use larger keys", cxxopts::value<uint64_t>(adgMod::key_multiple)->default_value("1"));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -86,6 +87,7 @@ int main(int argc, char *argv[]) {
         while (input >> key) {
             keys.push_back(std::move(key));
         }
+        adgMod::key_size = (int) keys.front().size();
         input.close();
     }
 
@@ -110,16 +112,15 @@ int main(int argc, char *argv[]) {
             assert(status.ok() && "Open Error");
 
             if (input_filename.empty()) {
-                for(int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
+                for(uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
                     //string key = generate_key(i);
                     //string value = generate_value(i);
-                    status = db->Put(write_options, generate_key(i), generate_value(i));
+                    status = db->Put(write_options, generate_key(i * adgMod::key_multiple), generate_value(i));
                     assert(status.ok() && "Put Error");
                 }
             } else {
                 for (int i = 0; i < keys.size(); ++i) {
-                    string value = generate_value(i);
-                    assert(keys[i] == generate_key(i));
+                    string value = generate_value(0);
                     status = db->Put(write_options, keys[i], value);
                     assert(status.ok() && "File Put Error");
                 }
@@ -136,17 +137,15 @@ int main(int argc, char *argv[]) {
             std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
 
             if (input_filename.empty()) {
-                for (int i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
+                for (uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
                     string value;
-                    string key = generate_key(i);
-                    status = db->Get(read_options, key, &value);
+                    status = db->Get(read_options, generate_key(i * adgMod::key_multiple), &value);
                     //cout << "Get " << i << " Done" << endl;
                     assert(status.ok() && "Get Error");
                 }
             } else {
                 for (int i = 0; i < keys.size(); ++i) {
                     string value;
-                    assert(keys[i] == generate_key(i));
                     status = db->Get(read_options, keys[i], &value);
                     //cout << "Get " << keys[i] << " Done" << endl;
                     assert(status.ok() && "File Get Error");
@@ -161,9 +160,9 @@ int main(int argc, char *argv[]) {
 #endif
 
             if (input_filename.empty()) {
-                for (int i = 0; i < num_gets; ++i) {
+                for (uint64_t i = 0; i < num_gets; ++i) {
                     string value;
-                    string key = generate_key(uniform_dist(e1));
+                    string key = generate_key(uniform_dist(e1) * adgMod::key_multiple);
                     uint64_t start_time = instance->ReportTime(4);
                     instance->StartTimer(4);
                     status = db->Get(read_options, key, &value);
@@ -204,5 +203,7 @@ int main(int argc, char *argv[]) {
         for (int s = 0; s < time_sums.size(); ++s) {
             printf("%d : Time Average for Timer %d : %lu\n", int(num_pairs[outer]), s, time_sums[s] / num_iteration);
         }
+
+        if (!input_filename.empty()) break;
     }
 }
