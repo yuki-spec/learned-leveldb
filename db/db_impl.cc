@@ -687,10 +687,15 @@ void DBImpl::BackgroundCall() {
 }
 
 void DBImpl::BackgroundCompaction() {
+
+  adgMod::Stats* instance = adgMod::Stats::GetInstance();
+  instance->StartTimer(7);
+
   mutex_.AssertHeld();
 
   if (imm_ != nullptr) {
     CompactMemTable();
+    instance->PauseTimer(7);
     return;
   }
 
@@ -765,6 +770,8 @@ void DBImpl::BackgroundCompaction() {
     }
     manual_compaction_ = nullptr;
   }
+
+  instance->PauseTimer(7);
 }
 
 void DBImpl::CleanupCompaction(CompactionState* compact) {

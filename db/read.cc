@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 
 
     for (size_t outer = 0; outer < num_pairs.size(); ++outer) {
-        vector<size_t> time_sums(9, 0);
+        vector<size_t> time_sums(10, 0);
         adgMod::test_num_level_segments =  (uint32_t) floor(num_pairs[outer] *  test_num_segments_base);
         for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
             DB* db;
@@ -111,17 +111,24 @@ int main(int argc, char *argv[]) {
             Status status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
 
+            adgMod::Stats* instance = adgMod::Stats::GetInstance();
+            instance->ResetAll();
+
             if (input_filename.empty()) {
                 for(uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
                     //string key = generate_key(i);
                     //string value = generate_value(i);
+                    instance->StartTimer(9);
                     status = db->Put(write_options, generate_key(i * adgMod::key_multiple), generate_value(i));
+                    instance->PauseTimer(9);
                     assert(status.ok() && "Put Error");
                 }
             } else {
                 for (int i = 0; i < keys.size(); ++i) {
                     string value = generate_value(0);
+                    instance->StartTimer(9);
                     status = db->Put(write_options, keys[i], value);
+                    instance->PauseTimer(9);
                     assert(status.ok() && "File Put Error");
                 }
             }
@@ -129,7 +136,9 @@ int main(int argc, char *argv[]) {
 
             cout << "Put Complete" << endl;
             sleep(10);
+            instance->StartTimer(8);
             if (MOD > 0) db->Learn(read_options);
+            instance->PauseTimer(8);
             cout << "Learn Complete" << endl;
             if (print_file_info && iteration == 0) db->PrintFileInfo();
 
@@ -151,9 +160,6 @@ int main(int argc, char *argv[]) {
                     assert(status.ok() && "File Get Error");
                 }
             }
-
-            adgMod::Stats* instance = adgMod::Stats::GetInstance();
-            instance->ResetAll();
 
 #ifdef PROFILER
             ProfilerStart(profiler_out.c_str());
