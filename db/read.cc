@@ -164,6 +164,9 @@ int main(int argc, char *argv[]) {
 #ifdef PROFILER
             ProfilerStart(profiler_out.c_str());
 #endif
+            for (int s = 7; s <= 9; ++s)
+                time_sums[s] += instance->ReportTime(s);
+            instance->ResetAll();
 
             if (input_filename.empty()) {
                 for (uint64_t i = 0; i < num_gets; ++i) {

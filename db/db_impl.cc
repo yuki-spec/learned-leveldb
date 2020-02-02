@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <util/stats.h>
+#include <unistd.h>
 
 #include "db/builder.h"
 #include "db/db_iter.h"
@@ -687,6 +688,8 @@ void DBImpl::BackgroundCall() {
 }
 
 void DBImpl::BackgroundCompaction() {
+
+  sleep(1);
 
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   instance->StartTimer(7);

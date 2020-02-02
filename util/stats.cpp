@@ -92,6 +92,8 @@ namespace adgMod {
     }
 
     uint64_t Stats::ReportTime(uint32_t id) {
+        for (size_t i = timers.size(); i < id + 1; ++i) timers.push_back(Timer{});
+
         Timer& timer = timers[id];
         return timer.Time();
     }
