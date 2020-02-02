@@ -93,9 +93,9 @@ int main(int argc, char *argv[]) {
         input.close();
     }
 
-
+    adgMod::Stats* instance = adgMod::Stats::GetInstance();
     for (size_t outer = 0; outer < num_pairs.size(); ++outer) {
-        vector<size_t> time_sums(10, 0);
+        vector<size_t> time_sums(11, 0);
         adgMod::test_num_level_segments =  (uint32_t) floor(num_pairs[outer] *  test_num_segments_base);
         for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
             DB* db;
@@ -113,8 +113,7 @@ int main(int argc, char *argv[]) {
             Status status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
 
-            adgMod::Stats* instance = adgMod::Stats::GetInstance();
-            instance->ResetAll();
+            instance->ResetAll(true);
 
             if (input_filename.empty()) {
                 for(uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
@@ -122,7 +121,7 @@ int main(int argc, char *argv[]) {
                     //string value = generate_value(i);
                     instance->StartTimer(9);
                     status = db->Put(write_options, generate_key(i * adgMod::key_multiple), generate_value(i));
-                    instance->PauseTimer(9);
+                    instance->PauseTimer(9, true);
                     assert(status.ok() && "Put Error");
                 }
             } else {
@@ -130,7 +129,7 @@ int main(int argc, char *argv[]) {
                     string value = generate_value(0);
                     instance->StartTimer(9);
                     status = db->Put(write_options, keys[i], value);
-                    instance->PauseTimer(9);
+                    instance->PauseTimer(9, true);
                     assert(status.ok() && "File Put Error");
                 }
             }
@@ -140,7 +139,7 @@ int main(int argc, char *argv[]) {
             sleep(10);
             instance->StartTimer(8);
             if (MOD > 0) db->Learn(read_options);
-            instance->PauseTimer(8);
+            instance->PauseTimer(8, true);
             cout << "Learn Complete" << endl;
             if (print_file_info && iteration == 0) db->PrintFileInfo();
 
@@ -170,6 +169,7 @@ int main(int argc, char *argv[]) {
                 time_sums[s] += instance->ReportTime(s);
             instance->ResetAll();
 
+            instance->StartTimer(10);
             if (input_filename.empty()) {
                 for (uint64_t i = 0; i < num_gets; ++i) {
                     string value;
@@ -193,6 +193,7 @@ int main(int argc, char *argv[]) {
                     assert(status.ok() && "File Get Error");
                 }
             }
+            instance->PauseTimer(10, true);
 
 #ifdef PROFILER
             ProfilerStop();
@@ -205,7 +206,6 @@ int main(int argc, char *argv[]) {
             for (int s = 0; s < time_sums.size(); ++s) {
                 time_sums[s] += instance->ReportTime(s);
             }
-            instance->ResetAll();
             delete db;
             string command = "rm -rf " + db_location;
             system(command.c_str());
@@ -214,6 +214,11 @@ int main(int argc, char *argv[]) {
         for (int s = 0; s < time_sums.size(); ++s) {
             printf("%d : Time Average for Timer %d : %lu\n", int(num_pairs[outer]), s, time_sums[s] / num_iteration);
         }
+        instance->ReportTimeSeries(7);
+        instance->ReportTimeSeries(8);
+        instance->ReportTimeSeries(9);
+        instance->ReportTimeSeries(10);
+
 
         if (!input_filename.empty()) break;
     }

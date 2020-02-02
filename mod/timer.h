@@ -23,7 +23,7 @@ namespace adgMod {
     public:
         void Start();
         void Pause(bool record = false);
-        void Reset();
+        void Reset(bool record = false);
         uint64_t Time();
         void ReportTimeSeries();
 

@@ -30,9 +30,13 @@ namespace adgMod {
         started = false;
     }
 
-    void Timer::Reset() {
+    void Timer::Reset(bool record) {
         timestamp_accumulated = 0;
         started = false;
+        if (record) {
+            clock_gettime(CLOCK_MONOTONIC, &time_initial);
+            time_series.clear();
+        }
     }
 
     uint64_t Timer::Time() {
@@ -42,7 +46,6 @@ namespace adgMod {
 
     void Timer::ReportTimeSeries() {
         for (auto& pair: time_series) printf("(%lu %lu)", pair.first, pair.second);
-        printf("\n");
     }
 
 }

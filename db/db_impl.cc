@@ -696,7 +696,7 @@ void DBImpl::BackgroundCompaction() {
 
   if (imm_ != nullptr) {
     CompactMemTable();
-    instance->PauseTimer(7);
+    instance->PauseTimer(7, true);
     return;
   }
 
@@ -772,7 +772,7 @@ void DBImpl::BackgroundCompaction() {
     manual_compaction_ = nullptr;
   }
 
-  instance->PauseTimer(7);
+  instance->PauseTimer(7, true);
 }
 
 void DBImpl::CleanupCompaction(CompactionState* compact) {

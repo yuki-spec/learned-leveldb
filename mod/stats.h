@@ -33,11 +33,12 @@ namespace adgMod {
         void ResetTimer(uint32_t id);
         uint64_t ReportTime(uint32_t id);
         void ReportTime();
+        void ReportTimeSeries(uint32_t id);
 
         void RecordLevel(int level);
         void ReportLevelStats();
 
-        void ResetAll();
+        void ResetAll(bool record = false);
         ~Stats();
     };
 

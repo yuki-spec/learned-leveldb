@@ -13,7 +13,7 @@ namespace adgMod {
 
     Stats* Stats::singleton = nullptr;
 
-    Stats::Stats() : timers(10, Timer{}), level_stats(9, 0) {}
+    Stats::Stats() : timers(11, Timer{}), level_stats(9, 0) {}
 
     Stats* Stats::GetInstance() {
         if (!singleton) singleton = new Stats();
@@ -46,6 +46,12 @@ namespace adgMod {
         }
     }
 
+    void Stats::ReportTimeSeries(uint32_t id) {
+        printf("Timer %u: ", id);
+        timers[id].ReportTimeSeries();
+        printf("\n");
+    }
+
 
 
     void Stats::RecordLevel(int level) {
@@ -58,8 +64,8 @@ namespace adgMod {
         }
     }
 
-    void Stats::ResetAll() {
-        for (Timer& t: timers) t.Reset();
+    void Stats::ResetAll(bool record) {
+        for (Timer& t: timers) t.Reset(record);
         for (uint32_t& num: level_stats) num = 0;
     }
 
