@@ -1,5 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/leveldb.dir/util/stats.cpp.obj"
+  "CMakeFiles/leveldb.dir/mod/stats.cpp.obj"
+  "CMakeFiles/leveldb.dir/mod/timer.cpp.obj"
+  "CMakeFiles/leveldb.dir/mod/learned_index.cpp.obj"
+  "CMakeFiles/leveldb.dir/mod/util.cpp.obj"
   "CMakeFiles/leveldb.dir/db/builder.cc.obj"
   "CMakeFiles/leveldb.dir/db/c.cc.obj"
   "CMakeFiles/leveldb.dir/db/db_impl.cc.obj"
@@ -36,7 +39,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/leveldb.dir/util/logging.cc.obj"
   "CMakeFiles/leveldb.dir/util/options.cc.obj"
   "CMakeFiles/leveldb.dir/util/status.cc.obj"
-  "CMakeFiles/leveldb.dir/util/plr.cpp.obj"
+  "CMakeFiles/leveldb.dir/mod/plr.cpp.obj"
   "CMakeFiles/leveldb.dir/util/env_posix.cc.obj"
   "CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj"
   "libleveldb.pdb"

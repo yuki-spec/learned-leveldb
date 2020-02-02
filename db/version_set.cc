@@ -5,9 +5,7 @@
 #include "db/version_set.h"
 
 #include <stdio.h>
-
 #include <algorithm>
-#include <util/stats.h>
 #include <iostream>
 
 #include "db/filename.h"
@@ -21,6 +19,8 @@
 #include "table/two_level_iterator.h"
 #include "util/coding.h"
 #include "util/logging.h"
+#include "mod/stats.h"
+#include "mod/learned_index.h"
 
 namespace leveldb {
 

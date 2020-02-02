@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
-#include <util/stats.h>
 #include <iostream>
 #include "leveldb/table.h"
 
@@ -16,6 +15,8 @@
 #include "table/format.h"
 #include "table/two_level_iterator.h"
 #include "util/coding.h"
+#include "mod/stats.h"
+#include "mod/learned_index.h"
 
 namespace leveldb {
 

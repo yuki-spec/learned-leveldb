@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/read.dir/util/testharness.cc.obj"
   "CMakeFiles/read.dir/util/testutil.cc.obj"
-  "CMakeFiles/read.dir/db/read.cc.obj"
+  "CMakeFiles/read.dir/mod/read.cc.obj"
   "read.pdb"
   "read.exe"
   "read.exe.manifest"

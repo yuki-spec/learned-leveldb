@@ -3,6 +3,8 @@
 #include <iostream>
 #include "leveldb/db.h"
 #include "leveldb/comparator.h"
+#include "util.h"
+#include "stats.h"
 #include <cstring>
 #include "cxxopts.hpp"
 #include <gperftools/profiler.h>

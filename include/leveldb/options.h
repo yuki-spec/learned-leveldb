@@ -6,7 +6,7 @@
 #define STORAGE_LEVELDB_INCLUDE_OPTIONS_H_
 
 #include <stddef.h>
-#include "../util/stats.h"
+#include "mod/stats.h"
 
 #include "leveldb/export.h"
 

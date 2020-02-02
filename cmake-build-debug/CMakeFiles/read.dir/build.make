@@ -106,43 +106,43 @@ CMakeFiles/read.dir/util/testutil.cc.obj.provides: CMakeFiles/read.dir/util/test
 CMakeFiles/read.dir/util/testutil.cc.obj.provides.build: CMakeFiles/read.dir/util/testutil.cc.obj
 
 
-CMakeFiles/read.dir/db/read.cc.obj: CMakeFiles/read.dir/flags.make
-CMakeFiles/read.dir/db/read.cc.obj: CMakeFiles/read.dir/includes_CXX.rsp
-CMakeFiles/read.dir/db/read.cc.obj: ../db/read.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/read.dir/db/read.cc.obj"
-	C:\TDM-GCC-64\bin\g++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\read.dir\db\read.cc.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\db\read.cc
+CMakeFiles/read.dir/mod/read.cc.obj: CMakeFiles/read.dir/flags.make
+CMakeFiles/read.dir/mod/read.cc.obj: CMakeFiles/read.dir/includes_CXX.rsp
+CMakeFiles/read.dir/mod/read.cc.obj: ../mod/read.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/read.dir/mod/read.cc.obj"
+	C:\TDM-GCC-64\bin\g++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\read.dir\mod\read.cc.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\mod\read.cc
 
-CMakeFiles/read.dir/db/read.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/read.dir/db/read.cc.i"
-	C:\TDM-GCC-64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\daiyi\Desktop\Research\temp\leveldb\db\read.cc > CMakeFiles\read.dir\db\read.cc.i
+CMakeFiles/read.dir/mod/read.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/read.dir/mod/read.cc.i"
+	C:\TDM-GCC-64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\daiyi\Desktop\Research\temp\leveldb\mod\read.cc > CMakeFiles\read.dir\mod\read.cc.i
 
-CMakeFiles/read.dir/db/read.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/read.dir/db/read.cc.s"
-	C:\TDM-GCC-64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\daiyi\Desktop\Research\temp\leveldb\db\read.cc -o CMakeFiles\read.dir\db\read.cc.s
+CMakeFiles/read.dir/mod/read.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/read.dir/mod/read.cc.s"
+	C:\TDM-GCC-64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\daiyi\Desktop\Research\temp\leveldb\mod\read.cc -o CMakeFiles\read.dir\mod\read.cc.s
 
-CMakeFiles/read.dir/db/read.cc.obj.requires:
+CMakeFiles/read.dir/mod/read.cc.obj.requires:
 
-.PHONY : CMakeFiles/read.dir/db/read.cc.obj.requires
+.PHONY : CMakeFiles/read.dir/mod/read.cc.obj.requires
 
-CMakeFiles/read.dir/db/read.cc.obj.provides: CMakeFiles/read.dir/db/read.cc.obj.requires
-	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/db/read.cc.obj.provides.build
-.PHONY : CMakeFiles/read.dir/db/read.cc.obj.provides
+CMakeFiles/read.dir/mod/read.cc.obj.provides: CMakeFiles/read.dir/mod/read.cc.obj.requires
+	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/mod/read.cc.obj.provides.build
+.PHONY : CMakeFiles/read.dir/mod/read.cc.obj.provides
 
-CMakeFiles/read.dir/db/read.cc.obj.provides.build: CMakeFiles/read.dir/db/read.cc.obj
+CMakeFiles/read.dir/mod/read.cc.obj.provides.build: CMakeFiles/read.dir/mod/read.cc.obj
 
 
 # Object files for target read
 read_OBJECTS = \
 "CMakeFiles/read.dir/util/testharness.cc.obj" \
 "CMakeFiles/read.dir/util/testutil.cc.obj" \
-"CMakeFiles/read.dir/db/read.cc.obj"
+"CMakeFiles/read.dir/mod/read.cc.obj"
 
 # External object files for target read
 read_EXTERNAL_OBJECTS =
 
 read.exe: CMakeFiles/read.dir/util/testharness.cc.obj
 read.exe: CMakeFiles/read.dir/util/testutil.cc.obj
-read.exe: CMakeFiles/read.dir/db/read.cc.obj
+read.exe: CMakeFiles/read.dir/mod/read.cc.obj
 read.exe: CMakeFiles/read.dir/build.make
 read.exe: libleveldb.a
 read.exe: CMakeFiles/read.dir/linklibs.rsp
@@ -158,7 +158,7 @@ CMakeFiles/read.dir/build: read.exe
 
 CMakeFiles/read.dir/requires: CMakeFiles/read.dir/util/testharness.cc.obj.requires
 CMakeFiles/read.dir/requires: CMakeFiles/read.dir/util/testutil.cc.obj.requires
-CMakeFiles/read.dir/requires: CMakeFiles/read.dir/db/read.cc.obj.requires
+CMakeFiles/read.dir/requires: CMakeFiles/read.dir/mod/read.cc.obj.requires
 
 .PHONY : CMakeFiles/read.dir/requires
 

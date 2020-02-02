@@ -109,7 +109,7 @@ if(BUILD_SHARED_LIBS)
   add_compile_options(-fvisibility=hidden)
 endif(BUILD_SHARED_LIBS)
 
-add_library(leveldb "" util/stats.cpp util/stats.h)
+add_library(leveldb "" mod/stats.h mod/stats.cpp mod/timer.cpp mod/timer.h mod/learned_index.cpp mod/learned_index.h mod/util.cpp mod/util.h)
 target_sources(leveldb
   PRIVATE
     "${PROJECT_BINARY_DIR}/${LEVELDB_PORT_CONFIG_DIR}/port_config.h"
@@ -182,10 +182,14 @@ target_sources(leveldb
     "${PROJECT_SOURCE_DIR}/util/options.cc"
     "${PROJECT_SOURCE_DIR}/util/random.h"
     "${PROJECT_SOURCE_DIR}/util/status.cc"
-    "${PROJECT_SOURCE_DIR}/util/stats.cpp"
-    "${PROJECT_SOURCE_DIR}/util/stats.h"
-    "${PROJECT_SOURCE_DIR}/util/plr.h"
-    "${PROJECT_SOURCE_DIR}/util/plr.cpp"
+    "${PROJECT_SOURCE_DIR}/mod/stats.cpp"
+    "${PROJECT_SOURCE_DIR}/mod/stats.h"
+    "${PROJECT_SOURCE_DIR}/mod/plr.h"
+    "${PROJECT_SOURCE_DIR}/mod/plr.cpp"
+    "${PROJECT_SOURCE_DIR}/mod/learned_index.cpp"
+    "${PROJECT_SOURCE_DIR}/mod/learned_index.h"
+    "${PROJECT_SOURCE_DIR}/mod/util.cpp"
+    "${PROJECT_SOURCE_DIR}/mod/util.h"
 
   # Only CMake 3.3+ supports PUBLIC sources in targets exported by "install".
   $<$<VERSION_GREATER:CMAKE_VERSION,3.2>:PUBLIC>
@@ -316,7 +320,7 @@ if(LEVELDB_BUILD_TESTS)
   endfunction(leveldb_test)
 
   leveldb_test("${PROJECT_SOURCE_DIR}/db/c_test.c")
-  leveldb_test("${PROJECT_SOURCE_DIR}/db/read.cc")
+  leveldb_test("${PROJECT_SOURCE_DIR}/mod/read.cc")
   leveldb_test("${PROJECT_SOURCE_DIR}/db/fault_injection_test.cc")
 
   leveldb_test("${PROJECT_SOURCE_DIR}/issues/issue178_test.cc")

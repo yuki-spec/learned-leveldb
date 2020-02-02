@@ -1,134 +1,16 @@
 //
-// Created by daiyi on 2019/09/30.
+// Created by daiyi on 2020/02/02.
 //
 
+#include <cstdint>
 #include <cassert>
-#include "stats.h"
-#include <ctime>
+#include <utility>
 #include <cmath>
+#include "learned_index.h"
+#include "util.h"
 #include "plr.h"
 
-using std::stoull;
-
 namespace adgMod {
-    int MOD = 0;
-    bool string_mode = true;
-    uint64_t key_multiple = 1;
-    uint32_t model_error = 10;
-    int block_restart_interval = 16;
-    uint32_t test_num_level_segments = 100;
-    uint32_t test_num_file_segments = 100;
-    int key_size;
-    int value_size;
-
-    class Timer {
-        friend class Stats;
-
-        void Start();
-        void Pause();
-        void Reset();
-        uint64_t Time();
-
-        struct timespec time_started;
-        uint64_t timestamp_accumulated;
-        bool started;
-
-    public:
-        Timer();
-        ~Timer() = default;
-    };
-
-    Timer::Timer() : timestamp_accumulated(0), started(false) {}
-
-    void Timer::Start() {
-        assert(!started);
-        clock_gettime(CLOCK_MONOTONIC, &time_started);
-        started = true;
-    }
-
-    void Timer::Pause() {
-        assert(started);
-        struct timespec time_ended;
-        clock_gettime(CLOCK_MONOTONIC, &time_ended);
-        uint64_t time_elapse = (time_ended.tv_sec - time_started.tv_sec) * 1000000000 + time_ended.tv_nsec - time_started.tv_nsec;
-        timestamp_accumulated += time_elapse;
-        started = false;
-    }
-
-    void Timer::Reset() {
-        timestamp_accumulated = 0;
-        started = false;
-    }
-
-    uint64_t Timer::Time() {
-        assert(!started);
-        return timestamp_accumulated;
-    }
-
-    Stats* Stats::singleton = nullptr;
-
-    Stats::Stats() : timers(9), level_stats(9, 0) {}
-
-    Stats* Stats::GetInstance() {
-        if (!singleton) singleton = new Stats();
-        return singleton;
-    }
-
-    void Stats::StartTimer(uint32_t id) {
-        for (size_t i = timers.size(); i < id + 1; ++i) timers.push_back(Timer{});
-
-        Timer& timer = timers[id];
-        timer.Start();
-    }
-
-    void Stats::PauseTimer(uint32_t id) {
-        Timer& timer = timers[id];
-        timer.Pause();
-    }
-
-    void Stats::ResetTimer(uint32_t id) {
-        Timer& timer = timers[id];
-        timer.Reset();
-    }
-
-    uint64_t Stats::ReportTime(uint32_t id) {
-        for (size_t i = timers.size(); i < id + 1; ++i) timers.push_back(Timer{});
-
-        Timer& timer = timers[id];
-        return timer.Time();
-    }
-
-    void Stats::ReportTime() {
-        for (int i = 0; i < timers.size(); ++i) {
-            printf("Timer %u: %lu\n", i, timers[i].Time());
-        }
-    }
-
-
-
-    void Stats::RecordLevel(int level) {
-        for (size_t i = level_stats.size(); i < level + 1; ++i) level_stats.push_back(0);
-
-        level_stats[level]++;
-    }
-
-    void Stats::ReportLevelStats() {
-        for (int i = 0; i < level_stats.size(); ++i) {
-            printf("Level %d: %u\n", i, level_stats[i]);
-        }
-    }
-
-    void Stats::ResetAll() {
-        timers.clear();
-        level_stats.clear();
-    }
-
-    Stats::~Stats() {
-        ReportTime();
-    }
-
-
-
 
     void LearnedIndexData::AddSegment(string&& x, double k, double b) {
         if (string_mode) {
@@ -240,7 +122,7 @@ namespace adgMod {
     }
 
     bool AccumulatedNumEntriesArray::Search(const Slice& key, uint64_t lower, uint64_t upper, size_t* index,
-                                             uint64_t* relative_lower, uint64_t* relative_upper) {
+                                            uint64_t* relative_lower, uint64_t* relative_upper) {
         if (adgMod::MOD == 4) {
             uint64_t lower_pos = lower / array[0].first;
             uint64_t upper_pos = upper / array[0].first;
@@ -308,108 +190,4 @@ namespace adgMod {
         return array.empty() ? 0 : array.back().first;
     }
 
-
-
-
-
-
-    uint64_t ExtractInteger(const char* pos, size_t size) {
-        char* temp = new char[size + 1];
-        memcpy(temp, pos, size);
-        temp[size] = '\0';
-        uint64_t result = (uint64_t) atol(temp);
-        delete[] temp;
-        return result;
-    }
-
-//    bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t pos,
-//                                size_t* index, uint64_t* relative_pos) {
-//        size_t left = 0, right = num_entries_array.size() - 1;
-//        while (left < right) {
-//            size_t mid = (left + right) / 2;
-//            if (pos < num_entries_array[mid]) right = mid;
-//            else left = mid + 1;
-//        }
-//        *index = left;
-//        *relative_pos = left > 0 ? pos - num_entries_array[left - 1] : pos;
-//        return left < num_entries_array.size();
-//    }
-
-
-    string generate_key(uint64_t key) {
-        string key_string = to_string(key);
-        string result = string(key_size - key_string.length(), '0') + key_string;
-        return std::move(result);
-    }
-
-    string generate_value(uint64_t value) {
-        string value_string = to_string(value);
-        string result = string(value_size - value_string.length(), '0') + value_string;
-        return std::move(result);
-    }
-
-    uint64_t SliceToInteger(const Slice& slice) {
-        const char* data = slice.data();
-        size_t size = slice.size();
-        uint64_t num = 0;
-        bool leading_zeros = true;
-
-        for (int i = 0; i < size; ++i) {
-            int temp = data[i];
-            if (leading_zeros && temp == '0') continue;
-            leading_zeros = false;
-            num = (num << 3) + (num << 1) + temp - 48;
-        }
-        return num;
-    }
-
-    int compare(const Slice& slice, const string& string) {
-        return memcmp((void*) slice.data(), string.c_str(), slice.size());
-    }
-
-    bool operator<(const Slice& slice, const string& string) {
-        return memcmp((void*) slice.data(), string.c_str(), slice.size()) < 0;
-    }
-    bool operator>(const Slice& slice, const string& string) {
-        return memcmp((void*) slice.data(), string.c_str(), slice.size()) > 0;
-    }
-    bool operator<=(const Slice& slice, const string& string) {
-        return memcmp((void*) slice.data(), string.c_str(), slice.size()) <= 0;
-    }
-    bool operator>=(const Slice& slice, const string& string) {
-        return memcmp((void*) slice.data(), string.c_str(), slice.size()) >= 0;
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

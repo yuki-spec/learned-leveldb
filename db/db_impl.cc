@@ -12,7 +12,6 @@
 #include <set>
 #include <string>
 #include <vector>
-#include <util/stats.h>
 #include <unistd.h>
 
 #include "db/builder.h"
@@ -37,6 +36,7 @@
 #include "util/coding.h"
 #include "util/logging.h"
 #include "util/mutexlock.h"
+#include "mod/stats.h"
 
 namespace leveldb {
 
@@ -688,8 +688,6 @@ void DBImpl::BackgroundCall() {
 }
 
 void DBImpl::BackgroundCompaction() {
-
-  sleep(1);
 
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   instance->StartTimer(7);

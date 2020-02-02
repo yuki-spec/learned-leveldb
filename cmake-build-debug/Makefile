@@ -1146,33 +1146,6 @@ db/memtable.cc.s:
 	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/db/memtable.cc.s
 .PHONY : db/memtable.cc.s
 
-db/read.obj: db/read.cc.obj
-
-.PHONY : db/read.obj
-
-# target to build an object file
-db/read.cc.obj:
-	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/db/read.cc.obj
-.PHONY : db/read.cc.obj
-
-db/read.i: db/read.cc.i
-
-.PHONY : db/read.i
-
-# target to preprocess a source file
-db/read.cc.i:
-	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/db/read.cc.i
-.PHONY : db/read.cc.i
-
-db/read.s: db/read.cc.s
-
-.PHONY : db/read.s
-
-# target to generate assembly for a file
-db/read.cc.s:
-	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/db/read.cc.s
-.PHONY : db/read.cc.s
-
 db/recovery_test.obj: db/recovery_test.cc.obj
 
 .PHONY : db/recovery_test.obj
@@ -1577,6 +1550,168 @@ issues/issue320_test.s: issues/issue320_test.cc.s
 issues/issue320_test.cc.s:
 	$(MAKE) -f CMakeFiles\issue320_test.dir\build.make CMakeFiles/issue320_test.dir/issues/issue320_test.cc.s
 .PHONY : issues/issue320_test.cc.s
+
+mod/learned_index.obj: mod/learned_index.cpp.obj
+
+.PHONY : mod/learned_index.obj
+
+# target to build an object file
+mod/learned_index.cpp.obj:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/learned_index.cpp.obj
+.PHONY : mod/learned_index.cpp.obj
+
+mod/learned_index.i: mod/learned_index.cpp.i
+
+.PHONY : mod/learned_index.i
+
+# target to preprocess a source file
+mod/learned_index.cpp.i:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/learned_index.cpp.i
+.PHONY : mod/learned_index.cpp.i
+
+mod/learned_index.s: mod/learned_index.cpp.s
+
+.PHONY : mod/learned_index.s
+
+# target to generate assembly for a file
+mod/learned_index.cpp.s:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/learned_index.cpp.s
+.PHONY : mod/learned_index.cpp.s
+
+mod/plr.obj: mod/plr.cpp.obj
+
+.PHONY : mod/plr.obj
+
+# target to build an object file
+mod/plr.cpp.obj:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/plr.cpp.obj
+.PHONY : mod/plr.cpp.obj
+
+mod/plr.i: mod/plr.cpp.i
+
+.PHONY : mod/plr.i
+
+# target to preprocess a source file
+mod/plr.cpp.i:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/plr.cpp.i
+.PHONY : mod/plr.cpp.i
+
+mod/plr.s: mod/plr.cpp.s
+
+.PHONY : mod/plr.s
+
+# target to generate assembly for a file
+mod/plr.cpp.s:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/plr.cpp.s
+.PHONY : mod/plr.cpp.s
+
+mod/read.obj: mod/read.cc.obj
+
+.PHONY : mod/read.obj
+
+# target to build an object file
+mod/read.cc.obj:
+	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/mod/read.cc.obj
+.PHONY : mod/read.cc.obj
+
+mod/read.i: mod/read.cc.i
+
+.PHONY : mod/read.i
+
+# target to preprocess a source file
+mod/read.cc.i:
+	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/mod/read.cc.i
+.PHONY : mod/read.cc.i
+
+mod/read.s: mod/read.cc.s
+
+.PHONY : mod/read.s
+
+# target to generate assembly for a file
+mod/read.cc.s:
+	$(MAKE) -f CMakeFiles\read.dir\build.make CMakeFiles/read.dir/mod/read.cc.s
+.PHONY : mod/read.cc.s
+
+mod/stats.obj: mod/stats.cpp.obj
+
+.PHONY : mod/stats.obj
+
+# target to build an object file
+mod/stats.cpp.obj:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/stats.cpp.obj
+.PHONY : mod/stats.cpp.obj
+
+mod/stats.i: mod/stats.cpp.i
+
+.PHONY : mod/stats.i
+
+# target to preprocess a source file
+mod/stats.cpp.i:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/stats.cpp.i
+.PHONY : mod/stats.cpp.i
+
+mod/stats.s: mod/stats.cpp.s
+
+.PHONY : mod/stats.s
+
+# target to generate assembly for a file
+mod/stats.cpp.s:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/stats.cpp.s
+.PHONY : mod/stats.cpp.s
+
+mod/timer.obj: mod/timer.cpp.obj
+
+.PHONY : mod/timer.obj
+
+# target to build an object file
+mod/timer.cpp.obj:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/timer.cpp.obj
+.PHONY : mod/timer.cpp.obj
+
+mod/timer.i: mod/timer.cpp.i
+
+.PHONY : mod/timer.i
+
+# target to preprocess a source file
+mod/timer.cpp.i:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/timer.cpp.i
+.PHONY : mod/timer.cpp.i
+
+mod/timer.s: mod/timer.cpp.s
+
+.PHONY : mod/timer.s
+
+# target to generate assembly for a file
+mod/timer.cpp.s:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/timer.cpp.s
+.PHONY : mod/timer.cpp.s
+
+mod/util.obj: mod/util.cpp.obj
+
+.PHONY : mod/util.obj
+
+# target to build an object file
+mod/util.cpp.obj:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/util.cpp.obj
+.PHONY : mod/util.cpp.obj
+
+mod/util.i: mod/util.cpp.i
+
+.PHONY : mod/util.i
+
+# target to preprocess a source file
+mod/util.cpp.i:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/util.cpp.i
+.PHONY : mod/util.cpp.i
+
+mod/util.s: mod/util.cpp.s
+
+.PHONY : mod/util.s
+
+# target to generate assembly for a file
+mod/util.cpp.s:
+	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/mod/util.cpp.s
+.PHONY : mod/util.cpp.s
 
 table/block.obj: table/block.cc.obj
 
@@ -2496,60 +2631,6 @@ util/options.cc.s:
 	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/options.cc.s
 .PHONY : util/options.cc.s
 
-util/plr.obj: util/plr.cpp.obj
-
-.PHONY : util/plr.obj
-
-# target to build an object file
-util/plr.cpp.obj:
-	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.obj
-.PHONY : util/plr.cpp.obj
-
-util/plr.i: util/plr.cpp.i
-
-.PHONY : util/plr.i
-
-# target to preprocess a source file
-util/plr.cpp.i:
-	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.i
-.PHONY : util/plr.cpp.i
-
-util/plr.s: util/plr.cpp.s
-
-.PHONY : util/plr.s
-
-# target to generate assembly for a file
-util/plr.cpp.s:
-	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/plr.cpp.s
-.PHONY : util/plr.cpp.s
-
-util/stats.obj: util/stats.cpp.obj
-
-.PHONY : util/stats.obj
-
-# target to build an object file
-util/stats.cpp.obj:
-	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/stats.cpp.obj
-.PHONY : util/stats.cpp.obj
-
-util/stats.i: util/stats.cpp.i
-
-.PHONY : util/stats.i
-
-# target to preprocess a source file
-util/stats.cpp.i:
-	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/stats.cpp.i
-.PHONY : util/stats.cpp.i
-
-util/stats.s: util/stats.cpp.s
-
-.PHONY : util/stats.s
-
-# target to generate assembly for a file
-util/stats.cpp.s:
-	$(MAKE) -f CMakeFiles\leveldb.dir\build.make CMakeFiles/leveldb.dir/util/stats.cpp.s
-.PHONY : util/stats.cpp.s
-
 util/status.obj: util/status.cc.obj
 
 .PHONY : util/status.obj
@@ -2951,9 +3032,6 @@ help:
 	@echo ... db/memtable.obj
 	@echo ... db/memtable.i
 	@echo ... db/memtable.s
-	@echo ... db/read.obj
-	@echo ... db/read.i
-	@echo ... db/read.s
 	@echo ... db/recovery_test.obj
 	@echo ... db/recovery_test.i
 	@echo ... db/recovery_test.s
@@ -2999,6 +3077,24 @@ help:
 	@echo ... issues/issue320_test.obj
 	@echo ... issues/issue320_test.i
 	@echo ... issues/issue320_test.s
+	@echo ... mod/learned_index.obj
+	@echo ... mod/learned_index.i
+	@echo ... mod/learned_index.s
+	@echo ... mod/plr.obj
+	@echo ... mod/plr.i
+	@echo ... mod/plr.s
+	@echo ... mod/read.obj
+	@echo ... mod/read.i
+	@echo ... mod/read.s
+	@echo ... mod/stats.obj
+	@echo ... mod/stats.i
+	@echo ... mod/stats.s
+	@echo ... mod/timer.obj
+	@echo ... mod/timer.i
+	@echo ... mod/timer.s
+	@echo ... mod/util.obj
+	@echo ... mod/util.i
+	@echo ... mod/util.s
 	@echo ... table/block.obj
 	@echo ... table/block.i
 	@echo ... table/block.s
@@ -3101,12 +3197,6 @@ help:
 	@echo ... util/options.obj
 	@echo ... util/options.i
 	@echo ... util/options.s
-	@echo ... util/plr.obj
-	@echo ... util/plr.i
-	@echo ... util/plr.s
-	@echo ... util/stats.obj
-	@echo ... util/stats.i
-	@echo ... util/stats.s
 	@echo ... util/status.obj
 	@echo ... util/status.i
 	@echo ... util/status.s

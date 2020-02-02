@@ -10,7 +10,8 @@
 #include <vector>
 
 #include "db/dbformat.h"
-#include "util/stats.h"
+#include "mod/stats.h"
+#include "mod/learned_index.h"
 
 using std::vector;
 
