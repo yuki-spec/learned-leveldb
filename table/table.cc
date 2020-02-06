@@ -218,14 +218,14 @@ Iterator* Table::NewIterator(const ReadOptions& options) const {
 
 Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
                           void (*handle_result)(void*, const Slice&,
-                                                const Slice&), FileMetaData* meta, uint64_t lower, uint64_t upper) {
+                                                const Slice&), FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned) {
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   Status s;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
   ParsedInternalKey parsed_key;
   ParseInternalKey(k, &parsed_key);
 
-  if ((adgMod::MOD == 1 || adgMod::MOD == 4) && meta != nullptr) {
+  if ((adgMod::MOD == 1 || adgMod::MOD == 4 || (adgMod::MOD == 5 && learned)) && meta != nullptr) {
 #ifdef INTERNAL_TIMER
       instance->StartTimer(2);
 #endif

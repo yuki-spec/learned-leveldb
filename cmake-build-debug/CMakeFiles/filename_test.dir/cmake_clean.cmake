@@ -1,10 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/filename_test.dir/db/filename_test.cc.obj"
   "CMakeFiles/filename_test.dir/util/testharness.cc.obj"
   "CMakeFiles/filename_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/filename_test.dir/db/filename_test.cc.obj"
-  "filename_test.pdb"
   "filename_test.exe"
   "filename_test.exe.manifest"
+  "filename_test.pdb"
   "libfilename_test.dll.a"
 )
 

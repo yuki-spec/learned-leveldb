@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "leveldb/slice.h"
+#include "leveldb/env.h"
 
 using std::string;
 using leveldb::Slice;
@@ -25,6 +26,7 @@ namespace adgMod {
     extern uint32_t test_num_file_segments;
     extern int key_size;
     extern int value_size;
+    extern leveldb::Env* env;
 
     uint64_t ExtractInteger(const char* pos, size_t size);
 //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);

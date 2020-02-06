@@ -72,7 +72,7 @@ class LEVELDB_EXPORT Table {
   // that key is not present.
   Status InternalGet(const ReadOptions&, const Slice& key, void* arg,
                      void (*handle_result)(void* arg, const Slice& k,
-                                           const Slice& v), FileMetaData* meta = nullptr, uint64_t lower = 0, uint64_t upper = 0);
+                                           const Slice& v), FileMetaData* meta = nullptr, uint64_t lower = 0, uint64_t upper = 0, bool learned = false);
 
   void ReadMeta(const Footer& footer);
   void ReadFilter(const Slice& filter_handle_value);

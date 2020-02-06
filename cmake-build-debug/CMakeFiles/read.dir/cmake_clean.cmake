@@ -1,11 +1,11 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/read.dir/mod/read.cc.obj"
   "CMakeFiles/read.dir/util/testharness.cc.obj"
   "CMakeFiles/read.dir/util/testutil.cc.obj"
-  "CMakeFiles/read.dir/mod/read.cc.obj"
-  "read.pdb"
+  "libread.dll.a"
   "read.exe"
   "read.exe.manifest"
-  "libread.dll.a"
+  "read.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

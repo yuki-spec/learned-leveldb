@@ -1,11 +1,11 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/memenv_test.dir/helpers/memenv/memenv_test.cc.obj"
   "CMakeFiles/memenv_test.dir/util/testharness.cc.obj"
   "CMakeFiles/memenv_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/memenv_test.dir/helpers/memenv/memenv_test.cc.obj"
-  "memenv_test.pdb"
+  "libmemenv_test.dll.a"
   "memenv_test.exe"
   "memenv_test.exe.manifest"
-  "libmemenv_test.dll.a"
+  "memenv_test.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -111,7 +111,28 @@ namespace adgMod {
         for (auto& str: string_segments) {
             //printf("%s %f\n", str.first.c_str(), str.second);
         }
+
+        learned.store(true);
         return;
+    }
+
+    void LearnedIndexData::Learn(void *self) {
+        LearnedIndexData* self_ = reinterpret_cast<LearnedIndexData*>(self);
+        self_->Learn();
+    }
+
+    bool LearnedIndexData::Learned() {
+        if (learned_not_atomic) return true;
+        else if (learned.load()) {
+            learned_not_atomic = true;
+            return true;
+        } else {
+            if (!learning_not_atomic && !learning.load() && !string_keys.empty()) {
+                learning_not_atomic = true;
+                env->Schedule(&LearnedIndexData::Learn, this);
+            }
+            return false;
+        }
     }
 
 

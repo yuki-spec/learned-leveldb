@@ -24,7 +24,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -50,7 +52,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -77,7 +81,9 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_COMPILE_LIBRARY"/>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -104,7 +110,9 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_COMPILE_LIBRARY"/>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -130,7 +138,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -156,7 +166,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -182,6 +194,8 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -207,6 +221,8 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -225,58 +241,6 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="read">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/read.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 read"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="read/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/read.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 read/fast"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="fault_injection_test">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/fault_injection_test.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -284,7 +248,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -310,7 +276,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -329,53 +297,11 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="env_posix_test">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/env_posix_test.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="install/strip">
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
+				<Option type="4"/>
 				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 env_posix_test"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="env_posix_test/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/env_posix_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 env_posix_test/fast"/>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/strip"/>
 					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -388,7 +314,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -414,7 +342,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -433,214 +363,6 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="issue178_test">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue178_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue178_test"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="issue178_test/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue178_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue178_test/fast"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="db_test">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/db_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 db_test"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="db_test/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/db_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 db_test/fast"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="issue320_test">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue320_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue320_test"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="issue320_test/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue320_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue320_test/fast"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="status_test">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/status_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 status_test"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="status_test/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/status_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 status_test/fast"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="version_edit_test">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/version_edit_test.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -648,7 +370,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -674,7 +398,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -700,7 +426,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -726,7 +454,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -752,7 +482,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -778,7 +510,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -804,7 +538,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -830,7 +566,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -849,6 +587,174 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="issue178_test">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue178_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue178_test"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="issue178_test/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue178_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue178_test/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="issue320_test">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue320_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue320_test"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="issue320_test/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/issue320_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 issue320_test/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="status_test">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/status_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 status_test"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="status_test/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/status_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 status_test/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="autocompact_test">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/autocompact_test.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -856,7 +762,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -882,7 +790,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -901,6 +811,62 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="db_test">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/db_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 db_test"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="db_test/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/db_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 db_test/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="filename_test">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/filename_test.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -908,7 +874,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -934,7 +902,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -953,58 +923,6 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="hash_test">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/hash_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 hash_test"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="hash_test/fast">
-				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/hash_test.exe" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
-					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
-					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 hash_test/fast"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="memenv_test">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/memenv_test.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -1012,7 +930,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1038,7 +958,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1064,7 +986,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1090,7 +1014,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1116,7 +1042,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1142,7 +1070,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1168,7 +1098,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1194,7 +1126,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1230,7 +1164,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1256,7 +1192,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1282,7 +1220,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1308,7 +1248,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1334,7 +1276,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1360,7 +1304,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1386,7 +1332,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1412,7 +1360,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1438,7 +1388,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1464,7 +1416,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1490,7 +1444,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1516,7 +1472,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1542,7 +1500,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1568,7 +1528,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1594,7 +1556,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1620,7 +1584,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1646,7 +1612,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1672,7 +1640,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1691,6 +1661,62 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="hash_test">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/hash_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 hash_test"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="hash_test/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/hash_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 hash_test/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="logging_test">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/logging_test.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -1698,7 +1724,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1724,7 +1752,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1743,6 +1773,118 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="read">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/read.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 read"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="read/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/read.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 read/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="env_posix_test">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/env_posix_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 env_posix_test"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="env_posix_test/fast">
+				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/env_posix_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
+					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include/c++/backward"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../include"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed"/>
+					<Add directory="C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 env_posix_test/fast"/>
+					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="db_bench">
 				<Option output="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/db_bench.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
@@ -1750,7 +1892,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1776,7 +1920,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DLEVELDB_PLATFORM_WINDOWS=1"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-DUNICODE"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/include"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb"/>
 					<Add directory="C:/Users/daiyi/Desktop/Research/temp/leveldb/include"/>
@@ -1825,16 +1971,6 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="install">
-				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 install"/>
-					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="install/local">
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
 				<Option type="4"/>
@@ -1845,11 +1981,11 @@
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="install/strip">
+			<Target title="install">
 				<Option working_dir="C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<Build command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 install"/>
 					<CompileFile command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="C:/TDM-GCC-64/bin/mingw32-make.exe -f &quot;C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -1860,21 +1996,18 @@
 			<Option target="c_test"/>
 			<Option target="leveldb"/>
 			<Option target="issue200_test"/>
-			<Option target="read"/>
 			<Option target="fault_injection_test"/>
-			<Option target="env_posix_test"/>
 			<Option target="env_test"/>
-			<Option target="issue178_test"/>
-			<Option target="db_test"/>
-			<Option target="issue320_test"/>
-			<Option target="status_test"/>
 			<Option target="version_edit_test"/>
 			<Option target="dbformat_test"/>
 			<Option target="corruption_test"/>
 			<Option target="no_destructor_test"/>
+			<Option target="issue178_test"/>
+			<Option target="issue320_test"/>
+			<Option target="status_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="db_test"/>
 			<Option target="filename_test"/>
-			<Option target="hash_test"/>
 			<Option target="memenv_test"/>
 			<Option target="log_test"/>
 			<Option target="recovery_test"/>
@@ -1888,7 +2021,10 @@
 			<Option target="cache_test"/>
 			<Option target="coding_test"/>
 			<Option target="crc32c_test"/>
+			<Option target="hash_test"/>
 			<Option target="logging_test"/>
+			<Option target="read"/>
+			<Option target="env_posix_test"/>
 			<Option target="db_bench"/>
 		</Unit>
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/db/autocompact_test.cc">
@@ -2293,21 +2429,18 @@
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/testharness.cc">
 			<Option target="c_test"/>
 			<Option target="issue200_test"/>
-			<Option target="read"/>
 			<Option target="fault_injection_test"/>
-			<Option target="env_posix_test"/>
 			<Option target="env_test"/>
-			<Option target="issue178_test"/>
-			<Option target="db_test"/>
-			<Option target="issue320_test"/>
-			<Option target="status_test"/>
 			<Option target="version_edit_test"/>
 			<Option target="dbformat_test"/>
 			<Option target="corruption_test"/>
 			<Option target="no_destructor_test"/>
+			<Option target="issue178_test"/>
+			<Option target="issue320_test"/>
+			<Option target="status_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="db_test"/>
 			<Option target="filename_test"/>
-			<Option target="hash_test"/>
 			<Option target="memenv_test"/>
 			<Option target="log_test"/>
 			<Option target="recovery_test"/>
@@ -2321,27 +2454,27 @@
 			<Option target="cache_test"/>
 			<Option target="coding_test"/>
 			<Option target="crc32c_test"/>
+			<Option target="hash_test"/>
 			<Option target="logging_test"/>
+			<Option target="read"/>
+			<Option target="env_posix_test"/>
 			<Option target="db_bench"/>
 		</Unit>
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/testharness.h">
 			<Option target="c_test"/>
 			<Option target="issue200_test"/>
-			<Option target="read"/>
 			<Option target="fault_injection_test"/>
-			<Option target="env_posix_test"/>
 			<Option target="env_test"/>
-			<Option target="issue178_test"/>
-			<Option target="db_test"/>
-			<Option target="issue320_test"/>
-			<Option target="status_test"/>
 			<Option target="version_edit_test"/>
 			<Option target="dbformat_test"/>
 			<Option target="corruption_test"/>
 			<Option target="no_destructor_test"/>
+			<Option target="issue178_test"/>
+			<Option target="issue320_test"/>
+			<Option target="status_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="db_test"/>
 			<Option target="filename_test"/>
-			<Option target="hash_test"/>
 			<Option target="memenv_test"/>
 			<Option target="log_test"/>
 			<Option target="recovery_test"/>
@@ -2355,27 +2488,27 @@
 			<Option target="cache_test"/>
 			<Option target="coding_test"/>
 			<Option target="crc32c_test"/>
+			<Option target="hash_test"/>
 			<Option target="logging_test"/>
+			<Option target="read"/>
+			<Option target="env_posix_test"/>
 			<Option target="db_bench"/>
 		</Unit>
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/testutil.cc">
 			<Option target="c_test"/>
 			<Option target="issue200_test"/>
-			<Option target="read"/>
 			<Option target="fault_injection_test"/>
-			<Option target="env_posix_test"/>
 			<Option target="env_test"/>
-			<Option target="issue178_test"/>
-			<Option target="db_test"/>
-			<Option target="issue320_test"/>
-			<Option target="status_test"/>
 			<Option target="version_edit_test"/>
 			<Option target="dbformat_test"/>
 			<Option target="corruption_test"/>
 			<Option target="no_destructor_test"/>
+			<Option target="issue178_test"/>
+			<Option target="issue320_test"/>
+			<Option target="status_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="db_test"/>
 			<Option target="filename_test"/>
-			<Option target="hash_test"/>
 			<Option target="memenv_test"/>
 			<Option target="log_test"/>
 			<Option target="recovery_test"/>
@@ -2389,27 +2522,27 @@
 			<Option target="cache_test"/>
 			<Option target="coding_test"/>
 			<Option target="crc32c_test"/>
+			<Option target="hash_test"/>
 			<Option target="logging_test"/>
+			<Option target="read"/>
+			<Option target="env_posix_test"/>
 			<Option target="db_bench"/>
 		</Unit>
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/util/testutil.h">
 			<Option target="c_test"/>
 			<Option target="issue200_test"/>
-			<Option target="read"/>
 			<Option target="fault_injection_test"/>
-			<Option target="env_posix_test"/>
 			<Option target="env_test"/>
-			<Option target="issue178_test"/>
-			<Option target="db_test"/>
-			<Option target="issue320_test"/>
-			<Option target="status_test"/>
 			<Option target="version_edit_test"/>
 			<Option target="dbformat_test"/>
 			<Option target="corruption_test"/>
 			<Option target="no_destructor_test"/>
+			<Option target="issue178_test"/>
+			<Option target="issue320_test"/>
+			<Option target="status_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="db_test"/>
 			<Option target="filename_test"/>
-			<Option target="hash_test"/>
 			<Option target="memenv_test"/>
 			<Option target="log_test"/>
 			<Option target="recovery_test"/>
@@ -2423,7 +2556,10 @@
 			<Option target="cache_test"/>
 			<Option target="coding_test"/>
 			<Option target="crc32c_test"/>
+			<Option target="hash_test"/>
 			<Option target="logging_test"/>
+			<Option target="read"/>
+			<Option target="env_posix_test"/>
 			<Option target="db_bench"/>
 		</Unit>
 		<Unit filename="C:/Users/daiyi/Desktop/Research/temp/leveldb/CMakeLists.txt">

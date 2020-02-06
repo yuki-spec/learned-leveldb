@@ -1,10 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/issue320_test.dir/issues/issue320_test.cc.obj"
   "CMakeFiles/issue320_test.dir/util/testharness.cc.obj"
   "CMakeFiles/issue320_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/issue320_test.dir/issues/issue320_test.cc.obj"
-  "issue320_test.pdb"
   "issue320_test.exe"
   "issue320_test.exe.manifest"
+  "issue320_test.pdb"
   "libissue320_test.dll.a"
 )
 

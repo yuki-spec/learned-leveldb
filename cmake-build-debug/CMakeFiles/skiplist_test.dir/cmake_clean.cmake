@@ -1,11 +1,11 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/skiplist_test.dir/db/skiplist_test.cc.obj"
   "CMakeFiles/skiplist_test.dir/util/testharness.cc.obj"
   "CMakeFiles/skiplist_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/skiplist_test.dir/db/skiplist_test.cc.obj"
-  "skiplist_test.pdb"
+  "libskiplist_test.dll.a"
   "skiplist_test.exe"
   "skiplist_test.exe.manifest"
-  "libskiplist_test.dll.a"
+  "skiplist_test.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -1,11 +1,11 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/log_test.dir/db/log_test.cc.obj"
   "CMakeFiles/log_test.dir/util/testharness.cc.obj"
   "CMakeFiles/log_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/log_test.dir/db/log_test.cc.obj"
-  "log_test.pdb"
+  "liblog_test.dll.a"
   "log_test.exe"
   "log_test.exe.manifest"
-  "liblog_test.dll.a"
+  "log_test.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

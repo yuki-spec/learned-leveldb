@@ -22,6 +22,7 @@ struct Options;
 struct ReadOptions;
 struct WriteOptions;
 class WriteBatch;
+class Version;
 
 // Abstract handle to particular state of a DB.
 // A Snapshot is an immutable object and can therefore be safely
@@ -146,7 +147,7 @@ class LEVELDB_EXPORT DB {
   //    db->CompactRange(nullptr, nullptr);
   virtual void CompactRange(const Slice* begin, const Slice* end) = 0;
 
-  virtual void PrintFileInfo() const = 0;
+  virtual void PrintFileInfo() = 0;
 
   virtual void Learn(const ReadOptions& options) = 0;
 };

@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/leveldbutil.dir/db/leveldbutil.cc.obj"
-  "leveldbutil.pdb"
   "leveldbutil.exe"
   "leveldbutil.exe.manifest"
+  "leveldbutil.pdb"
   "libleveldbutil.dll.a"
 )
 

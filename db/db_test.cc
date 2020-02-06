@@ -2080,7 +2080,7 @@ class ModelDB : public DB {
   }
   virtual void CompactRange(const Slice* start, const Slice* end) {}
 
-  virtual void PrintFileInfo() const {};
+  virtual void PrintFileInfo() {};
 
   virtual void Learn(const ReadOptions& options) {};
 

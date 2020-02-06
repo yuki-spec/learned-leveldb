@@ -1,10 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/crc32c_test.dir/util/crc32c_test.cc.obj"
   "CMakeFiles/crc32c_test.dir/util/testharness.cc.obj"
   "CMakeFiles/crc32c_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/crc32c_test.dir/util/crc32c_test.cc.obj"
-  "crc32c_test.pdb"
   "crc32c_test.exe"
   "crc32c_test.exe.manifest"
+  "crc32c_test.pdb"
   "libcrc32c_test.dll.a"
 )
 

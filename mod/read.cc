@@ -98,6 +98,9 @@ int main(int argc, char *argv[]) {
         vector<size_t> time_sums(11, 0);
         adgMod::test_num_level_segments =  (uint32_t) floor(num_pairs[outer] *  test_num_segments_base);
         for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
+            string command = "rm -rf " + db_location;
+            system(command.c_str());
+
             DB* db;
             Options options;
             ReadOptions read_options;
@@ -114,29 +117,25 @@ int main(int argc, char *argv[]) {
             assert(status.ok() && "Open Error");
 
             instance->ResetAll(true);
-
+            instance->StartTimer(9);
             if (input_filename.empty()) {
                 for(uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
                     //string key = generate_key(i);
                     //string value = generate_value(i);
-                    instance->StartTimer(9);
                     status = db->Put(write_options, generate_key(i * adgMod::key_multiple), generate_value(i));
-                    instance->PauseTimer(9, true);
                     assert(status.ok() && "Put Error");
                 }
             } else {
                 for (int i = 0; i < keys.size(); ++i) {
                     string value = generate_value(0);
-                    instance->StartTimer(9);
                     status = db->Put(write_options, keys[i], value);
-                    instance->PauseTimer(9, true);
                     assert(status.ok() && "File Put Error");
                 }
             }
-
+            instance->PauseTimer(9, true);
 
             cout << "Put Complete" << endl;
-            sleep(10);
+            sleep(1);
             instance->StartTimer(8);
             if (MOD > 0) db->Learn(read_options);
             instance->PauseTimer(8, true);
@@ -146,6 +145,7 @@ int main(int argc, char *argv[]) {
             std::uniform_int_distribution<uint64_t > uniform_dist(0, (uint64_t) floor(num_pairs[outer] * num_pairs_base) - 1);
             std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
 
+            instance->StartTimer(10);
             if (input_filename.empty()) {
                 for (uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
                     string value;
@@ -161,6 +161,7 @@ int main(int argc, char *argv[]) {
                     assert(status.ok() && "File Get Error");
                 }
             }
+            instance->PauseTimer(10, true);
 
 #ifdef PROFILER
             ProfilerStart(profiler_out.c_str());
@@ -207,8 +208,6 @@ int main(int argc, char *argv[]) {
                 time_sums[s] += instance->ReportTime(s);
             }
             delete db;
-            string command = "rm -rf " + db_location;
-            system(command.c_str());
         }
 
         for (int s = 0; s < time_sums.size(); ++s) {

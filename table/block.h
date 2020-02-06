@@ -12,6 +12,7 @@
 #include "leveldb/iterator.h"
 #include "leveldb/comparator.h"
 #include "table/format.h"
+#include "mod/util.h"
 
 namespace leveldb {
 

@@ -70,7 +70,7 @@ class DBImpl : public DB {
   // bytes.
   void RecordReadSample(Slice key);
 
-  virtual void PrintFileInfo() const;
+  virtual void PrintFileInfo();
 
   virtual void Learn(const ReadOptions& options);
 

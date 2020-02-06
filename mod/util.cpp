@@ -17,6 +17,7 @@ namespace adgMod {
     uint32_t test_num_file_segments = 100;
     int key_size;
     int value_size;
+    leveldb::Env* env;
 
     uint64_t ExtractInteger(const char* pos, size_t size) {
         char* temp = new char[size + 1];

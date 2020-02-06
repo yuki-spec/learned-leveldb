@@ -1,0 +1,220 @@
+Determining if the function crc32c_value exists in the crc32c failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_2e226/fast && /usr/bin/make -f CMakeFiles/cmTC_2e226.dir/build.make CMakeFiles/cmTC_2e226.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2e226.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=crc32c_value   -o CMakeFiles/cmTC_2e226.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_2e226
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2e226.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=crc32c_value    CMakeFiles/cmTC_2e226.dir/CheckFunctionExists.c.o  -o cmTC_2e226  -lcrc32c 
+/usr/bin/ld: cannot find -lcrc32c
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_2e226.dir/build.make:86: recipe for target 'cmTC_2e226' failed
+make[1]: *** [cmTC_2e226] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_2e226/fast' failed
+make: *** [cmTC_2e226/fast] Error 2
+
+
+
+Determining if the function snappy_compress exists in the snappy failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_6971c/fast && /usr/bin/make -f CMakeFiles/cmTC_6971c.dir/build.make CMakeFiles/cmTC_6971c.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6971c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=snappy_compress   -o CMakeFiles/cmTC_6971c.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_6971c
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6971c.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=snappy_compress    CMakeFiles/cmTC_6971c.dir/CheckFunctionExists.c.o  -o cmTC_6971c  -lsnappy 
+/usr/bin/ld: cannot find -lsnappy
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_6971c.dir/build.make:86: recipe for target 'cmTC_6971c' failed
+make[1]: *** [cmTC_6971c] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_6971c/fast' failed
+make: *** [cmTC_6971c/fast] Error 2
+
+
+
+Determining if the F_FULLFSYNC exist failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f5e70/fast && /usr/bin/make -f CMakeFiles/cmTC_f5e70.dir/build.make CMakeFiles/cmTC_f5e70.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f5e70.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_f5e70.dir/CheckSymbolExists.cxx.o -c /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘F_FULLFSYNC’ was not declared in this scope
+   return ((int*)(&F_FULLFSYNC))[argc];
+                   ^
+CMakeFiles/cmTC_f5e70.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_f5e70.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_f5e70.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_f5e70/fast' failed
+make: *** [cmTC_f5e70/fast] Error 2
+
+
+File /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <fcntl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef F_FULLFSYNC
+  return ((int*)(&F_FULLFSYNC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C++ SOURCE FILE Test HAVE_CLANG_THREAD_SAFETY failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_bd75f/fast && /usr/bin/make -f CMakeFiles/cmTC_bd75f.dir/build.make CMakeFiles/cmTC_bd75f.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_bd75f.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_CLANG_THREAD_SAFETY -Werror   -o CMakeFiles/cmTC_bd75f.dir/src.cxx.o -c /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx:2:34: error: ‘lockable’ attribute directive ignored [-Werror=attributes]
+ struct __attribute__((lockable)) Lock {
+                                  ^
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx:3:59: error: ‘exclusive_lock_function’ attribute directive ignored [-Werror=attributes]
+   void Acquire() __attribute__((exclusive_lock_function()));
+                                                           ^
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx:4:51: error: ‘unlock_function’ attribute directive ignored [-Werror=attributes]
+   void Release() __attribute__((unlock_function()));
+                                                   ^
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx:8:46: error: ‘guarded_by’ attribute directive ignored [-Werror=attributes]
+   int data_ __attribute__((guarded_by(lock_)));
+                                              ^
+cc1plus: all warnings being treated as errors
+CMakeFiles/cmTC_bd75f.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_bd75f.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_bd75f.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_bd75f/fast' failed
+make: *** [cmTC_bd75f/fast] Error 2
+
+
+Source file was:
+
+struct __attribute__((lockable)) Lock {
+  void Acquire() __attribute__((exclusive_lock_function()));
+  void Release() __attribute__((unlock_function()));
+};
+struct ThreadSafeType {
+  Lock lock_;
+  int data_ __attribute__((guarded_by(lock_)));
+};
+int main() { return 0; }
+
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ab49d/fast && /usr/bin/make -f CMakeFiles/cmTC_ab49d.dir/build.make CMakeFiles/cmTC_ab49d.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ab49d.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_ab49d.dir/src.c.o   -c /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_ab49d
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ab49d.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    CMakeFiles/cmTC_ab49d.dir/src.c.o  -o cmTC_ab49d 
+CMakeFiles/cmTC_ab49d.dir/src.c.o: In function `main':
+src.c:(.text+0x3c): undefined reference to `pthread_create'
+src.c:(.text+0x48): undefined reference to `pthread_detach'
+src.c:(.text+0x59): undefined reference to `pthread_join'
+src.c:(.text+0x6d): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_ab49d.dir/build.make:86: recipe for target 'cmTC_ab49d' failed
+make[1]: *** [cmTC_ab49d] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_ab49d/fast' failed
+make: *** [cmTC_ab49d/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5ef12/fast && /usr/bin/make -f CMakeFiles/cmTC_5ef12.dir/build.make CMakeFiles/cmTC_5ef12.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5ef12.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_5ef12.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_5ef12
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5ef12.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_5ef12.dir/CheckFunctionExists.c.o  -o cmTC_5ef12  -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_5ef12.dir/build.make:86: recipe for target 'cmTC_5ef12' failed
+make[1]: *** [cmTC_5ef12] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_5ef12/fast' failed
+make: *** [cmTC_5ef12/fast] Error 2
+
+
+
+Determining if the function sqlite3_open exists in the sqlite3 failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f958f/fast && /usr/bin/make -f CMakeFiles/cmTC_f958f.dir/build.make CMakeFiles/cmTC_f958f.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f958f.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=sqlite3_open   -o CMakeFiles/cmTC_f958f.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_f958f
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f958f.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=sqlite3_open    CMakeFiles/cmTC_f958f.dir/CheckFunctionExists.c.o  -o cmTC_f958f  -lsqlite3 
+/usr/bin/ld: cannot find -lsqlite3
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_f958f.dir/build.make:86: recipe for target 'cmTC_f958f' failed
+make[1]: *** [cmTC_f958f] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_f958f/fast' failed
+make: *** [cmTC_f958f/fast] Error 2
+
+
+
+Performing C++ SOURCE FILE Test HAVE_KYOTOCABINET failed with the following output:
+Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_8d13d/fast && /usr/bin/make -f CMakeFiles/cmTC_8d13d.dir/build.make CMakeFiles/cmTC_8d13d.dir/build
+make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_8d13d.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_KYOTOCABINET   -o CMakeFiles/cmTC_8d13d.dir/src.cxx.o -c /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp/src.cxx:2:22: fatal error: kcpolydb.h: No such file or directory
+compilation terminated.
+CMakeFiles/cmTC_8d13d.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_8d13d.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_8d13d.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_8d13d/fast' failed
+make: *** [cmTC_8d13d/fast] Error 2
+
+
+Source file was:
+
+#include <kcpolydb.h>
+
+int main() {
+  kyotocabinet::TreeDB* db = new kyotocabinet::TreeDB();
+  delete db;
+  return 0;
+}
+  

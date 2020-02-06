@@ -10,11 +10,18 @@
 #include <cstring>
 #include "util.h"
 #include "leveldb/slice.h"
+#include "leveldb/db.h"
+#include <atomic>
+
+
 
 using std::string;
 using leveldb::Slice;
+using leveldb::Version;
 
 namespace adgMod {
+
+
 
 
     class Segment {
@@ -30,17 +37,31 @@ namespace adgMod {
     private:
         bool string_mode;
         double error;
+        std::atomic<bool> learned;
+        std::atomic<bool> learning;
+        bool learned_not_atomic;
+        bool learning_not_atomic;
+        Version* current;
 
         std::vector<Segment> string_segments;
+
+        class VersionAndSelf {
+        public:
+            Version* version;
+            LearnedIndexData* self;
+        };
     public:
         std::vector<std::string> string_keys;
 
-        LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error) {};
+        LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error), learned(false), learning(false), learned_not_atomic(false), learning_not_atomic(false) {};
+        LearnedIndexData(const LearnedIndexData& other) : string_mode(adgMod::string_mode), error(adgMod::model_error), learned(false), learning(false), learned_not_atomic(false), learning_not_atomic(false) {};
         void AddSegment(string&& x, double k, double b);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
         double GetError() const;
         void Learn();
+        bool Learned();
+        static void Learn(void* self);
     };
 
     class AccumulatedNumEntriesArray {

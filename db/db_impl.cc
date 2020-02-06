@@ -150,7 +150,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       background_compaction_scheduled_(false),
       manual_compaction_(nullptr),
       versions_(new VersionSet(dbname_, &options_, table_cache_,
-                               &internal_comparator_)) {}
+                               &internal_comparator_)) {adgMod::env = raw_options.env;}
 
 DBImpl::~DBImpl() {
   // Wait for background work to finish.
@@ -688,11 +688,10 @@ void DBImpl::BackgroundCall() {
 }
 
 void DBImpl::BackgroundCompaction() {
+  mutex_.AssertHeld();
 
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   instance->StartTimer(7);
-
-  mutex_.AssertHeld();
 
   if (imm_ != nullptr) {
     CompactMemTable();
@@ -1328,6 +1327,10 @@ WriteBatch* DBImpl::BuildBatchGroup(Writer** last_writer) {
 // REQUIRES: this thread is currently at the front of the writer queue
 Status DBImpl::MakeRoomForWrite(bool force) {
   mutex_.AssertHeld();
+
+  adgMod::Stats* instance = adgMod::Stats::GetInstance();
+
+
   assert(!writers_.empty());
   bool allow_delay = !force;
   Status s;
@@ -1356,11 +1359,15 @@ Status DBImpl::MakeRoomForWrite(bool force) {
       // We have filled up the current memtable, but the previous
       // one is still being compacted, so we wait.
       Log(options_.info_log, "Current memtable full; waiting...\n");
+      instance->PauseTimer(9, true);
       background_work_finished_signal_.Wait();
+      instance->StartTimer(9);
     } else if (versions_->NumLevelFiles(0) >= config::kL0_StopWritesTrigger) {
       // There are too many level-0 files.
       Log(options_.info_log, "Too many L0 files; waiting...\n");
+      instance->PauseTimer(9, true);
       background_work_finished_signal_.Wait();
+      instance->StartTimer(9);
     } else {
       // Attempt to switch to a new memtable and trigger compaction of old
       assert(versions_->PrevLogNumber() == 0);
@@ -1566,12 +1573,20 @@ Status DestroyDB(const std::string& dbname, const Options& options) {
   return result;
 }
 
-void DBImpl::PrintFileInfo() const {
-  versions_->current()->PrintAll();
+void DBImpl::PrintFileInfo() {
+    MutexLock l(&mutex_);
+    Version* ver = versions_->current();
+    ver->Ref();
+    ver->PrintAll();
+    ver->Unref();
 }
 
 void DBImpl::Learn(const ReadOptions& options) {
-  versions_->current()->Learn(options);
+    MutexLock l(&mutex_);
+    Version* ver = versions_->current();
+    ver->Ref();
+    ver->Learn(options);
+    ver->Unref();
 }
 
 

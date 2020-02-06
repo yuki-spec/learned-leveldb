@@ -16,13 +16,13 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-if (!WIN32)
+if (WIN32)
   set(LEVELDB_PLATFORM_NAME LEVELDB_PLATFORM_WINDOWS)
   # TODO(cmumford): Make UNICODE configurable for Windows.
   add_definitions(-D_UNICODE -DUNICODE)
-else (!WIN32)
+else (WIN32)
   set(LEVELDB_PLATFORM_NAME LEVELDB_PLATFORM_POSIX)
-endif (!WIN32)
+endif (WIN32)
 
 option(LEVELDB_BUILD_TESTS "Build LevelDB's unit tests" ON)
 option(LEVELDB_BUILD_BENCHMARKS "Build LevelDB's benchmarks" ON)
@@ -320,7 +320,6 @@ if(LEVELDB_BUILD_TESTS)
   endfunction(leveldb_test)
 
   leveldb_test("${PROJECT_SOURCE_DIR}/db/c_test.c")
-  leveldb_test("${PROJECT_SOURCE_DIR}/mod/read.cc")
   leveldb_test("${PROJECT_SOURCE_DIR}/db/fault_injection_test.cc")
 
   leveldb_test("${PROJECT_SOURCE_DIR}/issues/issue178_test.cc")
@@ -360,6 +359,7 @@ if(LEVELDB_BUILD_TESTS)
     leveldb_test("${PROJECT_SOURCE_DIR}/util/crc32c_test.cc")
     leveldb_test("${PROJECT_SOURCE_DIR}/util/hash_test.cc")
     leveldb_test("${PROJECT_SOURCE_DIR}/util/logging_test.cc")
+    leveldb_test("${PROJECT_SOURCE_DIR}/mod/read.cc")
 
     # TODO(costan): This test also uses
     #               "${PROJECT_SOURCE_DIR}/util/env_{posix|windows}_test_helper.h"

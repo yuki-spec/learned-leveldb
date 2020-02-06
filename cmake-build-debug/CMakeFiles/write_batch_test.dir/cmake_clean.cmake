@@ -1,11 +1,11 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/write_batch_test.dir/db/write_batch_test.cc.obj"
   "CMakeFiles/write_batch_test.dir/util/testharness.cc.obj"
   "CMakeFiles/write_batch_test.dir/util/testutil.cc.obj"
-  "CMakeFiles/write_batch_test.dir/db/write_batch_test.cc.obj"
-  "write_batch_test.pdb"
+  "libwrite_batch_test.dll.a"
   "write_batch_test.exe"
   "write_batch_test.exe.manifest"
-  "libwrite_batch_test.dll.a"
+  "write_batch_test.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

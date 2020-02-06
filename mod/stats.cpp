@@ -5,6 +5,7 @@
 #include <cassert>
 #include "stats.h"
 #include <cmath>
+#include <iostream>
 #include "plr.h"
 
 using std::stoull;
@@ -23,11 +24,13 @@ namespace adgMod {
     void Stats::StartTimer(uint32_t id) {
         Timer& timer = timers[id];
         timer.Start();
+        //if (id > 6) std::cout << "Timer " << id << " started." << std::endl;
     }
 
     void Stats::PauseTimer(uint32_t id, bool record) {
         Timer& timer = timers[id];
         timer.Pause(record);
+        //if (id > 6) std::cout << "Timer " << id << " paused." << std::endl;
     }
 
     void Stats::ResetTimer(uint32_t id) {
