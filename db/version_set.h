@@ -116,7 +116,9 @@ class Version {
 
   void PrintAll() const;
 
-  void Learn(const ReadOptions& options);
+  bool FillData(const ReadOptions& options, FileMetaData* meta, adgMod::LearnedIndexData* data);
+
+  void FillLevel(const ReadOptions& options, int level);
 
  private:
   friend class Compaction;
@@ -132,7 +134,9 @@ class Version {
         file_to_compact_(nullptr),
         file_to_compact_level_(-1),
         compaction_score_(-1),
-        compaction_level_(-1) {}
+        compaction_level_(-1) {
+            for (int i = 0; i < config::kNumLevels; ++i) learned_index_data_.push_back(std::make_shared<adgMod::LearnedIndexData>());
+        }
 
   Version(const Version&) = delete;
   Version& operator=(const Version&) = delete;
@@ -167,9 +171,7 @@ class Version {
   double compaction_score_;
   int compaction_level_;
 
-  adgMod::AccumulatedNumEntriesArray num_entries_accumulated_[config::kNumLevels];
-  adgMod::LearnedIndexData learned_index_data_[config::kNumLevels];
-  adgMod::LearnedIndexData learned_index_data_file_only_[config::kNumLevels];
+  std::vector<std::shared_ptr<adgMod::LearnedIndexData>> learned_index_data_;
 };
 
 class VersionSet {
@@ -188,6 +190,8 @@ class VersionSet {
   // REQUIRES: no other thread concurrently calls LogAndApply()
   Status LogAndApply(VersionEdit* edit, port::Mutex* mu)
       EXCLUSIVE_LOCKS_REQUIRED(mu);
+
+  void ApplyToModel(VersionEdit* edit, Version* previous, Version* current);
 
   // Recover the last saved descriptor from persistent storage.
   Status Recover(bool* save_manifest);

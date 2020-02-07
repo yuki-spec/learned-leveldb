@@ -72,7 +72,8 @@ class DBImpl : public DB {
 
   virtual void PrintFileInfo();
 
-  virtual void Learn(const ReadOptions& options);
+  Version* GetCurrentVersion();
+  void ReturnCurrentVersion(Version* version);
 
  private:
   friend class DB;

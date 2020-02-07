@@ -101,6 +101,9 @@ int main(int argc, char *argv[]) {
             string command = "rm -rf " + db_location;
             system(command.c_str());
 
+            std::uniform_int_distribution<uint64_t > uniform_dist(0, (uint64_t) floor(num_pairs[outer] * num_pairs_base) - 1);
+            std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
+
             DB* db;
             Options options;
             ReadOptions read_options;
@@ -112,6 +115,7 @@ int main(int argc, char *argv[]) {
                 adgMod::MOD ? 1 : adgMod::block_restart_interval;
             read_options.fill_cache = false;
             write_options.sync = false;
+            adgMod::read_options = &read_options;
 
             Status status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
@@ -135,15 +139,8 @@ int main(int argc, char *argv[]) {
             instance->PauseTimer(9, true);
 
             cout << "Put Complete" << endl;
-            sleep(1);
-            instance->StartTimer(8);
-            if (MOD > 0) db->Learn(read_options);
-            instance->PauseTimer(8, true);
-            cout << "Learn Complete" << endl;
+            //sleep(10);
             if (print_file_info && iteration == 0) db->PrintFileInfo();
-
-            std::uniform_int_distribution<uint64_t > uniform_dist(0, (uint64_t) floor(num_pairs[outer] * num_pairs_base) - 1);
-            std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
 
             instance->StartTimer(10);
             if (input_filename.empty()) {

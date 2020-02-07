@@ -45,7 +45,7 @@ class TableCache {
   // Evict any entry for the specified file number
   void Evict(uint64_t file_number);
 
-  void Learn(const ReadOptions& options, FileMetaData* meta);
+  bool FillData(const ReadOptions& options, FileMetaData* meta, adgMod::LearnedIndexData* data);
 
  private:
   Status FindTable(uint64_t file_number, uint64_t file_size, Cache::Handle**);

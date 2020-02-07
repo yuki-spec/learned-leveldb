@@ -2082,8 +2082,6 @@ class ModelDB : public DB {
 
   virtual void PrintFileInfo() {};
 
-  virtual void Learn(const ReadOptions& options) {};
-
  private:
   class ModelIter : public Iterator {
    public:

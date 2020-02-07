@@ -3,6 +3,7 @@
 //
 
 #include "util.h"
+#include "learned_index.h"
 
 using std::to_string;
 
@@ -18,6 +19,9 @@ namespace adgMod {
     int key_size;
     int value_size;
     leveldb::Env* env;
+    leveldb::DBImpl* db;
+    leveldb::ReadOptions* read_options;
+    FileLearnedIndexData file_data;
 
     uint64_t ExtractInteger(const char* pos, size_t size) {
         char* temp = new char[size + 1];

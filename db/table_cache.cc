@@ -125,14 +125,16 @@ void TableCache::Evict(uint64_t file_number) {
   cache_->Erase(Slice(buf, sizeof(buf)));
 }
 
-void TableCache::Learn(const ReadOptions& options, FileMetaData *meta) {
+bool TableCache::FillData(const ReadOptions& options, FileMetaData *meta, adgMod::LearnedIndexData* data) {
   Cache::Handle* handle = nullptr;
   Status status = FindTable(meta->number, meta->file_size, &handle);
 
-  assert(status.ok());
+  if (!status.ok()) return false;
+
   Table* table = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-  table->Learn(options, meta);
+  table->FillData(options, data);
   cache_->Release(handle);
+  return true;
 }
 
 }  // namespace leveldb

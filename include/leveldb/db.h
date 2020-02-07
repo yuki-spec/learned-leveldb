@@ -23,6 +23,8 @@ struct ReadOptions;
 struct WriteOptions;
 class WriteBatch;
 class Version;
+class VersionSet;
+class FileMetaData;
 
 // Abstract handle to particular state of a DB.
 // A Snapshot is an immutable object and can therefore be safely
@@ -148,8 +150,6 @@ class LEVELDB_EXPORT DB {
   virtual void CompactRange(const Slice* begin, const Slice* end) = 0;
 
   virtual void PrintFileInfo() = 0;
-
-  virtual void Learn(const ReadOptions& options) = 0;
 };
 
 // Destroy the contents of the specified database.

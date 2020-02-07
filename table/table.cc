@@ -230,7 +230,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
       instance->StartTimer(2);
 #endif
     size_t index, pos_lower, pos_upper;
-    meta->num_entries_accumulated.Search(parsed_key.user_key, lower, upper, &index, &pos_lower, &pos_upper);
+    adgMod::file_data.GetAccumulatedArray(meta->number)->Search(parsed_key.user_key, lower, upper, &index, &pos_lower, &pos_upper);
     Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
     //printf("%u %lu %lu %lu\n", index_iter->num_restarts_, index, pos_lower, pos_upper);
     index_iter->SeekToRestartPoint((uint32_t) index);
@@ -250,94 +250,6 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
     block_iter->Seek((uint32_t) pos_lower, (uint32_t) pos_upper, k);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(3);
-#endif
-    if (block_iter->Valid()) {
-      (*handle_result)(arg, block_iter->key(), block_iter->value());
-    }
-    s = block_iter->status();
-    delete block_iter;
-    if (s.ok()) {
-      s = iiter->status();
-    }
-    delete iiter;
-  }
-
-
-
-
-
-  else if (adgMod::MOD == 2 && meta != nullptr) {
-#ifdef INTERNAL_TIMER
-    instance->StartTimer(2);
-#endif
-    size_t index = 0, pos_block_lower = 0, pos_block_upper = 0;
-    auto bounds = meta->learned_index_data.GetPosition(parsed_key.user_key);
-
-//      printf("file_number: %d position: %d block_index: %d relative_pos: %d key: %s\n", meta->number, pos, index, pos_in_block, key.c_str());
-//      fflush(stdout);
-
-    //assert(pos <= meta->learned_index_data.MaxPosition());
-    bool result = meta->num_entries_accumulated.Search(parsed_key.user_key, bounds.first, bounds.second, &index, &pos_block_lower, &pos_block_upper);
-    //assert(result);
-    Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
-    index_iter->SeekToRestartPoint((uint32_t) index);
-    index_iter->ParseNextKey();
-#ifdef INTERNAL_TIMER
-    instance->PauseTimer(2);
-    instance->StartTimer(5);
-#endif
-    Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
-#ifdef INTERNAL_TIMER
-    instance->PauseTimer(5);
-    instance->StartTimer(3);
-#endif
-    block_iter->Seek((uint32_t) pos_block_lower, (uint32_t) pos_block_upper, k);
-#ifdef INTERNAL_TIMER
-        instance->PauseTimer(3);
-#endif
-
-    if (block_iter->Valid()) {
-      (*handle_result)(arg, block_iter->key(), block_iter->value());
-    }
-    s = block_iter->status();
-    delete block_iter;
-    if (s.ok()) {
-      s = iiter->status();
-    }
-    delete iiter;
-  }
-
-
-
-
-  else if (adgMod::MOD == 3 && meta != nullptr) {
-#ifdef INTERNAL_TIMER
-    instance->StartTimer(2);
-#endif
-    size_t index, pos;
-    meta->num_entries_accumulated.SearchNoError(lower, &index, &pos);
-    Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
-    index_iter->SeekToRestartPoint((uint32_t) index);
-    index_iter->ParseNextKey();
-#ifdef INTERNAL_TIMER
-    instance->PauseTimer(2);
-    instance->StartTimer(5);
-#endif
-    Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
-#ifdef INTERNAL_TIMER
-    instance->PauseTimer(5);
-    instance->StartTimer(3);
-#endif
-    //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
-    //fflush(stdout);
-    block_iter->SeekToRestartPoint((uint32_t) pos / adgMod::block_restart_interval);
-    while (true) {
-      if (!block_iter->ParseNextKey() || block_iter->Compare(block_iter->key(), k) >= 0) {
-          break;
-      }
-    }
-#ifdef INTERNAL_TIMER
-    instance->PauseTimer(3);
 #endif
     if (block_iter->Valid()) {
       (*handle_result)(arg, block_iter->key(), block_iter->value());
@@ -415,7 +327,7 @@ uint64_t Table::ApproximateOffsetOf(const Slice& key) const {
   return result;
 }
 
-void Table::Learn(const ReadOptions& options, FileMetaData *meta) {
+void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data) {
   Status status;
   Block::Iter* index_iter = dynamic_cast<Block::Iter*>(rep_->index_block->NewIterator(rep_->options.comparator));
   for (uint32_t i = 0; i < index_iter->num_restarts_; ++i) {
@@ -426,25 +338,13 @@ void Table::Learn(const ReadOptions& options, FileMetaData *meta) {
     ParsedInternalKey parsed_key;
     for (block_iter->SeekToRestartPoint(0); block_iter->ParseNextKey();) {
         assert(ParseInternalKey(block_iter->key(), &parsed_key));
-        meta->learned_index_data.string_keys.push_back(string(parsed_key.user_key.data(), parsed_key.user_key.size()));
+        data->string_keys.emplace_back(parsed_key.user_key.data(), parsed_key.user_key.size());
     }
     uint64_t num_entries_this_block = block_iter->num_restarts_ * adgMod::block_restart_interval;
-    uint64_t current_total = meta->num_entries_accumulated.NumEntries();
-    meta->num_entries_accumulated.Add(current_total + num_entries_this_block, std::string(parsed_key.user_key.data(), parsed_key.user_key.size()));
+    uint64_t current_total = data->num_entries_accumulated.NumEntries();
+    data->num_entries_accumulated.Add(current_total + num_entries_this_block, std::string(parsed_key.user_key.data(), parsed_key.user_key.size()));
     delete block_iter;
   }
-
-  // TODO: Test Only
-//  uint64_t start = adgMod::ExtractInteger(meta->smallest.user_key().data(), meta->smallest.user_key().size());
-//  uint64_t end = adgMod::ExtractInteger(meta->largest.user_key().data(), meta->largest.user_key().size());
-//  assert(end > start);
-//  uint64_t interval = (end - start) / adgMod::test_num_file_segments;
-//  for (int j = 0; j < adgMod::test_num_file_segments; ++j) {
-//    meta->learned_index_data.AddSegment(adgMod::generate_key(start + interval * j), (interval * j) / adgMod::key_multiple);
-//  }
-//  meta->learned_index_data.AddSegment(adgMod::generate_key(end), (end - start) / adgMod::key_multiple);
-
-  meta->learned_index_data.Learn();
   delete index_iter;
 }
 

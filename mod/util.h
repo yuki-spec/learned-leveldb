@@ -8,14 +8,19 @@
 #include <cstdint>
 #include <cstdlib>
 #include <ctime>
+#include "db/db_impl.h"
 #include "leveldb/slice.h"
 #include "leveldb/env.h"
 
+
 using std::string;
+using std::vector;
 using leveldb::Slice;
 
 
 namespace adgMod {
+
+    class FileLearnedIndexData;
 
     extern int MOD;
     extern bool string_mode;
@@ -27,6 +32,9 @@ namespace adgMod {
     extern int key_size;
     extern int value_size;
     extern leveldb::Env* env;
+    extern leveldb::DBImpl* db;
+    extern leveldb::ReadOptions* read_options;
+    extern FileLearnedIndexData file_data;
 
     uint64_t ExtractInteger(const char* pos, size_t size);
 //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);

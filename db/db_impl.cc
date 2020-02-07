@@ -150,7 +150,10 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       background_compaction_scheduled_(false),
       manual_compaction_(nullptr),
       versions_(new VersionSet(dbname_, &options_, table_cache_,
-                               &internal_comparator_)) {adgMod::env = raw_options.env;}
+                               &internal_comparator_)) {
+        adgMod::env = raw_options.env;
+        adgMod::db = this;
+      }
 
 DBImpl::~DBImpl() {
   // Wait for background work to finish.
@@ -1581,12 +1584,16 @@ void DBImpl::PrintFileInfo() {
     ver->Unref();
 }
 
-void DBImpl::Learn(const ReadOptions& options) {
+Version* DBImpl::GetCurrentVersion() {
     MutexLock l(&mutex_);
     Version* ver = versions_->current();
     ver->Ref();
-    ver->Learn(options);
-    ver->Unref();
+    return ver;
+}
+
+void DBImpl::ReturnCurrentVersion(Version* version) {
+    MutexLock l(&mutex_);
+    version->Unref();
 }
 
 

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <iostream>
+#include <memory>
 
 #include "db/filename.h"
 #include "db/log_reader.h"
@@ -378,27 +379,27 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       files = &tmp[0];
       num_files = tmp.size();
     } else {
+        if (adgMod::MOD == 5) {
+            adgMod::LearnedIndexData* learned_this_level = learned_index_data_[level].get();
+            if (learned_this_level->Learned(this, level)) {
+                //std::cout << "using model" << std::endl;
+                learned = true;
+                std::pair<uint64_t, uint64_t> bounds = learned_this_level->GetPosition(user_key);
 
-      if (adgMod::MOD == 5) {
-        if (learned_index_data_[level].Learned()) {
-            //std::cout << "using model" << std::endl;
-            learned = true;
-            adgMod::LearnedIndexData& learned_this_level = learned_index_data_[level];
-            std::pair<uint64_t, uint64_t> bounds = learned_this_level.GetPosition(user_key);
+                //printf("%lu %lu\n", bounds.first, bounds.second);
 
-            //printf("%lu %lu\n", bounds.first, bounds.second);
+                size_t index;
+                if (bounds.first <= learned_this_level->MaxPosition()) {
+                    assert(learned_this_level->num_entries_accumulated.Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper));
 
-            size_t index;
-            if (bounds.first <= learned_this_level.MaxPosition()) {
-                assert(num_entries_accumulated_[level].Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper));
+                    //printf("%lu %lu %lu\n", index, position_lower, position_upper);
 
-                //printf("%lu %lu %lu\n", index, position_lower, position_upper);
-
-                files = &files_[level][index];
-                num_files = 1;
-            } else {
-                files = nullptr;
-                num_files = 0;
+                    files = &files_[level][index];
+                    num_files = 1;
+                } else {
+                    files = nullptr;
+                    num_files = 0;
+                }
             }
         } else {
             // Binary search to find earliest index whose largest key >= ikey.
@@ -418,62 +419,6 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
                 }
             }
         }
-      } else {
-          if (adgMod::MOD == 1 || adgMod::MOD == 4) {
-              adgMod::LearnedIndexData& learned_this_level = learned_index_data_[level];
-              std::pair<uint64_t, uint64_t> bounds = learned_this_level.GetPosition(user_key);
-
-              //printf("%lu %lu\n", bounds.first, bounds.second);
-
-              size_t index;
-              if (bounds.first <= learned_this_level.MaxPosition()) {
-                  assert(num_entries_accumulated_[level].Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper));
-
-                  //printf("%lu %lu %lu\n", index, position_lower, position_upper);
-
-                  files = &files_[level][index];
-                  num_files = 1;
-              } else {
-                  files = nullptr;
-                  num_files = 0;
-              }
-          } else if (adgMod::MOD == 3) {
-              adgMod::LearnedIndexData& learned_this_level = learned_index_data_[level];
-              std::pair<uint64_t, uint64_t> bounds = learned_this_level.GetPosition(user_key);
-              uint64_t pos = bounds.first;
-              size_t index;
-              if (pos <= learned_this_level.MaxPosition()) {
-                  assert(num_entries_accumulated_[level].SearchNoError(pos, &index, &position_lower));
-                  files = &files_[level][index];
-                  num_files = 1;
-              } else {
-                  files = nullptr;
-                  num_files = 0;
-              }
-
-
-          } else {
-              // Binary search to find earliest index whose largest key >= ikey.
-              uint32_t index = FindFile(vset_->icmp_, files_[level], ikey);
-              if (index >= num_files) {
-                  files = nullptr;
-                  num_files = 0;
-              } else {
-                  tmp2 = files[index];
-                  if (ucmp->Compare(user_key, tmp2->smallest.user_key()) < 0) {
-                      // All of "tmp2" is past any data for user_key
-                      files = nullptr;
-                      num_files = 0;
-                  } else {
-                      files = &tmp2;
-                      num_files = 1;
-                  }
-              }
-          }
-      }
-
-
-
     }
 #ifdef INTERNAL_TIMER
     instance->PauseTimer(0);
@@ -908,6 +853,16 @@ void VersionSet::AppendVersion(Version* v) {
   v->next_->prev_ = v;
 }
 
+void VersionSet::ApplyToModel(VersionEdit* edit, Version* previous, Version* current) {
+    std::set<int> changed_level;
+    for (auto& item: edit->new_files_) changed_level.insert(item.first);
+    for (auto& item: edit->deleted_files_) changed_level.insert(item.first);
+
+    for (int i = 1; i < config::kNumLevels; ++i) {
+        if (changed_level.count(i) == 0) current->learned_index_data_[i] = previous->learned_index_data_[i];
+    }
+}
+
 Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
   if (edit->has_log_number_) {
     assert(edit->log_number_ >= log_number_);
@@ -930,6 +885,7 @@ Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
     builder.SaveTo(v);
   }
   Finalize(v);
+  ApplyToModel(edit, current_, v);
 
   // Initialize new descriptor log file if necessary by creating
   // a temporary file that contains a snapshot of the current version.
@@ -1704,66 +1660,29 @@ void Version::PrintAll() const {
                            "\tNumber: %lu\n"
                            "\tSize: %lu\n"
                            "\tNumEntries: %lu\n"
-                           "\tKey Range: %s to %s\n", j, i, file->number, file->file_size, adgMod::MOD ? file->num_entries_accumulated.NumEntries() : 0,
+                           "\tKey Range: %s to %s\n", j, i, file->number, file->file_size, 0,
                            small_key.c_str(), large_key.c_str());
         }
     }
 }
 
-void Version::Learn(const ReadOptions& options) {
-  for (int i = 1; i < config::kNumLevels; ++i) {
-    for (int j = 0; j < files_[i].size(); ++j) {
-      adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[i].size();
-      vset_->table_cache_->Learn(options, files_[i][j]);
+bool Version::FillData(const ReadOptions &options, FileMetaData *meta, adgMod::LearnedIndexData* data) {
+    return vset_->table_cache_->FillData(options, meta, data);
+}
+
+void Version::FillLevel(const ReadOptions &options, int level) {
+    adgMod::LearnedIndexData* data = learned_index_data_[level].get();
+    for (int j = 0; j < files_[level].size(); ++j) {
+        FileMetaData* file = files_[level][j];
+        adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[level].size();
+        assert(adgMod::file_data.FillData(this, file));
+        vector<string>& file_data = adgMod::file_data.GetData(file);
+        data->string_keys.insert(data->string_keys.end(), file_data.begin(), file_data.end());
+
+        uint64_t current_total = data->num_entries_accumulated.NumEntries();
+        const Slice& largest_key = file->largest.user_key();
+        data->num_entries_accumulated.Add(current_total + adgMod::file_data.GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
     }
-  }
-
-  std::cout << "cp1" << std::endl;
-
-  for (int i = 1; i < config::kNumLevels; ++i) {
-    for (int j = 0; j < files_[i].size(); ++j) {
-      uint64_t current_total = num_entries_accumulated_[i].NumEntries();
-      const Slice& largest_key = files_[i][j]->largest.user_key();
-      const std::vector<string>& file_keys = files_[i][j]->learned_index_data.string_keys;
-      num_entries_accumulated_[i].Add(current_total + files_[i][j]->num_entries_accumulated.NumEntries(), string(largest_key.data(), largest_key.size()));
-      for (int k = 0; k < file_keys.size(); ++k) {
-        learned_index_data_[i].string_keys.push_back(file_keys[k]);
-      }
-    }
-  }
-
-  std::cout << "cp2" << std::endl;
-
-
-  // TODO: Test Only
-//  for (int i = 1; i < config::kNumLevels; ++i) {
-//    if (files_[i].empty()) continue;
-//
-//    uint64_t start = adgMod::ExtractInteger(files_[i].front()->smallest.user_key().data(), files_[i].front()->smallest.user_key().size());
-//    uint64_t end = adgMod::ExtractInteger(files_[i].back()->largest.user_key().data(), files_[i].back()->largest.user_key().size());
-//    uint64_t interval = (end - start) / adgMod::test_num_level_segments;
-//    for (int j = 0; j < adgMod::test_num_level_segments; ++j) {
-//      learned_index_data_[i].AddSegment(adgMod::generate_key(start + interval * j), (interval * j) / adgMod::key_multiple);
-//    }
-//    learned_index_data_[i].AddSegment(adgMod::generate_key(end), (end - start) / adgMod::key_multiple);
-//  }
-//
-//
-//  for (int i = 0; i < config::kNumLevels; ++i) {
-//    if (files_[i].empty()) continue;
-//
-//    for (int j = 0; j < files_[i].size(); ++j) {
-//        const Slice& smallest_key = files_[i][j]->smallest.user_key();
-//        learned_index_data_file_only_[i].AddSegment(std::string(smallest_key.data(), smallest_key.size()), (uint64_t) j);
-//    }
-//    const Slice& largest_key = files_[i].back()->largest.user_key();
-//    learned_index_data_file_only_[i].AddSegment(std::string(largest_key.data(), largest_key.size()), (uint64_t) files_[i].size() - 1);
-//  }
-
-  for (int i = 1; i < config::kNumLevels; ++i) {
-    if (learned_index_data_[i].string_keys.empty()) continue;
-    if (adgMod::MOD == 1) learned_index_data_[i].Learn();
-  }
 }
 
 

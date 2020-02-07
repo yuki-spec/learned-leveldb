@@ -6,9 +6,12 @@
 #include <cassert>
 #include <utility>
 #include <cmath>
+#include <iostream>
+#include "util/mutexlock.h"
 #include "learned_index.h"
 #include "util.h"
 #include "plr.h"
+#include "db/version_set.h"
 
 namespace adgMod {
 
@@ -21,67 +24,30 @@ namespace adgMod {
     }
 
     std::pair<uint64_t, uint64_t> LearnedIndexData::GetPosition(const Slice& target_x) const {
-        if (string_mode) {
-            if (adgMod::MOD == 3) {
-                if (target_x > string_keys.back()) return std::make_pair(string_keys.size(), string_keys.size());
-                if (target_x < string_keys.front()) return std::make_pair(string_keys.size(), string_keys.size());
+        assert(string_segments.size() > 1);
 
-                uint32_t left = 0, right = (uint32_t) string_keys.size() - 1;
-                while (left < right) {
-                    uint32_t mid = (right + left) / 2;
-                    int comp = compare(target_x, string_keys[mid]);
-                    if (comp < 0) right = mid - 1;
-                    else if (comp > 0) left = mid + 1;
-                    else {
-                        return std::make_pair(mid, mid);
-                    }
-                }
-                return std::make_pair(left, left);
-            }
+        uint64_t target_int = SliceToInteger(target_x);
+        if (target_x > max_key) return std::make_pair(size, size);
+        if (target_x < min_key) return std::make_pair(size, size);
 
-            else {
-                assert(string_segments.size() > 1);
+        uint32_t left = 0, right = (uint32_t) string_segments.size() - 1;
+        while (left != right - 1) {
+            uint32_t mid = (right + left) / 2;
+            if (target_x < string_segments[mid].x) right = mid;
+            else left = mid;
+        }
 
-                uint64_t target_int = SliceToInteger(target_x);
-                if (target_x > string_keys.back()) return std::make_pair(string_keys.size(), string_keys.size());
-                if (target_x < string_keys.front()) return std::make_pair(string_keys.size(), string_keys.size());
-
-                uint32_t left = 0, right = (uint32_t) string_segments.size() - 1;
-                while (left != right - 1) {
-                    uint32_t mid = (right + left) / 2;
-                    if (target_x < string_segments[mid].x) right = mid;
-                    else left = mid;
-                }
-
-                double result = target_int * string_segments[left].k + string_segments[left].b;
-                uint64_t lower = result - error> 0 ? (uint64_t) std::floor(result - error) : 0;
-                uint64_t upper = (uint64_t) std::ceil(result + error);
+        double result = target_int * string_segments[left].k + string_segments[left].b;
+        uint64_t lower = result - error> 0 ? (uint64_t) std::floor(result - error) : 0;
+        uint64_t upper = (uint64_t) std::ceil(result + error);
 
 //                printf("%s %s %s\n", string_keys[lower].c_str(), string(target_x.data(), target_x.size()).c_str(), string_keys[upper].c_str());
 //                assert(target_x >= string_keys[lower] && target_x <= string_keys[upper]);
-                return std::make_pair(lower, upper);
-            }
-        } else {
-//            uint64_t target_int = SliceToInteger(target_x);
-//            if (target_int > segments.back().first) return segments.back().second + 1;
-//            if (target_int < segments.front().first) return segments.back().second + 1;
-//
-//            uint32_t left = 0, right = (uint32_t) segments.size() - 1;
-//            while (left != right - 1) {
-//                uint32_t mid = (right + left) / 2;
-//                if (target_int < segments[mid].first) right = mid;
-//                else left = mid;
-//            }
-//
-//            uint64_t x1 = segments[left].first, x2 = segments[right].first;
-//            uint64_t y1 = segments[left].second, y2 = segments[right].second;
-//            return y1 + (y2 - y1) * (target_int - x1) / (x2 - x1);
-            return std::make_pair(0, 0);
-        }
+        return std::make_pair(lower, upper);
     }
 
     uint64_t LearnedIndexData::MaxPosition() const {
-        return string_keys.size() - 1;
+        return size - 1;
     }
 
     double LearnedIndexData::GetError() const {
@@ -107,6 +73,9 @@ namespace adgMod {
             string_segments.push_back(Segment(generate_key((uint64_t) s.start), s.slope, s.intercept));
         }
         string_segments.push_back(Segment(string_keys.back(), 0, 0));
+        min_key = string_keys.front();
+        max_key = string_keys.back();
+        size = string_keys.size();
 
         for (auto& str: string_segments) {
             //printf("%s %f\n", str.first.c_str(), str.second);
@@ -116,30 +85,133 @@ namespace adgMod {
         return;
     }
 
-    void LearnedIndexData::Learn(void *self) {
-        LearnedIndexData* self_ = reinterpret_cast<LearnedIndexData*>(self);
-        self_->Learn();
+    void LearnedIndexData::Learn(void *arg) {
+        Stats* instance = Stats::GetInstance();
+        instance->StartTimer(8);
+
+        VersionAndSelf* vas = reinterpret_cast<VersionAndSelf*>(arg);
+        Version* version = vas->version;
+        LearnedIndexData* self = vas->self;
+
+        Version* current = adgMod::db->GetCurrentVersion();
+
+        if (current == version){
+            current->FillLevel(*adgMod::read_options, vas->level);
+            self->filled = true;
+            self->Learn();
+            std::cout << "Learning complete" << std::endl;
+        }
+        adgMod::db->ReturnCurrentVersion(current);
+        delete vas;
+
+        instance->PauseTimer(8, true);
     }
 
-    bool LearnedIndexData::Learned() {
+    void LearnedIndexData::FileLearn(void *arg) {
+        Stats* instance = Stats::GetInstance();
+        instance->StartTimer(8);
+
+        MetaAndSelf* mas = reinterpret_cast<MetaAndSelf*>(arg);
+        LearnedIndexData* self = mas->self;
+
+        Version* current = adgMod::db->GetCurrentVersion();
+        if (self->FillData(current, mas->meta)) {
+            self->Learn();
+        }
+        adgMod::db->ReturnCurrentVersion(current);
+        delete mas;
+
+        instance->PauseTimer(8, true);
+    }
+
+    bool LearnedIndexData::Learned(Version* version, int level) {
         if (learned_not_atomic) return true;
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
         } else {
-            if (!learning_not_atomic && !learning.load() && !string_keys.empty()) {
+            if (!learning_not_atomic && !learning.load()) {
                 learning_not_atomic = true;
-                env->Schedule(&LearnedIndexData::Learn, this);
+                env->Schedule(&LearnedIndexData::Learn, new VersionAndSelf{version, this, level});
             }
             return false;
         }
     }
 
+    bool LearnedIndexData::Learned(FileMetaData *meta) {
+        if (learned_not_atomic) return true;
+        else if (learned.load()) {
+            learned_not_atomic = true;
+            return true;
+        } else {
+            if (!learning_not_atomic && !learning.load()) {
+                learning_not_atomic = true;
+                env->Schedule(&LearnedIndexData::FileLearn, new MetaAndSelf{meta, this});
+            }
+            return false;
+        }
+    }
+
+    bool LearnedIndexData::FillData(Version *version, FileMetaData *meta) {
+        if (filled) return true;
+
+        if (version->FillData(*adgMod::read_options, meta, this)) {
+            filled = true;
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
+    bool FileLearnedIndexData::FillData(Version *version, FileMetaData *meta) {
+        {
+            leveldb::MutexLock l(&mutex);
+            if (file_learned_index_data.size() <= meta->number)
+                file_learned_index_data.resize(meta->number + 1, nullptr);
+            if (file_learned_index_data[meta->number] == nullptr)
+                file_learned_index_data[meta->number] = new LearnedIndexData();
+        }
+        return file_learned_index_data[meta->number]->FillData(version ,meta);
+    }
+
+    std::vector<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
+        return file_learned_index_data[meta->number]->string_keys;
+    }
+
+    bool FileLearnedIndexData::Learned(Version* version, FileMetaData* meta) {
+        leveldb::MutexLock l(&mutex);
+        if (file_learned_index_data.size() <= meta->number)
+            file_learned_index_data.resize(meta->number + 1, nullptr);
+        if (file_learned_index_data[meta->number] == nullptr)
+            file_learned_index_data[meta->number] = new LearnedIndexData();
+        return file_learned_index_data[meta->number]->Learned(meta);
+    }
+
+    AccumulatedNumEntriesArray* FileLearnedIndexData::GetAccumulatedArray(int file_num) {
+        return &file_learned_index_data[file_num]->num_entries_accumulated;
+    }
+
+    std::pair<uint64_t, uint64_t> FileLearnedIndexData::GetPosition(const Slice &key, int file_num) {
+        return file_learned_index_data[file_num]->GetPosition(key);
+    }
+
+
+
+
+
+
+
 
 
 
     void AccumulatedNumEntriesArray::Add(uint64_t num_entries, string &&key) {
-        array.push_back(std::make_pair(num_entries, key));
+        array.emplace_back(num_entries, key);
     }
 
     bool AccumulatedNumEntriesArray::Search(const Slice& key, uint64_t lower, uint64_t upper, size_t* index,
