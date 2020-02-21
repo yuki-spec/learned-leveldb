@@ -8,7 +8,7 @@
 
 #include <algorithm>
 #include <vector>
-#include <util/stats.h>
+#include "mod/stats.h"
 
 #include "leveldb/comparator.h"
 #include "table/format.h"

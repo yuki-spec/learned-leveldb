@@ -7,7 +7,7 @@
 
 // Define to 1 if you have a definition for fdatasync() in <unistd.h>.
 #if !defined(HAVE_FDATASYNC)
-#define HAVE_FDATASYNC 0
+#define HAVE_FDATASYNC 1
 #endif  // !defined(HAVE_FDATASYNC)
 
 // Define to 1 if you have a definition for F_FULLFSYNC in <fcntl.h>.

@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\autocompact_test.dir/objects.a
-C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\autocompact_test.dir/objects.a @CMakeFiles\autocompact_test.dir\objects1.rsp
-C:\TDM-GCC-64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\autocompact_test.dir/objects.a -Wl,--no-whole-archive  -o autocompact_test.exe -Wl,--out-implib,libautocompact_test.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\autocompact_test.dir\linklibs.rsp
+/usr/bin/c++  -g   CMakeFiles/autocompact_test.dir/util/testharness.cc.o CMakeFiles/autocompact_test.dir/util/testutil.cc.o CMakeFiles/autocompact_test.dir/db/autocompact_test.cc.o  -o autocompact_test libleveldb.a -ltcmalloc -lpthread 

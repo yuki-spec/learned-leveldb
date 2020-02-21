@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/fault_injection_test.dir/db/fault_injection_test.cc.obj"
-  "CMakeFiles/fault_injection_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/fault_injection_test.dir/util/testutil.cc.obj"
-  "fault_injection_test.exe"
-  "fault_injection_test.exe.manifest"
+  "CMakeFiles/fault_injection_test.dir/db/fault_injection_test.cc.o"
+  "CMakeFiles/fault_injection_test.dir/util/testharness.cc.o"
+  "CMakeFiles/fault_injection_test.dir/util/testutil.cc.o"
+  "fault_injection_test"
   "fault_injection_test.pdb"
-  "libfault_injection_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

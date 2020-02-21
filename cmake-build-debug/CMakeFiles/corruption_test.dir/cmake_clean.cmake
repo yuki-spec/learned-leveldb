@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/corruption_test.dir/db/corruption_test.cc.obj"
-  "CMakeFiles/corruption_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/corruption_test.dir/util/testutil.cc.obj"
-  "corruption_test.exe"
-  "corruption_test.exe.manifest"
+  "CMakeFiles/corruption_test.dir/db/corruption_test.cc.o"
+  "CMakeFiles/corruption_test.dir/util/testharness.cc.o"
+  "CMakeFiles/corruption_test.dir/util/testutil.cc.o"
+  "corruption_test"
   "corruption_test.pdb"
-  "libcorruption_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

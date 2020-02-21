@@ -38,8 +38,9 @@ namespace adgMod {
         }
 
         double result = target_int * string_segments[left].k + string_segments[left].b;
-        uint64_t lower = result - error> 0 ? (uint64_t) std::floor(result - error) : 0;
+        uint64_t lower = result - error > 0 ? (uint64_t) std::floor(result - error) : 0;
         uint64_t upper = (uint64_t) std::ceil(result + error);
+        if (lower >= size) return std::make_pair(size, size);
 
 //                printf("%s %s %s\n", string_keys[lower].c_str(), string(target_x.data(), target_x.size()).c_str(), string_keys[upper].c_str());
 //                assert(target_x >= string_keys[lower] && target_x <= string_keys[upper]);
@@ -54,25 +55,26 @@ namespace adgMod {
         return error;
     }
 
-    void LearnedIndexData::Learn() {
+    bool LearnedIndexData::Learn() {
         // FILL IN GAMMA (error)
         PLR plr = PLR(error);
 
-        if (string_keys.empty()) return;
+        if (string_keys.empty()) assert(false);
 
         std::vector<struct point> points;
         int i = 0;
         for (string &s : string_keys) {
-            struct point p{ .x = (double) stoull(s), .y = (double) i};
-            points.push_back(p);
+            points.emplace_back((double) stoull(s), (double) i);
             ++i;
         }
 
-        std::vector<struct segment> segs = plr.train(points);
+        std::vector<struct segment> segs = plr.train(points, !level);
+        if (segs.empty()) return false;
+
         for (struct segment &s : segs) {
-            string_segments.push_back(Segment(generate_key((uint64_t) s.start), s.slope, s.intercept));
+            string_segments.emplace_back(generate_key((uint64_t) s.start), s.slope, s.intercept);
         }
-        string_segments.push_back(Segment(string_keys.back(), 0, 0));
+        string_segments.emplace_back(string_keys.back(), 0, 0);
         min_key = string_keys.front();
         max_key = string_keys.back();
         size = string_keys.size();
@@ -82,7 +84,7 @@ namespace adgMod {
         }
 
         learned.store(true);
-        return;
+        return true;
     }
 
     void LearnedIndexData::Learn(void *arg) {
@@ -90,18 +92,23 @@ namespace adgMod {
         instance->StartTimer(8);
 
         VersionAndSelf* vas = reinterpret_cast<VersionAndSelf*>(arg);
-        Version* version = vas->version;
         LearnedIndexData* self = vas->self;
+        self->level = true;
 
-        Version* current = adgMod::db->GetCurrentVersion();
-
-        if (current == version){
-            current->FillLevel(*adgMod::read_options, vas->level);
+        Version* c = db->GetCurrentVersion();
+        if (db->version_count == vas->v_count){
+            vas->version->FillLevel(adgMod::read_options, vas->level);
+            //instance->ReportEventWithTime("Fill " + to_string(vas->level));
             self->filled = true;
-            self->Learn();
-            std::cout << "Learning complete" << std::endl;
+            if (db->version_count == vas->v_count) {
+                if (env->compaction_awaiting.load() == 0 && self->Learn()) {
+                    instance->ReportEventWithTime("L " + to_string(vas->level));
+                } else {
+                    self->learning.store(false);
+                }
+            }
         }
-        adgMod::db->ReturnCurrentVersion(current);
+        adgMod::db->ReturnCurrentVersion(c);
         delete vas;
 
         instance->PauseTimer(8, true);
@@ -114,39 +121,40 @@ namespace adgMod {
         MetaAndSelf* mas = reinterpret_cast<MetaAndSelf*>(arg);
         LearnedIndexData* self = mas->self;
 
-        Version* current = adgMod::db->GetCurrentVersion();
-        if (self->FillData(current, mas->meta)) {
+        Version* c = db->GetCurrentVersion();
+        if (db->version_count == mas->v_count && self->FillData(c, mas->meta)) {
             self->Learn();
+            instance->ReportEventWithTime("FL " + to_string(mas->meta->number));
+        } else {
+            self->learning.store(false);
         }
-        adgMod::db->ReturnCurrentVersion(current);
+        adgMod::db->ReturnCurrentVersion(c);
         delete mas;
 
         instance->PauseTimer(8, true);
     }
 
-    bool LearnedIndexData::Learned(Version* version, int level) {
+    bool LearnedIndexData::Learned(Version* version, int v_count, int level) {
         if (learned_not_atomic) return true;
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
         } else {
-            if (!learning_not_atomic && !learning.load()) {
-                learning_not_atomic = true;
-                env->Schedule(&LearnedIndexData::Learn, new VersionAndSelf{version, this, level});
+            if (++current_seek >= allowed_seek && !learning.exchange(true)) {
+                env->ScheduleLearning(&LearnedIndexData::Learn, new VersionAndSelf{version, v_count, this, level}, 0);
             }
             return false;
         }
     }
 
-    bool LearnedIndexData::Learned(FileMetaData *meta) {
+    bool LearnedIndexData::Learned(Version* version, int v_count, FileMetaData *meta) {
         if (learned_not_atomic) return true;
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
         } else {
-            if (!learning_not_atomic && !learning.load()) {
-                learning_not_atomic = true;
-                env->Schedule(&LearnedIndexData::FileLearn, new MetaAndSelf{meta, this});
+            if (++current_seek >= allowed_seek && !learning.exchange(true)) {
+                env->ScheduleLearning(&LearnedIndexData::FileLearn, new MetaAndSelf{version, v_count, meta, this}, 0);
             }
             return false;
         }
@@ -155,7 +163,7 @@ namespace adgMod {
     bool LearnedIndexData::FillData(Version *version, FileMetaData *meta) {
         if (filled) return true;
 
-        if (version->FillData(*adgMod::read_options, meta, this)) {
+        if (version->FillData(adgMod::read_options, meta, this)) {
             filled = true;
             return true;
         }
@@ -175,7 +183,7 @@ namespace adgMod {
             if (file_learned_index_data.size() <= meta->number)
                 file_learned_index_data.resize(meta->number + 1, nullptr);
             if (file_learned_index_data[meta->number] == nullptr)
-                file_learned_index_data[meta->number] = new LearnedIndexData();
+                file_learned_index_data[meta->number] = new LearnedIndexData(file_allowed_seek);
         }
         return file_learned_index_data[meta->number]->FillData(version ,meta);
     }
@@ -189,8 +197,8 @@ namespace adgMod {
         if (file_learned_index_data.size() <= meta->number)
             file_learned_index_data.resize(meta->number + 1, nullptr);
         if (file_learned_index_data[meta->number] == nullptr)
-            file_learned_index_data[meta->number] = new LearnedIndexData();
-        return file_learned_index_data[meta->number]->Learned(meta);
+            file_learned_index_data[meta->number] = new LearnedIndexData(file_allowed_seek);
+        return file_learned_index_data[meta->number]->Learned(version, db->version_count, meta);
     }
 
     AccumulatedNumEntriesArray* FileLearnedIndexData::GetAccumulatedArray(int file_num) {
@@ -199,6 +207,12 @@ namespace adgMod {
 
     std::pair<uint64_t, uint64_t> FileLearnedIndexData::GetPosition(const Slice &key, int file_num) {
         return file_learned_index_data[file_num]->GetPosition(key);
+    }
+
+    FileLearnedIndexData::~FileLearnedIndexData() {
+        for (auto pointer: file_learned_index_data) {
+            delete pointer;
+        }
     }
 
 

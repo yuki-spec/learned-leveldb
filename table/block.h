@@ -94,6 +94,8 @@ private:
     Slice value_;
     Status status_;
 
+    Slice value2_;
+
     inline int Compare(const Slice &a, const Slice &b) const {
         return comparator_->Compare(a, b);
     }
@@ -180,49 +182,26 @@ public:
 #ifdef INTERNAL_TIMER
         instance->StartTimer(2);
 #endif
-
-        if (adgMod::MOD == 4 && right > 3) {
-            uint32_t s1, s2, ns1, ns2, vl;
-            const char *key_start_ptr = DecodeEntry(data_ + GetRestartPoint(0), data_ + restarts_, &s1, &ns1, &vl);
-            const char *key_end_ptr = DecodeEntry(data_ + GetRestartPoint(num_restarts_ - 1), data_ + restarts_,
-                                                  &s2, &ns2, &vl);
-
-            uint64_t start_key_num = adgMod::ExtractInteger(key_start_ptr, ns1);
-            uint64_t end_key_num = adgMod::ExtractInteger(key_end_ptr, ns2);
-            uint64_t target_key_num = adgMod::ExtractInteger(target.data(), target.size());
-            uint64_t first_segment = (int64_t) target_key_num - (int64_t) start_key_num > 0 ? target_key_num - start_key_num : 0;
-            uint64_t whole_segment = (uint64_t) (end_key_num - start_key_num);
-
-            uint64_t target_pos = 0;
-            if (whole_segment != 0) {
-                target_pos = first_segment * (num_restarts_ - 1) / whole_segment;
-                left = (uint32_t) target_pos;
-                //right = target_pos < num_restarts_ - 1 ? target_pos + 1 : num_restarts_ - 1;
+        while (left < right) {
+            uint32_t mid = (left + right + 1) / 2;
+            uint32_t region_offset = GetRestartPoint(mid);
+            uint32_t shared, non_shared, value_length;
+            const char *key_ptr =
+                    DecodeEntry(data_ + region_offset, data_ + restarts_, &shared,
+                                &non_shared, &value_length);
+            if (key_ptr == nullptr || (shared != 0)) {
+                CorruptionError();
+                return;
             }
-
-            //printf("num_restart: %d left: %d\n", num_restarts_, left);
-        } else {
-            while (left < right) {
-                uint32_t mid = (left + right + 1) / 2;
-                uint32_t region_offset = GetRestartPoint(mid);
-                uint32_t shared, non_shared, value_length;
-                const char *key_ptr =
-                        DecodeEntry(data_ + region_offset, data_ + restarts_, &shared,
-                                    &non_shared, &value_length);
-                if (key_ptr == nullptr || (shared != 0)) {
-                    CorruptionError();
-                    return;
-                }
-                Slice mid_key(key_ptr, non_shared);
-                if (Compare(mid_key, target) < 0) {
-                    // Key at "mid" is smaller than "target".  Therefore all
-                    // blocks before "mid" are uninteresting.
-                    left = mid;
-                } else {
-                    // Key at "mid" is >= "target".  Therefore all blocks at or
-                    // after "mid" are uninteresting.
-                    right = mid - 1;
-                }
+            Slice mid_key(key_ptr, non_shared);
+            if (Compare(mid_key, target) < 0) {
+                // Key at "mid" is smaller than "target".  Therefore all
+                // blocks before "mid" are uninteresting.
+                left = mid;
+            } else {
+                // Key at "mid" is >= "target".  Therefore all blocks at or
+                // after "mid" are uninteresting.
+                right = mid - 1;
             }
         }
 #ifdef INTERNAL_TIMER

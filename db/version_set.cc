@@ -83,6 +83,7 @@ Version::~Version() {
       f->refs--;
       if (f->refs <= 0) {
         delete f;
+        f = nullptr;
       }
     }
   }
@@ -381,7 +382,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
     } else {
         if (adgMod::MOD == 5) {
             adgMod::LearnedIndexData* learned_this_level = learned_index_data_[level].get();
-            if (learned_this_level->Learned(this, level)) {
+            if (learned_this_level->Learned(this, adgMod::db->version_count, level)) {
                 //std::cout << "using model" << std::endl;
                 learned = true;
                 std::pair<uint64_t, uint64_t> bounds = learned_this_level->GetPosition(user_key);
@@ -393,12 +394,35 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
                     assert(learned_this_level->num_entries_accumulated.Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper));
 
                     //printf("%lu %lu %lu\n", index, position_lower, position_upper);
+                    FileMetaData* file = files_[level][index];
+                    if (ucmp->Compare(file->smallest.user_key(), user_key) <= 0) {
+                        files = &files_[level][index];
+                        num_files = 1;
+                    } else {
+                        files = nullptr;
+                        num_files = 0;
+                    }
 
-                    files = &files_[level][index];
-                    num_files = 1;
                 } else {
                     files = nullptr;
                     num_files = 0;
+                }
+            } else {
+                // Binary search to find earliest index whose largest key >= ikey.
+                uint32_t index = FindFile(vset_->icmp_, files_[level], ikey);
+                if (index >= num_files) {
+                    files = nullptr;
+                    num_files = 0;
+                } else {
+                    tmp2 = files[index];
+                    if (ucmp->Compare(user_key, tmp2->smallest.user_key()) < 0) {
+                        // All of "tmp2" is past any data for user_key
+                        files = nullptr;
+                        num_files = 0;
+                    } else {
+                        files = &tmp2;
+                        num_files = 1;
+                    }
                 }
             }
         } else {
@@ -445,10 +469,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
                                       &saver, SaveValue);
       } else if (adgMod::MOD == 5) {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                     &saver, SaveValue, f, position_lower, position_upper, learned);
-      } else {
-        s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                     &saver, SaveValue, f, position_lower, position_upper);
+                                     &saver, SaveValue, f, position_lower, position_upper, learned, this);
       }
 
       if (!s.ok()) {
@@ -456,6 +477,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       }
       switch (saver.state) {
         case kNotFound:
+          instance->IncrementCounter(4);
           break;  // Keep searching in other files
         case kFound:
 #ifdef RECORD_LEVEL_INFO
@@ -831,7 +853,7 @@ VersionSet::VersionSet(const std::string& dbname, const Options* options,
 
 VersionSet::~VersionSet() {
   current_->Unref();
-  assert(dummy_versions_.next_ == &dummy_versions_);  // List must be empty
+  //assert(dummy_versions_.next_ == &dummy_versions_);  // List must be empty
   delete descriptor_log_;
   delete descriptor_file_;
 }
@@ -854,13 +876,35 @@ void VersionSet::AppendVersion(Version* v) {
 }
 
 void VersionSet::ApplyToModel(VersionEdit* edit, Version* previous, Version* current) {
-    std::set<int> changed_level;
-    for (auto& item: edit->new_files_) changed_level.insert(item.first);
-    for (auto& item: edit->deleted_files_) changed_level.insert(item.first);
+    std::set<int> changed_level, deleted_files;
+    for (auto& item: edit->deleted_files_) {
+        changed_level.insert(item.first);
+        deleted_files.insert(item.second);
+    }
+    for (auto& item: edit->new_files_) {
+        changed_level.insert(item.first);
+        deleted_files.erase(item.second.number);
+    }
+
 
     for (int i = 1; i < config::kNumLevels; ++i) {
-        if (changed_level.count(i) == 0) current->learned_index_data_[i] = previous->learned_index_data_[i];
+        if (changed_level.count(i) == 0) {
+            current->learned_index_data_[i] = previous->learned_index_data_[i];
+        }
     }
+    for (auto& item: previous->file_learned_index_data_) {
+        if (!item.second->aborted.load() && deleted_files.find(item.first) == deleted_files.end()) {
+            current->file_learned_index_data_.emplace(item.first, item.second);
+            if (item.second->aborted.exchange(false)) {
+                item.second->learned.store(false);
+            }
+        }
+    }
+
+    string changed_level_string;
+    for (auto item: changed_level) changed_level_string += to_string(item);
+    adgMod::Stats* instance = adgMod::Stats::GetInstance();
+    if (!changed_level_string.empty()) instance->ReportEventWithTime("C " + changed_level_string);
 }
 
 Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
@@ -885,7 +929,8 @@ Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
     builder.SaveTo(v);
   }
   Finalize(v);
-  ApplyToModel(edit, current_, v);
+  //ApplyToModel(edit, current_, v);
+  //adgMod::env->ClearPendingLearning();
 
   // Initialize new descriptor log file if necessary by creating
   // a temporary file that contains a snapshot of the current version.
@@ -932,7 +977,9 @@ Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
 
   // Install the new version
   if (s.ok()) {
+    ApplyToModel(edit, current_, v);
     AppendVersion(v);
+    adgMod::db->version_count += 1;
     log_number_ = edit->log_number_;
     prev_log_number_ = edit->prev_log_number_;
   } else {
@@ -1672,17 +1719,19 @@ bool Version::FillData(const ReadOptions &options, FileMetaData *meta, adgMod::L
 
 void Version::FillLevel(const ReadOptions &options, int level) {
     adgMod::LearnedIndexData* data = learned_index_data_[level].get();
+    assert(!files_[level].empty());
     for (int j = 0; j < files_[level].size(); ++j) {
         FileMetaData* file = files_[level][j];
         adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[level].size();
-        assert(adgMod::file_data.FillData(this, file));
-        vector<string>& file_data = adgMod::file_data.GetData(file);
+        assert(adgMod::file_data->FillData(this, file));
+        vector<string>& file_data = adgMod::file_data->GetData(file);
         data->string_keys.insert(data->string_keys.end(), file_data.begin(), file_data.end());
 
         uint64_t current_total = data->num_entries_accumulated.NumEntries();
         const Slice& largest_key = file->largest.user_key();
-        data->num_entries_accumulated.Add(current_total + adgMod::file_data.GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
+        data->num_entries_accumulated.Add(current_total + adgMod::file_data->GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
     }
+    uint64_t size = data->string_keys.size();
 }
 
 

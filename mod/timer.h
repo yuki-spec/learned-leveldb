@@ -14,8 +14,7 @@
 namespace adgMod {
 
     class Timer {
-        struct timespec time_initial;
-        struct timespec time_started;
+        uint64_t time_started;
         uint64_t timestamp_accumulated;
         bool started;
         std::vector<std::pair<uint64_t, uint64_t>> time_series;

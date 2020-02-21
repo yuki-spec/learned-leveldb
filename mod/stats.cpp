@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include "plr.h"
+#include "util.h"
 
 using std::stoull;
 
@@ -14,7 +15,7 @@ namespace adgMod {
 
     Stats* Stats::singleton = nullptr;
 
-    Stats::Stats() : timers(11, Timer{}), level_stats(9, 0) {}
+    Stats::Stats() : timers(12, Timer{}), level_stats(9, 0), counters(5), initial_time(__rdtsc()) {}
 
     Stats* Stats::GetInstance() {
         if (!singleton) singleton = new Stats();
@@ -50,7 +51,7 @@ namespace adgMod {
     }
 
     void Stats::ReportTimeSeries(uint32_t id) {
-        printf("Timer %u: ", id);
+        printf("TimeSeries %u: ", id);
         timers[id].ReportTimeSeries();
         printf("\n");
     }
@@ -67,9 +68,32 @@ namespace adgMod {
         }
     }
 
+
+    void Stats::IncrementCounter(int id) {
+        counters[id].Increment();
+    }
+
+    int Stats::ReportCounter(int id) {
+        return counters[id].Report();
+    }
+
+    void Stats::ResetCounter(int id) {
+        counters[id].Reset();
+    }
+
+    void Stats::ReportEventWithTime(const string &event) {
+        uint64_t time_absolute = __rdtsc() - initial_time;
+        printf("%s %lu\n", event.c_str(), (uint64_t) (time_absolute / reference_frequency));
+    }
+
+
+
+
     void Stats::ResetAll(bool record) {
         for (Timer& t: timers) t.Reset(record);
         for (uint32_t& num: level_stats) num = 0;
+        for (Counter& c: counters) c.Reset();
+        initial_time = __rdtsc();
     }
 
     Stats::~Stats() {

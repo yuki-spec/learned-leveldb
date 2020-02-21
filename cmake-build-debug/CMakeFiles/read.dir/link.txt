@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\read.dir/objects.a
-C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\read.dir/objects.a @CMakeFiles\read.dir\objects1.rsp
-C:\TDM-GCC-64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\read.dir/objects.a -Wl,--no-whole-archive  -o read.exe -Wl,--out-implib,libread.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\read.dir\linklibs.rsp
+/usr/bin/c++  -g   CMakeFiles/read.dir/util/testharness.cc.o CMakeFiles/read.dir/util/testutil.cc.o CMakeFiles/read.dir/mod/read.cc.o  -o read libleveldb.a -ltcmalloc -lpthread 

@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/hash_test.dir/util/hash_test.cc.obj"
-  "CMakeFiles/hash_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/hash_test.dir/util/testutil.cc.obj"
-  "hash_test.exe"
-  "hash_test.exe.manifest"
+  "CMakeFiles/hash_test.dir/util/hash_test.cc.o"
+  "CMakeFiles/hash_test.dir/util/testharness.cc.o"
+  "CMakeFiles/hash_test.dir/util/testutil.cc.o"
+  "hash_test"
   "hash_test.pdb"
-  "libhash_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

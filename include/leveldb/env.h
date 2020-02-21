@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <atomic>
 
 #include "leveldb/export.h"
 #include "leveldb/status.h"
@@ -187,6 +188,10 @@ class LEVELDB_EXPORT Env {
 
   // Sleep/delay the thread for the prescribed number of micro-seconds.
   virtual void SleepForMicroseconds(int micros) = 0;
+
+  virtual void ClearPendingLearning() {};
+  virtual void ScheduleLearning(void (*background_work_function)(void*), void* background_work_arg, int priority) {};
+  std::atomic<int> compaction_awaiting;
 };
 
 // A file abstraction for reading sequentially through a file

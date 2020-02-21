@@ -11,6 +11,7 @@
 #include <vector>
 #include <cstring>
 #include "timer.h"
+#include "Counter.h"
 
 using std::string;
 using std::to_string;
@@ -26,7 +27,10 @@ namespace adgMod {
 
         std::vector<Timer> timers;
         std::vector<uint32_t> level_stats;
+        std::vector<Counter> counters;
     public:
+        uint64_t initial_time;
+
         static Stats* GetInstance();
         void StartTimer(uint32_t id);
         void PauseTimer(uint32_t id, bool record = false);
@@ -37,6 +41,12 @@ namespace adgMod {
 
         void RecordLevel(int level);
         void ReportLevelStats();
+
+        void ResetCounter(int id);
+        void IncrementCounter(int id);
+        int ReportCounter(int id);
+
+        void ReportEventWithTime(const string& event);
 
         void ResetAll(bool record = false);
         ~Stats();

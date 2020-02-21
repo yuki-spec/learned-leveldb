@@ -1,10 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/table_test.dir/table/table_test.cc.obj"
-  "CMakeFiles/table_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/table_test.dir/util/testutil.cc.obj"
-  "libtable_test.dll.a"
-  "table_test.exe"
-  "table_test.exe.manifest"
+  "CMakeFiles/table_test.dir/table/table_test.cc.o"
+  "CMakeFiles/table_test.dir/util/testharness.cc.o"
+  "CMakeFiles/table_test.dir/util/testutil.cc.o"
+  "table_test"
   "table_test.pdb"
 )
 

@@ -39,6 +39,8 @@ string
 -
 vector
 -
+atomic
+-
 leveldb/export.h
 ../include/leveldb/leveldb/export.h
 leveldb/status.h
@@ -100,6 +102,8 @@ leveldb/export.h
 leveldb/status.h
 ../include/leveldb/leveldb/status.h
 
+../mod/Counter.h
+
 ../mod/stats.h
 cstdint
 -
@@ -111,6 +115,8 @@ cstring
 -
 timer.h
 ../mod/timer.h
+Counter.h
+../mod/Counter.h
 
 ../mod/timer.h
 cstdint

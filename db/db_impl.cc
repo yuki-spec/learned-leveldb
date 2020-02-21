@@ -150,9 +150,11 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       background_compaction_scheduled_(false),
       manual_compaction_(nullptr),
       versions_(new VersionSet(dbname_, &options_, table_cache_,
-                               &internal_comparator_)) {
+                               &internal_comparator_)),
+      version_count(0) {
         adgMod::env = raw_options.env;
         adgMod::db = this;
+        adgMod::file_data = new adgMod::FileLearnedIndexData();
       }
 
 DBImpl::~DBImpl() {
@@ -182,6 +184,8 @@ DBImpl::~DBImpl() {
   if (owns_cache_) {
     delete options_.block_cache;
   }
+
+  delete adgMod::file_data;
 }
 
 Status DBImpl::NewDB() {
@@ -663,6 +667,9 @@ void DBImpl::MaybeScheduleCompaction() {
     // No work to be done
   } else {
     background_compaction_scheduled_ = true;
+    adgMod::Stats* instance = adgMod::Stats::GetInstance();
+    //instance->ReportEventWithTime("CS x");
+    env_->compaction_awaiting += 1;
     env_->Schedule(&DBImpl::BGWork, this);
   }
 }
@@ -688,6 +695,7 @@ void DBImpl::BackgroundCall() {
   // so reschedule another compaction if needed.
   MaybeScheduleCompaction();
   background_work_finished_signal_.SignalAll();
+  env_->compaction_awaiting -= 1;
 }
 
 void DBImpl::BackgroundCompaction() {
@@ -1137,12 +1145,13 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
     // First look in the memtable, then in the immutable memtable (if any).
     LookupKey lkey(key, snapshot);
     if (mem->Get(lkey, value, &s)) {
-
+      instance->IncrementCounter(3);
 #ifdef RECORD_LEVEL_INFO
       instance->RecordLevel(8);
 #endif
       // Done
     } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
+      instance->IncrementCounter(3);
 #ifdef RECORD_LEVEL_INFO
       instance->RecordLevel(8);
 #endif

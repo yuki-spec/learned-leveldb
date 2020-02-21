@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\fault_injection_test.dir/objects.a
-C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\fault_injection_test.dir/objects.a @CMakeFiles\fault_injection_test.dir\objects1.rsp
-C:\TDM-GCC-64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\fault_injection_test.dir/objects.a -Wl,--no-whole-archive  -o fault_injection_test.exe -Wl,--out-implib,libfault_injection_test.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\fault_injection_test.dir\linklibs.rsp
+/usr/bin/c++  -g   CMakeFiles/fault_injection_test.dir/util/testharness.cc.o CMakeFiles/fault_injection_test.dir/util/testutil.cc.o CMakeFiles/fault_injection_test.dir/db/fault_injection_test.cc.o  -o fault_injection_test libleveldb.a -ltcmalloc -lpthread 

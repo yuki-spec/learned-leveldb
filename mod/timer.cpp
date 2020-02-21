@@ -9,24 +9,26 @@
 
 namespace adgMod {
 
-    Timer::Timer() : timestamp_accumulated(0), started(false) {
-        clock_gettime(CLOCK_MONOTONIC, &time_initial);
-    }
+    Timer::Timer() : timestamp_accumulated(0), started(false) {}
 
     void Timer::Start() {
         assert(!started);
-        clock_gettime(CLOCK_MONOTONIC, &time_started);
+        time_started = __rdtsc();
         started = true;
     }
 
     void Timer::Pause(bool record) {
         assert(started);
-        struct timespec time_ended;
-        clock_gettime(CLOCK_MONOTONIC, &time_ended);
-        uint64_t time_elapse = get_time_difference(time_started, time_ended);
-        timestamp_accumulated += time_elapse;
-        if (record)
-            time_series.push_back(std::make_pair(get_time_difference(time_initial, time_started), get_time_difference(time_initial, time_ended)));
+        uint64_t time_elapse = __rdtsc() - time_started;
+        timestamp_accumulated += time_elapse / reference_frequency;
+
+        if (record) {
+            Stats* instance = Stats::GetInstance();
+            uint64_t start_absolute = time_started - instance->initial_time;
+            uint64_t end_absolute = start_absolute + time_elapse;
+            time_series.emplace_back(start_absolute / reference_frequency, end_absolute / reference_frequency);
+        }
+
         started = false;
     }
 
@@ -34,13 +36,12 @@ namespace adgMod {
         timestamp_accumulated = 0;
         started = false;
         if (record) {
-            clock_gettime(CLOCK_MONOTONIC, &time_initial);
             time_series.clear();
         }
     }
 
     uint64_t Timer::Time() {
-        assert(!started);
+        //assert(!started);
         return timestamp_accumulated;
     }
 

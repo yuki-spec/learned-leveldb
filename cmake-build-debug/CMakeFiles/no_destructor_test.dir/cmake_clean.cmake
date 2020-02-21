@@ -1,10 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/no_destructor_test.dir/util/no_destructor_test.cc.obj"
-  "CMakeFiles/no_destructor_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/no_destructor_test.dir/util/testutil.cc.obj"
-  "libno_destructor_test.dll.a"
-  "no_destructor_test.exe"
-  "no_destructor_test.exe.manifest"
+  "CMakeFiles/no_destructor_test.dir/util/no_destructor_test.cc.o"
+  "CMakeFiles/no_destructor_test.dir/util/testharness.cc.o"
+  "CMakeFiles/no_destructor_test.dir/util/testutil.cc.o"
+  "no_destructor_test"
   "no_destructor_test.pdb"
 )
 

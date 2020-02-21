@@ -109,7 +109,7 @@ if(BUILD_SHARED_LIBS)
   add_compile_options(-fvisibility=hidden)
 endif(BUILD_SHARED_LIBS)
 
-add_library(leveldb "" mod/stats.h mod/stats.cpp mod/timer.cpp mod/timer.h mod/learned_index.cpp mod/learned_index.h mod/util.cpp mod/util.h)
+add_library(leveldb "" mod/stats.h mod/stats.cpp mod/timer.cpp mod/timer.h mod/learned_index.cpp mod/learned_index.h mod/util.cpp mod/util.h mod/Counter.cpp mod/Counter.h)
 target_sources(leveldb
   PRIVATE
     "${PROJECT_BINARY_DIR}/${LEVELDB_PORT_CONFIG_DIR}/port_config.h"

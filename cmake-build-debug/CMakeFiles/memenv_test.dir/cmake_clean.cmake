@@ -1,10 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/memenv_test.dir/helpers/memenv/memenv_test.cc.obj"
-  "CMakeFiles/memenv_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/memenv_test.dir/util/testutil.cc.obj"
-  "libmemenv_test.dll.a"
-  "memenv_test.exe"
-  "memenv_test.exe.manifest"
+  "CMakeFiles/memenv_test.dir/helpers/memenv/memenv_test.cc.o"
+  "CMakeFiles/memenv_test.dir/util/testharness.cc.o"
+  "CMakeFiles/memenv_test.dir/util/testutil.cc.o"
+  "memenv_test"
   "memenv_test.pdb"
 )
 

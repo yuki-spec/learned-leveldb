@@ -26,6 +26,7 @@
 #include <thread>
 #include <type_traits>
 #include <utility>
+#include <db/db_impl.h>
 
 #include "leveldb/env.h"
 #include "leveldb/slice.h"
@@ -34,6 +35,7 @@
 #include "port/thread_annotations.h"
 #include "util/env_posix_test_helper.h"
 #include "util/posix_logger.h"
+#include "mutexlock.h"
 
 namespace leveldb {
 
@@ -693,6 +695,55 @@ class PosixEnv : public Env {
 
   void SleepForMicroseconds(int micros) override { ::usleep(micros); }
 
+
+
+  void ClearPendingLearning() override {
+    MutexLock l(&background_learn_mutex_);
+    std::priority_queue<BackgroundWorkItem> empty;
+    std::swap(background_learn_queue_, empty);
+  }
+
+
+  void BackgroundLearningThreadMain() {
+    while (true) {
+      background_learn_mutex_.Lock();
+
+      // Wait until there is work to be done.
+      while (background_learn_queue_.empty()) {
+          background_learn_cv_.Wait();
+      }
+
+      assert(!background_learn_queue_.empty());
+      auto background_work_function = background_learn_queue_.top().function;
+      void* background_work_arg = background_learn_queue_.top().arg;
+      background_learn_queue_.pop();
+
+      background_learn_mutex_.Unlock();
+      background_work_function(background_work_arg);
+    }
+  }
+
+  static void BackgroundLearningEntryPoint(PosixEnv* env) {
+    env->BackgroundLearningThreadMain();
+  }
+
+  void ScheduleLearning(void (*background_work_function)(void*), void* background_work_arg, int priority) override {
+    MutexLock l(&background_learn_mutex_);
+
+    if (!started_learn_thread_) {
+        started_learn_thread_ = true;
+        std::thread learning_thread(PosixEnv::BackgroundLearningEntryPoint, this);
+        learning_thread.detach();
+    }
+
+
+    if (background_learn_queue_.empty()) background_learn_cv_.Signal();
+    background_learn_queue_.emplace(background_work_function, background_work_arg, priority);
+  }
+
+
+
+
  private:
   void BackgroundThreadMain();
 
@@ -707,19 +758,32 @@ class PosixEnv : public Env {
   //
   // This structure is thread-safe beacuse it is immutable.
   struct BackgroundWorkItem {
-    explicit BackgroundWorkItem(void (*function)(void* arg), void* arg)
-        : function(function), arg(arg) {}
+    explicit BackgroundWorkItem(void (*function)(void*), void* arg, int priority = 2)
+        : function(function), arg(arg), priority(priority) {}
 
-    void (*const function)(void*);
-    void* const arg;
+    BackgroundWorkItem& operator=(const BackgroundWorkItem& other) = default;
+
+    void (* function)(void*);
+    void* arg;
+    int priority;
+
+    bool operator<(const BackgroundWorkItem& other) const {
+        return priority < other.priority;
+    }
   };
 
   port::Mutex background_work_mutex_;
   port::CondVar background_work_cv_ GUARDED_BY(background_work_mutex_);
   bool started_background_thread_ GUARDED_BY(background_work_mutex_);
-
   std::queue<BackgroundWorkItem> background_work_queue_
       GUARDED_BY(background_work_mutex_);
+
+  port::Mutex background_learn_mutex_;
+  port::CondVar background_learn_cv_ GUARDED_BY(background_learn_mutex_);
+  bool started_learn_thread_ GUARDED_BY(background_learn_mutex_);
+  std::priority_queue<BackgroundWorkItem> background_learn_queue_ GUARDED_BY(background_learn_mutex_);
+
+
 
   PosixLockTable locks_;  // Thread-safe.
   Limiter mmap_limiter_;  // Thread-safe.
@@ -752,12 +816,17 @@ int MaxOpenFiles() {
 PosixEnv::PosixEnv()
     : background_work_cv_(&background_work_mutex_),
       started_background_thread_(false),
+      background_learn_cv_(&background_learn_mutex_),
+      started_learn_thread_(false),
       mmap_limiter_(MaxMmaps()),
-      fd_limiter_(MaxOpenFiles()) {}
+      fd_limiter_(MaxOpenFiles()) {
+        compaction_awaiting.store(0);
+      }
 
 void PosixEnv::Schedule(
     void (*background_work_function)(void* background_work_arg),
     void* background_work_arg) {
+  //ClearPendingLearning();
   background_work_mutex_.Lock();
 
   // Start the background thread, if we haven't done so already.

@@ -1,9 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/leveldbutil.dir/db/leveldbutil.cc.obj"
-  "leveldbutil.exe"
-  "leveldbutil.exe.manifest"
+  "CMakeFiles/leveldbutil.dir/db/leveldbutil.cc.o"
+  "leveldbutil"
   "leveldbutil.pdb"
-  "libleveldbutil.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

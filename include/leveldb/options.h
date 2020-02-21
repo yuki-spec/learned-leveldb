@@ -9,6 +9,7 @@
 #include "mod/stats.h"
 
 #include "leveldb/export.h"
+#include "filter_policy.h"
 
 namespace leveldb {
 
@@ -140,7 +141,7 @@ struct LEVELDB_EXPORT Options {
   // If non-null, use the specified filter policy to reduce disk reads.
   // Many applications will benefit from passing the result of
   // NewBloomFilterPolicy() here.
-  const FilterPolicy* filter_policy = nullptr;
+  const FilterPolicy* filter_policy = NewBloomFilterPolicy(10);
 };
 
 // Options that control read operations

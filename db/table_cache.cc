@@ -100,8 +100,8 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
 
 Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
                        uint64_t file_size, const Slice& k, void* arg,
-                       void (*handle_result)(void*, const Slice&,
-                                             const Slice&), FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned) {
+                       void (*handle_result)(void*, const Slice&, const Slice&),
+                       FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version) {
   Cache::Handle* handle = nullptr;
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
 #ifdef INTERNAL_TIMER
@@ -113,7 +113,7 @@ Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
 #endif
   if (s.ok()) {
     Table* t = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-    s = t->InternalGet(options, k, arg, handle_result, meta, lower, upper, learned);
+    s = t->InternalGet(options, k, arg, handle_result, meta, lower, upper, learned, version);
     cache_->Release(handle);
   }
   return s;

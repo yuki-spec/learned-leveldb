@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\corruption_test.dir/objects.a
-C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\corruption_test.dir/objects.a @CMakeFiles\corruption_test.dir\objects1.rsp
-C:\TDM-GCC-64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\corruption_test.dir/objects.a -Wl,--no-whole-archive  -o corruption_test.exe -Wl,--out-implib,libcorruption_test.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\corruption_test.dir\linklibs.rsp
+/usr/bin/c++  -g   CMakeFiles/corruption_test.dir/util/testharness.cc.o CMakeFiles/corruption_test.dir/util/testutil.cc.o CMakeFiles/corruption_test.dir/db/corruption_test.cc.o  -o corruption_test libleveldb.a -ltcmalloc -lpthread 

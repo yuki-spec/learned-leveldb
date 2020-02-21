@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/env_test.dir/util/env_test.cc.obj"
-  "CMakeFiles/env_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/env_test.dir/util/testutil.cc.obj"
-  "env_test.exe"
-  "env_test.exe.manifest"
+  "CMakeFiles/env_test.dir/util/env_test.cc.o"
+  "CMakeFiles/env_test.dir/util/testharness.cc.o"
+  "CMakeFiles/env_test.dir/util/testutil.cc.o"
+  "env_test"
   "env_test.pdb"
-  "libenv_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

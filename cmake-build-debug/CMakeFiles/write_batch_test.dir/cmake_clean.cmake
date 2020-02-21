@@ -1,10 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/write_batch_test.dir/db/write_batch_test.cc.obj"
-  "CMakeFiles/write_batch_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/write_batch_test.dir/util/testutil.cc.obj"
-  "libwrite_batch_test.dll.a"
-  "write_batch_test.exe"
-  "write_batch_test.exe.manifest"
+  "CMakeFiles/write_batch_test.dir/db/write_batch_test.cc.o"
+  "CMakeFiles/write_batch_test.dir/util/testharness.cc.o"
+  "CMakeFiles/write_batch_test.dir/util/testutil.cc.o"
+  "write_batch_test"
   "write_batch_test.pdb"
 )
 

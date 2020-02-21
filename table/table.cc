@@ -217,56 +217,105 @@ Iterator* Table::NewIterator(const ReadOptions& options) const {
 }
 
 Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
-                          void (*handle_result)(void*, const Slice&,
-                                                const Slice&), FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned) {
+                          void (*handle_result)(void*, const Slice&, const Slice&),
+                          FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version) {
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   Status s;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
   ParsedInternalKey parsed_key;
   ParseInternalKey(k, &parsed_key);
 
-  if ((adgMod::MOD == 1 || adgMod::MOD == 4 || (adgMod::MOD == 5 && learned)) && meta != nullptr) {
+  if (adgMod::MOD == 5 && meta != nullptr) {
+    if (learned) {
+        instance->IncrementCounter(0);
 #ifdef INTERNAL_TIMER
-      instance->StartTimer(2);
+        instance->StartTimer(2);
 #endif
-    size_t index, pos_lower, pos_upper;
-    adgMod::file_data.GetAccumulatedArray(meta->number)->Search(parsed_key.user_key, lower, upper, &index, &pos_lower, &pos_upper);
-    Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
-    //printf("%u %lu %lu %lu\n", index_iter->num_restarts_, index, pos_lower, pos_upper);
-    index_iter->SeekToRestartPoint((uint32_t) index);
-    index_iter->ParseNextKey();
+        size_t index, pos_lower, pos_upper;
+        adgMod::file_data->GetAccumulatedArray(meta->number)->Search(parsed_key.user_key, lower, upper, &index, &pos_lower, &pos_upper);
+        Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
+        //printf("%u %lu %lu %lu\n", index_iter->num_restarts_, index, pos_lower, pos_upper);
+        index_iter->SeekToRestartPoint((uint32_t) index);
+        index_iter->ParseNextKey();
 #ifdef INTERNAL_TIMER
-    instance->PauseTimer(2);
+        instance->PauseTimer(2);
     instance->StartTimer(5);
 #endif
-    Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
+        Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
 #ifdef INTERNAL_TIMER
-    instance->PauseTimer(5);
+        instance->PauseTimer(5);
     instance->StartTimer(3);
 #endif
-    //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
-    //fflush(stdout);
-    //printf("%u %u %lu %lu %lu\n", index_iter->num_restarts_, block_iter->num_restarts_, index, pos_lower, pos_upper);
-    block_iter->Seek((uint32_t) pos_lower, (uint32_t) pos_upper, k);
+        //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
+        //fflush(stdout);
+        //printf("%u %u %lu %lu %lu\n", index_iter->num_restarts_, block_iter->num_restarts_, index, pos_lower, pos_upper);
+        block_iter->Seek((uint32_t) pos_lower, (uint32_t) pos_upper, k);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(3);
 #endif
-    if (block_iter->Valid()) {
-      (*handle_result)(arg, block_iter->key(), block_iter->value());
+        if (block_iter->Valid()) {
+            (*handle_result)(arg, block_iter->key(), block_iter->value());
+        }
+        s = block_iter->status();
+        delete block_iter;
+        if (s.ok()) {
+            s = iiter->status();
+        }
+        delete iiter;
+        return s;
+    } else if (adgMod::file_data->Learned(version, meta)) {
+
+#ifdef INTERNAL_TIMER
+        instance->StartTimer(2);
+#endif
+        size_t index = 0, pos_block_lower = 0, pos_block_upper = 0;
+        auto bounds = adgMod::file_data->GetPosition(parsed_key.user_key, meta->number);
+        if (bounds.first != bounds.second) {
+
+            bool result = adgMod::file_data->GetAccumulatedArray(meta->number)->Search(parsed_key.user_key, bounds.first,
+                                                                                       bounds.second, &index, &pos_block_lower, &pos_block_upper);
+            //assert(result);
+            //assert(pos_block_lower <= pos_block_upper);
+            Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
+            index_iter->SeekToRestartPoint((uint32_t) index);
+            index_iter->ParseNextKey();
+#ifdef INTERNAL_TIMER
+            instance->PauseTimer(2);
+    instance->StartTimer(5);
+#endif
+            if (index_iter->Compare(index_iter->key(), k) > 0) {
+                instance->IncrementCounter(1);
+                Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
+#ifdef INTERNAL_TIMER
+                instance->PauseTimer(5);
+    instance->StartTimer(3);
+#endif
+                block_iter->Seek((uint32_t) pos_block_lower, (uint32_t) pos_block_upper, k);
+#ifdef INTERNAL_TIMER
+                instance->PauseTimer(3);
+#endif
+
+                if (block_iter->Valid()) {
+                    (*handle_result)(arg, block_iter->key(), block_iter->value());
+                }
+                s = block_iter->status();
+                delete block_iter;
+                if (s.ok()) {
+                    s = iiter->status();
+                }
+                delete iiter;
+                return s;
+            }
+            else {
+                return Status::OK();
+            }
+        }
+        else {
+            return Status::OK();
+        }
     }
-    s = block_iter->status();
-    delete block_iter;
-    if (s.ok()) {
-      s = iiter->status();
-    }
-    delete iiter;
   }
-
-
-
-
-  else {
-
+    instance->IncrementCounter(2);
     iiter->Seek(k);
     if (iiter->Valid()) {
       Slice handle_value = iiter->value();
@@ -295,9 +344,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
       s = iiter->status();
     }
     delete iiter;
-  }
-
-  return s;
+    return s;
 }
 
 uint64_t Table::ApproximateOffsetOf(const Slice& key) const {

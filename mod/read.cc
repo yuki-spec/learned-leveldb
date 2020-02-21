@@ -5,6 +5,7 @@
 #include "leveldb/comparator.h"
 #include "util.h"
 #include "stats.h"
+#include "learned_index.h"
 #include <cstring>
 #include "cxxopts.hpp"
 #include <gperftools/profiler.h>
@@ -24,6 +25,8 @@ using std::string;
 
 int num_pairs_base = 1024;
 
+
+
 class NumericalComparator : public Comparator {
 public:
     NumericalComparator() = default;
@@ -37,6 +40,35 @@ public:
     }
     virtual void FindShortestSeparator(std::string* start, const Slice& limit) const { return; };
     virtual void FindShortSuccessor(std::string* key) const { return; };
+};
+
+
+void PutAndPrefetch(int lower, int higher, vector<string>& keys) {
+    adgMod::Stats* instance = adgMod::Stats::GetInstance();
+
+    Status status;
+
+    instance->StartTimer(9);
+    for (int i = lower; i < higher; ++i) {
+        string value = generate_value(0);
+        status = db->Put(write_options, keys[i], value);
+        assert(status.ok() && "File Put Error");
+    }
+    instance->PauseTimer(9, true);
+
+    //cout << "Put Complete" << endl;
+
+
+    instance->StartTimer(10);
+    for (int i = lower; i < higher; ++i) {
+        string value;
+        status = db->Get(read_options, keys[i], &value);
+        //cout << "Get " << keys[i] << " Done" << endl;
+        assert(status.ok() && "File Get Error");
+    }
+    instance->PauseTimer(10, true);
+
+    //cout << "Prefetch Complete" << endl;
 };
 
 
@@ -106,8 +138,8 @@ int main(int argc, char *argv[]) {
 
             DB* db;
             Options options;
-            ReadOptions read_options;
-            WriteOptions write_options;
+            ReadOptions& read_options = adgMod::read_options;
+            WriteOptions& write_options = adgMod::write_options;
 
             options.create_if_missing = true;
             //options.comparator = new NumericalComparator;
@@ -115,81 +147,45 @@ int main(int argc, char *argv[]) {
                 adgMod::MOD ? 1 : adgMod::block_restart_interval;
             read_options.fill_cache = false;
             write_options.sync = false;
-            adgMod::read_options = &read_options;
 
             Status status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
 
             instance->ResetAll(true);
-            instance->StartTimer(9);
-            if (input_filename.empty()) {
-                for(uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
-                    //string key = generate_key(i);
-                    //string value = generate_value(i);
-                    status = db->Put(write_options, generate_key(i * adgMod::key_multiple), generate_value(i));
-                    assert(status.ok() && "Put Error");
-                }
-            } else {
-                for (int i = 0; i < keys.size(); ++i) {
-                    string value = generate_value(0);
-                    status = db->Put(write_options, keys[i], value);
-                    assert(status.ok() && "File Put Error");
-                }
-            }
-            instance->PauseTimer(9, true);
 
-            cout << "Put Complete" << endl;
-            //sleep(10);
+
+            int cut_size = 20;
+            for (int cut = cut_size - 1; cut >= 0; --cut) {
+                PutAndPrefetch(keys.size() * cut / cut_size, keys.size() * (cut + 1) / cut_size, keys);
+            }
+
+            for (int i = 0; i < 5; ++i) {
+                printf("Counter %d: %d\n", i, instance->ReportCounter(i));
+                instance->ResetCounter(i);
+            }
+
             if (print_file_info && iteration == 0) db->PrintFileInfo();
-
-            instance->StartTimer(10);
-            if (input_filename.empty()) {
-                for (uint64_t i = 0; i < num_pairs[outer] * num_pairs_base; ++i) {
-                    string value;
-                    status = db->Get(read_options, generate_key(i * adgMod::key_multiple), &value);
-                    //cout << "Get " << i << " Done" << endl;
-                    assert(status.ok() && "Get Error");
-                }
-            } else {
-                for (int i = 0; i < keys.size(); ++i) {
-                    string value;
-                    status = db->Get(read_options, keys[i], &value);
-                    //cout << "Get " << keys[i] << " Done" << endl;
-                    assert(status.ok() && "File Get Error");
-                }
-            }
-            instance->PauseTimer(10, true);
-
 #ifdef PROFILER
             ProfilerStart(profiler_out.c_str());
 #endif
-            for (int s = 7; s <= 9; ++s)
-                time_sums[s] += instance->ReportTime(s);
-            instance->ResetAll();
+            //for (int s = 7; s <= 10; ++s)
+            //    time_sums[s] += instance->ReportTime(s);
+            instance->ResetTimer(4);
+            instance->ResetTimer(6);
+
+            //sleep(10);
+
+
+
+
 
             instance->StartTimer(10);
-            if (input_filename.empty()) {
-                for (uint64_t i = 0; i < num_gets; ++i) {
-                    string value;
-                    string key = generate_key(uniform_dist(e1) * adgMod::key_multiple);
-                    uint64_t start_time = instance->ReportTime(4);
-                    instance->StartTimer(4);
-                    status = db->Get(read_options, key, &value);
-                    instance->PauseTimer(4);
-                    assert(status.ok() && "Get Error");
-                    if (print_single_timing) {
-                        uint64_t time_elapse = instance->ReportTime(4) - start_time;
-                        printf("*** %lu\n", time_elapse);
-                    }
-                }
-            } else {
-                for (int i = 0; i < num_gets; ++i) {
-                    string value;
-                    instance->StartTimer(4);
-                    status = db->Get(read_options, keys[uniform_dist_file(e1)], &value);
-                    instance->PauseTimer(4);
-                    assert(status.ok() && "File Get Error");
-                }
+            for (int i = 0; i < num_gets * 8; ++i) {
+                string value;
+                instance->StartTimer(4);
+                status = db->Get(read_options, keys[uniform_dist_file(e1)], &value);
+                instance->PauseTimer(4);
+                assert(status.ok() && "File Get Error");
             }
             instance->PauseTimer(10, true);
 
@@ -199,11 +195,25 @@ int main(int argc, char *argv[]) {
 
             cout << num_pairs[outer] << " " << instance->ReportTime(4) << " " << iteration << endl;
             instance->ReportTime();
-            instance->ReportLevelStats();
+            //instance->ResetTimer(4);
+            //instance->ResetTimer(6);
+
+
+            for (int i = 0; i < 5; ++i) {
+                printf("Counter %d: %d\n", i, instance->ReportCounter(i));
+                instance->ResetCounter(i);
+            }
+
+
+
+
+
+
 
             for (int s = 0; s < time_sums.size(); ++s) {
                 time_sums[s] += instance->ReportTime(s);
             }
+            sleep(5);
             delete db;
         }
 

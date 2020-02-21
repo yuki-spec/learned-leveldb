@@ -1,4 +1,5 @@
 #include "plr.h"
+#include "util.h"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -67,7 +68,7 @@ GreedyPLR::GreedyPLR(double gamma) {
 int counter = 0;
 
 struct segment
-GreedyPLR::process(struct point pt) {
+GreedyPLR::process(struct point& pt) {
     this->last_pt = pt;
     if (this->state.compare("need2") == 0) {
         this->s0 = pt;
@@ -163,9 +164,10 @@ PLR::PLR(double gamma) {
     this->gamma = gamma;
 }
 
-std::vector <segment>
-PLR::train(std::vector <point> points) {
+std::vector <segment>&
+PLR::train(std::vector <point>& points, bool file) {
     GreedyPLR plr(this->gamma);
+    int count = 0;
     for (struct point &pt : points) {
         struct segment seg = plr.process(pt);
         if (seg.start != 0 ||
@@ -173,6 +175,11 @@ PLR::train(std::vector <point> points) {
             seg.slope != 0 ||
             seg.intercept != 0) {
             this->segments.push_back(seg);
+        }
+
+        if (!file && ++count % 10 == 0 && adgMod::env->compaction_awaiting.load() != 0) {
+            segments.clear();
+            return segments;
         }
     }
 

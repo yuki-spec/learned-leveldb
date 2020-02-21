@@ -9,7 +9,7 @@ using std::to_string;
 
 namespace adgMod {
 
-    int MOD = 0;
+    int MOD = 5;
     bool string_mode = true;
     uint64_t key_multiple = 1;
     uint32_t model_error = 10;
@@ -20,8 +20,13 @@ namespace adgMod {
     int value_size;
     leveldb::Env* env;
     leveldb::DBImpl* db;
-    leveldb::ReadOptions* read_options;
-    FileLearnedIndexData file_data;
+    leveldb::ReadOptions read_options;
+    leveldb::WriteOptions write_options;
+    FileLearnedIndexData* file_data = nullptr;
+
+    int file_allowed_seek = 1;
+    int level_allowed_seek = file_allowed_seek * 1000;
+    float reference_frequency = 2.6;
 
     uint64_t ExtractInteger(const char* pos, size_t size) {
         char* temp = new char[size + 1];
@@ -90,7 +95,7 @@ namespace adgMod {
         return memcmp((void*) slice.data(), string.c_str(), slice.size()) >= 0;
     }
 
-    uint64_t get_time_difference(struct timespec start, struct timespec stop) {
+    uint64_t get_time_difference(timespec start, timespec stop) {
         return (stop.tv_sec - start.tv_sec) * 1000000000 + stop.tv_nsec - start.tv_nsec;
     }
 

@@ -33,8 +33,13 @@ namespace adgMod {
     extern int value_size;
     extern leveldb::Env* env;
     extern leveldb::DBImpl* db;
-    extern leveldb::ReadOptions* read_options;
-    extern FileLearnedIndexData file_data;
+    extern leveldb::ReadOptions read_options;
+    extern leveldb::WriteOptions write_options;
+    extern FileLearnedIndexData* file_data;
+
+    extern int file_allowed_seek;
+    extern int level_allowed_seek;
+    extern float reference_frequency;
 
     uint64_t ExtractInteger(const char* pos, size_t size);
 //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);
@@ -46,7 +51,7 @@ namespace adgMod {
     bool operator>(const Slice& slice, const string& string);
     bool operator<=(const Slice& slice, const string& string);
     bool operator>=(const Slice& slice, const string& string);
-    uint64_t get_time_difference(struct timespec start, struct timespec stop);
+    uint64_t get_time_difference(timespec start, timespec stop);
 }
 
 

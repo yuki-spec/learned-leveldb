@@ -1554,6 +1554,33 @@ issues/issue320_test.cc.s:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/issues/issue320_test.cc.s
 .PHONY : issues/issue320_test.cc.s
 
+mod/Counter.o: mod/Counter.cpp.o
+
+.PHONY : mod/Counter.o
+
+# target to build an object file
+mod/Counter.cpp.o:
+	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Counter.cpp.o
+.PHONY : mod/Counter.cpp.o
+
+mod/Counter.i: mod/Counter.cpp.i
+
+.PHONY : mod/Counter.i
+
+# target to preprocess a source file
+mod/Counter.cpp.i:
+	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Counter.cpp.i
+.PHONY : mod/Counter.cpp.i
+
+mod/Counter.s: mod/Counter.cpp.s
+
+.PHONY : mod/Counter.s
+
+# target to generate assembly for a file
+mod/Counter.cpp.s:
+	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Counter.cpp.s
+.PHONY : mod/Counter.cpp.s
+
 mod/learned_index.o: mod/learned_index.cpp.o
 
 .PHONY : mod/learned_index.o
@@ -3080,6 +3107,9 @@ help:
 	@echo "... issues/issue320_test.o"
 	@echo "... issues/issue320_test.i"
 	@echo "... issues/issue320_test.s"
+	@echo "... mod/Counter.o"
+	@echo "... mod/Counter.i"
+	@echo "... mod/Counter.s"
 	@echo "... mod/learned_index.o"
 	@echo "... mod/learned_index.i"
 	@echo "... mod/learned_index.s"

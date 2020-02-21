@@ -2157,6 +2157,12 @@
 		<Unit filename="/users/yifann/research/leveldb/leveldb/issues/issue320_test.cc">
 			<Option target="issue320_test"/>
 		</Unit>
+		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/Counter.cpp">
+			<Option target="leveldb"/>
+		</Unit>
+		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/Counter.h">
+			<Option target="leveldb"/>
+		</Unit>
 		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/learned_index.cpp">
 			<Option target="leveldb"/>
 		</Unit>

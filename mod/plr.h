@@ -5,6 +5,9 @@
 struct point {
     double x;
     double y;
+
+    point() = default;
+    point(double x, double y) : x(x), y(y) {}
 };
 
 struct line {
@@ -47,7 +50,7 @@ private:
 
 public:
     GreedyPLR(double gamma);
-    struct segment process(struct point pt);
+    struct segment process(struct point& pt);
     struct segment finish();
 };
 
@@ -58,7 +61,7 @@ private:
 
 public:
     PLR(double gamma);
-    std::vector<struct segment> train(std::vector<struct point> points);
+    std::vector<struct segment>& train(std::vector<struct point>& points, bool file);
 //    std::vector<double> predict(std::vector<double> xx);
 //    double mae(std::vector<double> y_true, std::vector<double> y_pred);
 };

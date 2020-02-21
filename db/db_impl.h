@@ -75,7 +75,12 @@ class DBImpl : public DB {
   Version* GetCurrentVersion();
   void ReturnCurrentVersion(Version* version);
 
- private:
+
+  static void BGWork(void* db);
+
+  std::atomic<int> version_count;
+
+private:
   friend class DB;
   struct CompactionState;
   struct Writer;
@@ -142,8 +147,8 @@ class DBImpl : public DB {
   void RecordBackgroundError(const Status& s);
 
   void MaybeScheduleCompaction() EXCLUSIVE_LOCKS_REQUIRED(mutex_);
-  static void BGWork(void* db);
-  void BackgroundCall();
+
+    void BackgroundCall();
   void BackgroundCompaction() EXCLUSIVE_LOCKS_REQUIRED(mutex_);
   void CleanupCompaction(CompactionState* compact)
       EXCLUSIVE_LOCKS_REQUIRED(mutex_);

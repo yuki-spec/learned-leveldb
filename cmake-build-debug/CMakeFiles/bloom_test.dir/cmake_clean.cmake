@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/bloom_test.dir/util/bloom_test.cc.obj"
-  "CMakeFiles/bloom_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/bloom_test.dir/util/testutil.cc.obj"
-  "bloom_test.exe"
-  "bloom_test.exe.manifest"
+  "CMakeFiles/bloom_test.dir/util/bloom_test.cc.o"
+  "CMakeFiles/bloom_test.dir/util/testharness.cc.o"
+  "CMakeFiles/bloom_test.dir/util/testutil.cc.o"
+  "bloom_test"
   "bloom_test.pdb"
-  "libbloom_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

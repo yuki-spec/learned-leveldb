@@ -1,10 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/logging_test.dir/util/logging_test.cc.obj"
-  "CMakeFiles/logging_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/logging_test.dir/util/testutil.cc.obj"
-  "liblogging_test.dll.a"
-  "logging_test.exe"
-  "logging_test.exe.manifest"
+  "CMakeFiles/logging_test.dir/util/logging_test.cc.o"
+  "CMakeFiles/logging_test.dir/util/testharness.cc.o"
+  "CMakeFiles/logging_test.dir/util/testutil.cc.o"
+  "logging_test"
   "logging_test.pdb"
 )
 

@@ -9,8 +9,6 @@
 #include <vector>
 #include <cstring>
 #include "util.h"
-#include "leveldb/slice.h"
-#include "leveldb/db.h"
 #include <atomic>
 
 
@@ -47,14 +45,19 @@ namespace adgMod {
 
 
     class LearnedIndexData {
+        friend class leveldb::Version;
+        friend class leveldb::VersionSet;
     private:
         bool string_mode;
         double error;
         std::atomic<bool> learned;
-        std::atomic<bool> learning;
+        std::atomic<bool> aborted;
         bool learned_not_atomic;
-        bool learning_not_atomic;
+        std::atomic<bool> learning;
+        int allowed_seek;
+        int current_seek;
         bool filled;
+        bool level;
 
         std::vector<Segment> string_segments;
         std::string min_key;
@@ -64,12 +67,15 @@ namespace adgMod {
         class VersionAndSelf {
         public:
             Version* version;
+            int v_count;
             LearnedIndexData* self;
             int level;
         };
 
         class MetaAndSelf {
         public:
+            Version* version;
+            int v_count;
             FileMetaData* meta;
             LearnedIndexData* self;
         };
@@ -78,15 +84,17 @@ namespace adgMod {
         std::vector<std::string> string_keys;
         AccumulatedNumEntriesArray num_entries_accumulated;
 
-        LearnedIndexData() : string_mode(adgMod::string_mode), error(adgMod::model_error), learned(false), learning(false), learned_not_atomic(false), learning_not_atomic(false), filled(false) {};
-        LearnedIndexData(const LearnedIndexData& other) : string_mode(adgMod::string_mode), error(adgMod::model_error), learned(false), learning(false), learned_not_atomic(false), learning_not_atomic(false), filled(false) {};
+        explicit LearnedIndexData(int allowed_seek) :
+            string_mode(adgMod::string_mode), error(adgMod::model_error), learned(false), aborted(false), learning(false),
+            learned_not_atomic(false), allowed_seek(allowed_seek), current_seek(0), filled(false), level(false) {};
+        LearnedIndexData(const LearnedIndexData& other) = delete;
         void AddSegment(string&& x, double k, double b);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
         double GetError() const;
-        void Learn();
-        bool Learned(Version* version, int level);
-        bool Learned(FileMetaData* meta);
+        bool Learn();
+        bool Learned(Version* version, int v_count, int level);
+        bool Learned(Version* version, int v_count, FileMetaData* meta);
         static void Learn(void* arg);
         static void FileLearn(void* arg);
         bool FillData(Version* version, FileMetaData* meta);
@@ -103,6 +111,7 @@ namespace adgMod {
         std::vector<std::string>& GetData(FileMetaData* meta);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key, int file_num);
         AccumulatedNumEntriesArray* GetAccumulatedArray(int file_num);
+        ~FileLearnedIndexData();
     };
 
 }

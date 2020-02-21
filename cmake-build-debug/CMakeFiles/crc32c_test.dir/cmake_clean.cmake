@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/crc32c_test.dir/util/crc32c_test.cc.obj"
-  "CMakeFiles/crc32c_test.dir/util/testharness.cc.obj"
-  "CMakeFiles/crc32c_test.dir/util/testutil.cc.obj"
-  "crc32c_test.exe"
-  "crc32c_test.exe.manifest"
+  "CMakeFiles/crc32c_test.dir/util/crc32c_test.cc.o"
+  "CMakeFiles/crc32c_test.dir/util/testharness.cc.o"
+  "CMakeFiles/crc32c_test.dir/util/testutil.cc.o"
+  "crc32c_test"
   "crc32c_test.pdb"
-  "libcrc32c_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.
