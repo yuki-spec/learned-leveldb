@@ -123,6 +123,8 @@ mod/stats.h
 ../include/leveldb/mod/stats.h
 leveldb/export.h
 ../include/leveldb/leveldb/export.h
+filter_policy.h
+../include/leveldb/filter_policy.h
 
 ../include/leveldb/slice.h
 assert.h

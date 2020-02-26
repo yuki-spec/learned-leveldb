@@ -64,5 +64,7 @@ add_test(logging_test "/users/yifann/research/leveldb/leveldb/cmake-build-debug/
 set_tests_properties(logging_test PROPERTIES  _BACKTRACE_TRIPLES "/users/yifann/research/leveldb/leveldb/CMakeLists.txt;319;add_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;361;leveldb_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;0;")
 add_test(read "/users/yifann/research/leveldb/leveldb/cmake-build-debug/read")
 set_tests_properties(read PROPERTIES  _BACKTRACE_TRIPLES "/users/yifann/research/leveldb/leveldb/CMakeLists.txt;319;add_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;362;leveldb_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;0;")
+add_test(read_cold "/users/yifann/research/leveldb/leveldb/cmake-build-debug/read_cold")
+set_tests_properties(read_cold PROPERTIES  _BACKTRACE_TRIPLES "/users/yifann/research/leveldb/leveldb/CMakeLists.txt;319;add_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;363;leveldb_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;0;")
 add_test(env_posix_test "/users/yifann/research/leveldb/leveldb/cmake-build-debug/env_posix_test")
-set_tests_properties(env_posix_test PROPERTIES  _BACKTRACE_TRIPLES "/users/yifann/research/leveldb/leveldb/CMakeLists.txt;319;add_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;369;leveldb_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;0;")
+set_tests_properties(env_posix_test PROPERTIES  _BACKTRACE_TRIPLES "/users/yifann/research/leveldb/leveldb/CMakeLists.txt;319;add_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;370;leveldb_test;/users/yifann/research/leveldb/leveldb/CMakeLists.txt;0;")

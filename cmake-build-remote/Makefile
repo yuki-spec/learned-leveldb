@@ -389,6 +389,19 @@ autocompact_test/fast:
 .PHONY : autocompact_test/fast
 
 #=============================================================================
+# Target rules for targets named read_cold
+
+# Build rule for target.
+read_cold: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 read_cold
+.PHONY : read_cold
+
+# fast build rule for target.
+read_cold/fast:
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/build
+.PHONY : read_cold/fast
+
+#=============================================================================
 # Target rules for targets named db_test
 
 # Build rule for target.
@@ -1662,6 +1675,33 @@ mod/read.cc.s:
 	$(MAKE) -f CMakeFiles/read.dir/build.make CMakeFiles/read.dir/mod/read.cc.s
 .PHONY : mod/read.cc.s
 
+mod/read_cold.o: mod/read_cold.cc.o
+
+.PHONY : mod/read_cold.o
+
+# target to build an object file
+mod/read_cold.cc.o:
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/mod/read_cold.cc.o
+.PHONY : mod/read_cold.cc.o
+
+mod/read_cold.i: mod/read_cold.cc.i
+
+.PHONY : mod/read_cold.i
+
+# target to preprocess a source file
+mod/read_cold.cc.i:
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/mod/read_cold.cc.i
+.PHONY : mod/read_cold.cc.i
+
+mod/read_cold.s: mod/read_cold.cc.s
+
+.PHONY : mod/read_cold.s
+
+# target to generate assembly for a file
+mod/read_cold.cc.s:
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/mod/read_cold.cc.s
+.PHONY : mod/read_cold.cc.s
+
 mod/stats.o: mod/stats.cpp.o
 
 .PHONY : mod/stats.o
@@ -2737,6 +2777,7 @@ util/testharness.cc.o:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/util/testharness.cc.o
 	$(MAKE) -f CMakeFiles/issue200_test.dir/build.make CMakeFiles/issue200_test.dir/util/testharness.cc.o
 	$(MAKE) -f CMakeFiles/autocompact_test.dir/build.make CMakeFiles/autocompact_test.dir/util/testharness.cc.o
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/util/testharness.cc.o
 	$(MAKE) -f CMakeFiles/db_test.dir/build.make CMakeFiles/db_test.dir/util/testharness.cc.o
 	$(MAKE) -f CMakeFiles/c_test.dir/build.make CMakeFiles/c_test.dir/util/testharness.cc.o
 	$(MAKE) -f CMakeFiles/issue178_test.dir/build.make CMakeFiles/issue178_test.dir/util/testharness.cc.o
@@ -2777,6 +2818,7 @@ util/testharness.cc.i:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/util/testharness.cc.i
 	$(MAKE) -f CMakeFiles/issue200_test.dir/build.make CMakeFiles/issue200_test.dir/util/testharness.cc.i
 	$(MAKE) -f CMakeFiles/autocompact_test.dir/build.make CMakeFiles/autocompact_test.dir/util/testharness.cc.i
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/util/testharness.cc.i
 	$(MAKE) -f CMakeFiles/db_test.dir/build.make CMakeFiles/db_test.dir/util/testharness.cc.i
 	$(MAKE) -f CMakeFiles/c_test.dir/build.make CMakeFiles/c_test.dir/util/testharness.cc.i
 	$(MAKE) -f CMakeFiles/issue178_test.dir/build.make CMakeFiles/issue178_test.dir/util/testharness.cc.i
@@ -2817,6 +2859,7 @@ util/testharness.cc.s:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/util/testharness.cc.s
 	$(MAKE) -f CMakeFiles/issue200_test.dir/build.make CMakeFiles/issue200_test.dir/util/testharness.cc.s
 	$(MAKE) -f CMakeFiles/autocompact_test.dir/build.make CMakeFiles/autocompact_test.dir/util/testharness.cc.s
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/util/testharness.cc.s
 	$(MAKE) -f CMakeFiles/db_test.dir/build.make CMakeFiles/db_test.dir/util/testharness.cc.s
 	$(MAKE) -f CMakeFiles/c_test.dir/build.make CMakeFiles/c_test.dir/util/testharness.cc.s
 	$(MAKE) -f CMakeFiles/issue178_test.dir/build.make CMakeFiles/issue178_test.dir/util/testharness.cc.s
@@ -2857,6 +2900,7 @@ util/testutil.cc.o:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/util/testutil.cc.o
 	$(MAKE) -f CMakeFiles/issue200_test.dir/build.make CMakeFiles/issue200_test.dir/util/testutil.cc.o
 	$(MAKE) -f CMakeFiles/autocompact_test.dir/build.make CMakeFiles/autocompact_test.dir/util/testutil.cc.o
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/util/testutil.cc.o
 	$(MAKE) -f CMakeFiles/db_test.dir/build.make CMakeFiles/db_test.dir/util/testutil.cc.o
 	$(MAKE) -f CMakeFiles/c_test.dir/build.make CMakeFiles/c_test.dir/util/testutil.cc.o
 	$(MAKE) -f CMakeFiles/issue178_test.dir/build.make CMakeFiles/issue178_test.dir/util/testutil.cc.o
@@ -2897,6 +2941,7 @@ util/testutil.cc.i:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/util/testutil.cc.i
 	$(MAKE) -f CMakeFiles/issue200_test.dir/build.make CMakeFiles/issue200_test.dir/util/testutil.cc.i
 	$(MAKE) -f CMakeFiles/autocompact_test.dir/build.make CMakeFiles/autocompact_test.dir/util/testutil.cc.i
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/util/testutil.cc.i
 	$(MAKE) -f CMakeFiles/db_test.dir/build.make CMakeFiles/db_test.dir/util/testutil.cc.i
 	$(MAKE) -f CMakeFiles/c_test.dir/build.make CMakeFiles/c_test.dir/util/testutil.cc.i
 	$(MAKE) -f CMakeFiles/issue178_test.dir/build.make CMakeFiles/issue178_test.dir/util/testutil.cc.i
@@ -2937,6 +2982,7 @@ util/testutil.cc.s:
 	$(MAKE) -f CMakeFiles/issue320_test.dir/build.make CMakeFiles/issue320_test.dir/util/testutil.cc.s
 	$(MAKE) -f CMakeFiles/issue200_test.dir/build.make CMakeFiles/issue200_test.dir/util/testutil.cc.s
 	$(MAKE) -f CMakeFiles/autocompact_test.dir/build.make CMakeFiles/autocompact_test.dir/util/testutil.cc.s
+	$(MAKE) -f CMakeFiles/read_cold.dir/build.make CMakeFiles/read_cold.dir/util/testutil.cc.s
 	$(MAKE) -f CMakeFiles/db_test.dir/build.make CMakeFiles/db_test.dir/util/testutil.cc.s
 	$(MAKE) -f CMakeFiles/c_test.dir/build.make CMakeFiles/c_test.dir/util/testutil.cc.s
 	$(MAKE) -f CMakeFiles/issue178_test.dir/build.make CMakeFiles/issue178_test.dir/util/testutil.cc.s
@@ -2984,6 +3030,7 @@ help:
 	@echo "... list_install_components"
 	@echo "... autocompact_test"
 	@echo "... install/strip"
+	@echo "... read_cold"
 	@echo "... db_test"
 	@echo "... c_test"
 	@echo "... issue178_test"
@@ -3119,6 +3166,9 @@ help:
 	@echo "... mod/read.o"
 	@echo "... mod/read.i"
 	@echo "... mod/read.s"
+	@echo "... mod/read_cold.o"
+	@echo "... mod/read_cold.i"
+	@echo "... mod/read_cold.s"
 	@echo "... mod/stats.o"
 	@echo "... mod/stats.i"
 	@echo "... mod/stats.s"

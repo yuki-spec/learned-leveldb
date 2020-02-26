@@ -367,7 +367,46 @@ CMakeFiles/leveldb.dir/db/version_edit.cc.o: ../util/logging.h
 CMakeFiles/leveldb.dir/db/version_edit.cc.o: ../db/version_edit.cc
 CMakeFiles/leveldb.dir/db/version_edit.cc.o: include/port/port_config.h
 
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/db_impl.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/dbformat.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/filename.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/log_format.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/log_reader.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/log_writer.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/memtable.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/skiplist.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/snapshot.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/table_cache.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/version_edit.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/version_set.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/cache.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/comparator.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/db.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/env.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/export.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/filter_policy.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/iterator.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/options.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/slice.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/status.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/table.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../include/leveldb/table_builder.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../mod/Counter.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../mod/learned_index.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../mod/stats.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../mod/timer.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../mod/util.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../port/port.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../port/port_stdcxx.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../port/thread_annotations.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../table/merger.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../table/two_level_iterator.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../util/arena.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../util/coding.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../util/logging.h
+CMakeFiles/leveldb.dir/db/version_set.cc.o: ../util/random.h
 CMakeFiles/leveldb.dir/db/version_set.cc.o: ../db/version_set.cc
+CMakeFiles/leveldb.dir/db/version_set.cc.o: include/port/port_config.h
 
 CMakeFiles/leveldb.dir/db/write_batch.cc.o: ../db/dbformat.h
 CMakeFiles/leveldb.dir/db/write_batch.cc.o: ../db/memtable.h
@@ -587,6 +626,7 @@ CMakeFiles/leveldb.dir/table/block.cc.o: include/port/port_config.h
 
 CMakeFiles/leveldb.dir/table/block_builder.cc.o: ../include/leveldb/comparator.h
 CMakeFiles/leveldb.dir/table/block_builder.cc.o: ../include/leveldb/export.h
+CMakeFiles/leveldb.dir/table/block_builder.cc.o: ../include/leveldb/filter_policy.h
 CMakeFiles/leveldb.dir/table/block_builder.cc.o: ../include/leveldb/options.h
 CMakeFiles/leveldb.dir/table/block_builder.cc.o: ../include/leveldb/slice.h
 CMakeFiles/leveldb.dir/table/block_builder.cc.o: ../include/leveldb/status.h
@@ -665,7 +705,6 @@ CMakeFiles/leveldb.dir/table/table.cc.o: ../db/log_format.h
 CMakeFiles/leveldb.dir/table/table.cc.o: ../db/log_writer.h
 CMakeFiles/leveldb.dir/table/table.cc.o: ../db/snapshot.h
 CMakeFiles/leveldb.dir/table/table.cc.o: ../db/version_edit.h
-CMakeFiles/leveldb.dir/table/table.cc.o: ../db/version_set.h
 CMakeFiles/leveldb.dir/table/table.cc.o: ../include/leveldb/cache.h
 CMakeFiles/leveldb.dir/table/table.cc.o: ../include/leveldb/comparator.h
 CMakeFiles/leveldb.dir/table/table.cc.o: ../include/leveldb/db.h
@@ -866,6 +905,7 @@ CMakeFiles/leveldb.dir/util/logging.cc.o: include/port/port_config.h
 CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/comparator.h
 CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/env.h
 CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/export.h
+CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/filter_policy.h
 CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/options.h
 CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/slice.h
 CMakeFiles/leveldb.dir/util/options.cc.o: ../include/leveldb/status.h

@@ -21,6 +21,7 @@
 /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/list_install_components.dir
 /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/autocompact_test.dir
 /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/install/strip.dir
+/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/read_cold.dir
 /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/db_test.dir
 /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/c_test.dir
 /users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/issue178_test.dir

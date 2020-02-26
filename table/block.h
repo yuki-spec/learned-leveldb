@@ -235,6 +235,8 @@ public:
 
 private:
     inline void Seek(uint32_t left, uint32_t right, const Slice& target) {
+        if (right > num_restarts_ - 1) right = num_restarts_ - 1;
+
         while (left < right) {
             uint32_t mid = (left + right + 1) / 2;
             uint32_t region_offset = GetRestartPoint(mid);

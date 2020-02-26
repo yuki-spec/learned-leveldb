@@ -15,7 +15,7 @@ namespace adgMod {
 
     Stats* Stats::singleton = nullptr;
 
-    Stats::Stats() : timers(12, Timer{}), level_stats(9, 0), counters(5), initial_time(__rdtsc()) {}
+    Stats::Stats() : timers(12, Timer{}), level_stats(9, 0), counters(10), initial_time(__rdtsc()) {}
 
     Stats* Stats::GetInstance() {
         if (!singleton) singleton = new Stats();

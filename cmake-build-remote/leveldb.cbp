@@ -997,6 +997,60 @@
 					<DistClean command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="read_cold">
+				<Option output="/users/yifann/research/leveldb/leveldb/cmake-build-remote/read_cold" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/users/yifann/research/leveldb/leveldb/cmake-build-remote"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
+					<Add directory="/users/yifann/research/leveldb/leveldb"/>
+					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 read_cold"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="read_cold/fast">
+				<Option output="/users/yifann/research/leveldb/leveldb/cmake-build-remote/read_cold" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/users/yifann/research/leveldb/leveldb/cmake-build-remote"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
+					<Add directory="/users/yifann/research/leveldb/leveldb"/>
+					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 read_cold/fast"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/users/yifann/research/leveldb/leveldb/cmake-build-remote/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="db_test">
 				<Option output="/users/yifann/research/leveldb/leveldb/cmake-build-remote/db_test" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/users/yifann/research/leveldb/leveldb/cmake-build-remote"/>
@@ -1942,6 +1996,7 @@
 			<Option target="leveldb"/>
 			<Option target="issue200_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="read_cold"/>
 			<Option target="db_test"/>
 			<Option target="c_test"/>
 			<Option target="issue178_test"/>
@@ -2178,6 +2233,9 @@
 		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/read.cc">
 			<Option target="read"/>
 		</Unit>
+		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/read_cold.cc">
+			<Option target="read_cold"/>
+		</Unit>
 		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/stats.cpp">
 			<Option target="leveldb"/>
 		</Unit>
@@ -2381,6 +2439,7 @@
 			<Option target="issue320_test"/>
 			<Option target="issue200_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="read_cold"/>
 			<Option target="db_test"/>
 			<Option target="c_test"/>
 			<Option target="issue178_test"/>
@@ -2415,6 +2474,7 @@
 			<Option target="issue320_test"/>
 			<Option target="issue200_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="read_cold"/>
 			<Option target="db_test"/>
 			<Option target="c_test"/>
 			<Option target="issue178_test"/>
@@ -2449,6 +2509,7 @@
 			<Option target="issue320_test"/>
 			<Option target="issue200_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="read_cold"/>
 			<Option target="db_test"/>
 			<Option target="c_test"/>
 			<Option target="issue178_test"/>
@@ -2483,6 +2544,7 @@
 			<Option target="issue320_test"/>
 			<Option target="issue200_test"/>
 			<Option target="autocompact_test"/>
+			<Option target="read_cold"/>
 			<Option target="db_test"/>
 			<Option target="c_test"/>
 			<Option target="issue178_test"/>

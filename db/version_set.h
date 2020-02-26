@@ -115,10 +115,10 @@ class Version {
   std::string DebugString() const;
 
   void PrintAll() const;
-
   bool FillData(const ReadOptions& options, FileMetaData* meta, adgMod::LearnedIndexData* data);
-
-  void FillLevel(const ReadOptions& options, int level);
+  bool FillLevel(const ReadOptions& options, int level);
+  void WriteLevelModel();
+  void ReadLevelModel();
 
  private:
   friend class Compaction;
@@ -172,8 +172,8 @@ class Version {
   double compaction_score_;
   int compaction_level_;
 
-  std::vector<std::shared_ptr<adgMod::LearnedIndexData>> learned_index_data_;
 public:
+  std::vector<std::shared_ptr<adgMod::LearnedIndexData>> learned_index_data_;
   std::map<int, std::shared_ptr<adgMod::LearnedIndexData>> file_learned_index_data_;
 };
 
@@ -283,6 +283,10 @@ class VersionSet {
     char buffer[100];
   };
   const char* LevelSummary(LevelSummaryStorage* scratch) const;
+
+
+  static bool IsFound(void* arg);
+
 
  private:
   class Builder;

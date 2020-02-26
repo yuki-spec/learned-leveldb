@@ -1540,7 +1540,8 @@ Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
   }
   if (s.ok()) {
     impl->DeleteObsoleteFiles();
-    impl->MaybeScheduleCompaction();
+    //impl->MaybeScheduleCompaction();
+    impl->versions_->current()->ReadLevelModel();
   }
   impl->mutex_.Unlock();
   if (s.ok()) {
@@ -1603,6 +1604,13 @@ Version* DBImpl::GetCurrentVersion() {
 void DBImpl::ReturnCurrentVersion(Version* version) {
     MutexLock l(&mutex_);
     version->Unref();
+}
+
+void DBImpl::WaitForBackground() {
+    MutexLock l(&mutex_);
+    while (background_compaction_scheduled_) {
+        background_work_finished_signal_.Wait();
+    }
 }
 
 

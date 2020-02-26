@@ -40,6 +40,9 @@ namespace adgMod {
     extern int file_allowed_seek;
     extern int level_allowed_seek;
     extern float reference_frequency;
+    extern uint64_t block_num_entries;
+    extern bool block_num_entries_recorded;
+    extern bool level_learning_enabled;
 
     uint64_t ExtractInteger(const char* pos, size_t size);
 //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);

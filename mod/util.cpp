@@ -13,7 +13,7 @@ namespace adgMod {
     bool string_mode = true;
     uint64_t key_multiple = 1;
     uint32_t model_error = 10;
-    int block_restart_interval = 16;
+    int block_restart_interval = 1;
     uint32_t test_num_level_segments = 100;
     uint32_t test_num_file_segments = 100;
     int key_size;
@@ -27,6 +27,9 @@ namespace adgMod {
     int file_allowed_seek = 1;
     int level_allowed_seek = file_allowed_seek * 1000;
     float reference_frequency = 2.6;
+    uint64_t block_num_entries = 0;
+    bool block_num_entries_recorded = false;
+    bool level_learning_enabled = true;
 
     uint64_t ExtractInteger(const char* pos, size_t size) {
         char* temp = new char[size + 1];

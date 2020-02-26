@@ -279,6 +279,11 @@ static void SaveValue(void* arg, const Slice& ikey, const Slice& v) {
   }
 }
 
+bool VersionSet::IsFound(void *arg) {
+    Saver* s = reinterpret_cast<Saver*>(arg);
+    return s->state == kFound;
+}
+
 static bool NewestFirst(FileMetaData* a, FileMetaData* b) {
   return a->number > b->number;
 }
@@ -852,7 +857,9 @@ VersionSet::VersionSet(const std::string& dbname, const Options* options,
 }
 
 VersionSet::~VersionSet() {
+  current_->WriteLevelModel();
   current_->Unref();
+
   //assert(dummy_versions_.next_ == &dummy_versions_);  // List must be empty
   delete descriptor_log_;
   delete descriptor_file_;
@@ -1717,9 +1724,11 @@ bool Version::FillData(const ReadOptions &options, FileMetaData *meta, adgMod::L
     return vset_->table_cache_->FillData(options, meta, data);
 }
 
-void Version::FillLevel(const ReadOptions &options, int level) {
+bool Version::FillLevel(const ReadOptions &options, int level) {
     adgMod::LearnedIndexData* data = learned_index_data_[level].get();
-    assert(!files_[level].empty());
+
+    if (files_[level].empty()) return false;
+
     for (int j = 0; j < files_[level].size(); ++j) {
         FileMetaData* file = files_[level][j];
         adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[level].size();
@@ -1732,6 +1741,19 @@ void Version::FillLevel(const ReadOptions &options, int level) {
         data->num_entries_accumulated.Add(current_total + adgMod::file_data->GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
     }
     uint64_t size = data->string_keys.size();
+    return true;
+}
+
+void Version::WriteLevelModel() {
+    for (int i = 1; i < config::kNumLevels; ++i) {
+        learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+    }
+}
+
+void Version::ReadLevelModel() {
+    for (int i = 1; i < config::kNumLevels; ++i) {
+        learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+    }
 }
 
 

@@ -71,14 +71,14 @@ class DBImpl : public DB {
   void RecordReadSample(Slice key);
 
   virtual void PrintFileInfo();
-
   Version* GetCurrentVersion();
   void ReturnCurrentVersion(Version* version);
-
+  void WaitForBackground();
+  std::atomic<int> version_count;
 
   static void BGWork(void* db);
 
-  std::atomic<int> version_count;
+
 
 private:
   friend class DB;
@@ -205,8 +205,9 @@ private:
   bool background_compaction_scheduled_ GUARDED_BY(mutex_);
 
   ManualCompaction* manual_compaction_ GUARDED_BY(mutex_);
-
+public:
   VersionSet* const versions_;
+private:
 
   // Have we encountered a background error in paranoid mode?
   Status bg_error_ GUARDED_BY(mutex_);

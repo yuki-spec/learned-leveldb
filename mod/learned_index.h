@@ -18,9 +18,11 @@ using leveldb::Slice;
 using leveldb::Version;
 using leveldb::FileMetaData;
 
+
+
 namespace adgMod {
 
-
+    class LearnedIndexData;
 
 
     class Segment {
@@ -32,6 +34,7 @@ namespace adgMod {
     };
 
     class AccumulatedNumEntriesArray {
+        friend class LearnedIndexData;
     private:
         std::vector<std::pair<uint64_t, string>> array;
     public:
@@ -43,7 +46,21 @@ namespace adgMod {
     };
 
 
+    class VersionAndSelf {
+    public:
+        Version* version;
+        int v_count;
+        LearnedIndexData* self;
+        int level;
+    };
 
+    class MetaAndSelf {
+    public:
+        Version* version;
+        int v_count;
+        FileMetaData* meta;
+        LearnedIndexData* self;
+    };
     class LearnedIndexData {
         friend class leveldb::Version;
         friend class leveldb::VersionSet;
@@ -64,21 +81,7 @@ namespace adgMod {
         std::string max_key;
         uint64_t size;
 
-        class VersionAndSelf {
-        public:
-            Version* version;
-            int v_count;
-            LearnedIndexData* self;
-            int level;
-        };
 
-        class MetaAndSelf {
-        public:
-            Version* version;
-            int v_count;
-            FileMetaData* meta;
-            LearnedIndexData* self;
-        };
 
     public:
         std::vector<std::string> string_keys;
@@ -98,6 +101,8 @@ namespace adgMod {
         static void Learn(void* arg);
         static void FileLearn(void* arg);
         bool FillData(Version* version, FileMetaData* meta);
+        void WriteModel(const string& filename);
+        void ReadModel(const string& filename);
     };
 
 

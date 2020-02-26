@@ -84,6 +84,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/leveldb.dir/DependInfo.cmake"
   "CMakeFiles/issue200_test.dir/DependInfo.cmake"
   "CMakeFiles/autocompact_test.dir/DependInfo.cmake"
+  "CMakeFiles/read_cold.dir/DependInfo.cmake"
   "CMakeFiles/db_test.dir/DependInfo.cmake"
   "CMakeFiles/c_test.dir/DependInfo.cmake"
   "CMakeFiles/issue178_test.dir/DependInfo.cmake"

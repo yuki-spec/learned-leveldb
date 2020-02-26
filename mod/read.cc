@@ -43,7 +43,7 @@ public:
 };
 
 
-void PutAndPrefetch(int lower, int higher, vector<string>& keys) {
+void PutAndPrefetch(int lower, int higher, vector<string>& keys, int largest) {
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
 
     Status status;
@@ -57,7 +57,7 @@ void PutAndPrefetch(int lower, int higher, vector<string>& keys) {
     instance->PauseTimer(9, true);
 
     //cout << "Put Complete" << endl;
-
+    //if (lower == 0) adgMod::level_learning_enabled = true;
 
     instance->StartTimer(10);
     for (int i = lower; i < higher; ++i) {
@@ -81,14 +81,14 @@ int main(int argc, char *argv[]) {
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
     commandline_options.add_options()
-            ("n,get_number", "the number of gets (to be multiplied by 1024)", cxxopts::value<int>(num_gets)->default_value("128"))
+            ("n,get_number", "the number of gets (to be multiplied by 1024)", cxxopts::value<int>(num_gets)->default_value("1024"))
             ("l,lower_bound", "the lower bound of the loop of the size of db", cxxopts::value<float>(num_pair_lower)->default_value("10"))
             ("u,upper_bound", "the upper bound of the loop of the size of db", cxxopts::value<float>(num_pair_upper)->default_value("10"))
             ("s,step", "the step of the loop of the size of db", cxxopts::value<float>(num_pair_step)->default_value("1"))
             ("i,iteration", "the number of iterations of a same size", cxxopts::value<int>(num_iteration)->default_value("1"))
             ("m,modification", "if set, run our modified version", cxxopts::value<int>(adgMod::MOD)->default_value("0"))
             ("h,help", "print help message", cxxopts::value<bool>()->default_value("false"))
-            ("d,directory", "the directory of db", cxxopts::value<string>(db_location)->default_value("/tmp/testdb"))
+            ("d,directory", "the directory of db", cxxopts::value<string>(db_location)->default_value("/users/yifann/testdb"))
             ("k,key_size", "the size of key", cxxopts::value<int>(adgMod::key_size)->default_value("8"))
             ("v,value_size", "the size of value", cxxopts::value<int>(adgMod::value_size)->default_value("120"))
             ("single_timing", "print the time of every single get", cxxopts::value<bool>(print_single_timing)->default_value("false"))
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
             ("file_info", "print the file structure info", cxxopts::value<bool>(print_file_info)->default_value("false"))
             ("test_num_segments", "test: number of segments per level", cxxopts::value<float>(test_num_segments_base)->default_value("1"))
             ("string_mode", "test: use string or int in model", cxxopts::value<bool>(adgMod::string_mode)->default_value("false"))
-            ("e,model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("10"))
+            ("e,model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("8"))
             ("f,input_file", "the filename of input file", cxxopts::value<string>(input_filename)->default_value(""))
             ("multiple", "test: use larger keys", cxxopts::value<uint64_t>(adgMod::key_multiple)->default_value("1"));
     auto result = commandline_options.parse(argc, argv);
@@ -153,13 +153,14 @@ int main(int argc, char *argv[]) {
 
             instance->ResetAll(true);
 
-
-            int cut_size = 20;
+            adgMod::level_learning_enabled = false;
+            int cut_size = keys.size() / 100000;
             for (int cut = cut_size - 1; cut >= 0; --cut) {
-                PutAndPrefetch(keys.size() * cut / cut_size, keys.size() * (cut + 1) / cut_size, keys);
+                PutAndPrefetch(keys.size() * cut / cut_size, keys.size() * (cut + 1) / cut_size, keys, cut_size);
             }
+            //adgMod::level_learning_enabled = true;
 
-            for (int i = 0; i < 5; ++i) {
+            for (int i = 0; i < 6; ++i) {
                 printf("Counter %d: %d\n", i, instance->ReportCounter(i));
                 instance->ResetCounter(i);
             }
@@ -180,7 +181,7 @@ int main(int argc, char *argv[]) {
 
 
             instance->StartTimer(10);
-            for (int i = 0; i < num_gets * 8; ++i) {
+            for (int i = 0; i < keys.size(); ++i) {
                 string value;
                 instance->StartTimer(4);
                 status = db->Get(read_options, keys[uniform_dist_file(e1)], &value);
@@ -199,7 +200,7 @@ int main(int argc, char *argv[]) {
             //instance->ResetTimer(6);
 
 
-            for (int i = 0; i < 5; ++i) {
+            for (int i = 0; i < 6; ++i) {
                 printf("Counter %d: %d\n", i, instance->ReportCounter(i));
                 instance->ResetCounter(i);
             }
@@ -213,17 +214,20 @@ int main(int argc, char *argv[]) {
             for (int s = 0; s < time_sums.size(); ++s) {
                 time_sums[s] += instance->ReportTime(s);
             }
-            sleep(5);
+            adgMod::db->WaitForBackground();
+            sleep(10);
+            instance->ReportTimeSeries(7);
+            instance->ReportTimeSeries(8);
+            instance->ReportTimeSeries(9);
+            instance->ReportTimeSeries(10);
             delete db;
+
         }
 
         for (int s = 0; s < time_sums.size(); ++s) {
             printf("%d : Time Average for Timer %d : %lu\n", int(num_pairs[outer]), s, time_sums[s] / num_iteration);
         }
-        instance->ReportTimeSeries(7);
-        instance->ReportTimeSeries(8);
-        instance->ReportTimeSeries(9);
-        instance->ReportTimeSeries(10);
+
 
 
         if (!input_filename.empty()) break;

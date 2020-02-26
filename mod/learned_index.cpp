@@ -7,6 +7,7 @@
 #include <utility>
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include "util/mutexlock.h"
 #include "learned_index.h"
 #include "util.h"
@@ -97,14 +98,15 @@ namespace adgMod {
 
         Version* c = db->GetCurrentVersion();
         if (db->version_count == vas->v_count){
-            vas->version->FillLevel(adgMod::read_options, vas->level);
-            //instance->ReportEventWithTime("Fill " + to_string(vas->level));
-            self->filled = true;
-            if (db->version_count == vas->v_count) {
-                if (env->compaction_awaiting.load() == 0 && self->Learn()) {
-                    instance->ReportEventWithTime("L " + to_string(vas->level));
-                } else {
-                    self->learning.store(false);
+            if (vas->version->FillLevel(adgMod::read_options, vas->level)) {
+                //instance->ReportEventWithTime("Fill " + to_string(vas->level));
+                self->filled = true;
+                if (db->version_count == vas->v_count) {
+                    if (env->compaction_awaiting.load() == 0 && self->Learn()) {
+                        instance->ReportEventWithTime("L " + to_string(vas->level));
+                    } else {
+                        self->learning.store(false);
+                    }
                 }
             }
         }
@@ -135,7 +137,8 @@ namespace adgMod {
     }
 
     bool LearnedIndexData::Learned(Version* version, int v_count, int level) {
-        if (learned_not_atomic) return true;
+        if (!level_learning_enabled) return false;
+        else if (learned_not_atomic) return true;
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
@@ -168,6 +171,43 @@ namespace adgMod {
             return true;
         }
         return false;
+    }
+
+    void LearnedIndexData::WriteModel(const string &filename) {
+        if (!learned.load()) return;
+
+        std::ofstream output_file(filename);
+        output_file.precision(15);
+        for (Segment& item: string_segments) {
+            output_file << item.x << " " << item.k << " " << item.b << "\n";
+        }
+        output_file << "StartAcc" << " " << min_key << " " << max_key << " " << size << "\n";
+        for (auto& pair: num_entries_accumulated.array) {
+            output_file << pair.first << " " << pair.second << "\n";
+        }
+    }
+
+    void LearnedIndexData::ReadModel(const string &filename) {
+        std::ifstream input_file(filename);
+
+        if (!input_file.good()) return;
+        while (true) {
+            string x;
+            double k, b;
+            input_file >> x;
+            if (x == "StartAcc") break;
+            input_file >> k >> b;
+            string_segments.emplace_back(x, k, b);
+        }
+        input_file >> min_key >> max_key >> size;
+        while (true) {
+            uint64_t first;
+            string second;
+            if (!(input_file >> first >> second)) break;
+            num_entries_accumulated.Add(first, std::move(second));
+        }
+
+        learned.store(true);
     }
 
 
