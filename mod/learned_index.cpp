@@ -16,25 +16,17 @@
 
 namespace adgMod {
 
-    void LearnedIndexData::AddSegment(string&& x, double k, double b) {
-        if (string_mode) {
-            string_segments.push_back(Segment(x, k, b));
-        } else {
-            assert(false);
-        }
-    }
-
     std::pair<uint64_t, uint64_t> LearnedIndexData::GetPosition(const Slice& target_x) const {
         assert(string_segments.size() > 1);
 
         uint64_t target_int = SliceToInteger(target_x);
-        if (target_x > max_key) return std::make_pair(size, size);
-        if (target_x < min_key) return std::make_pair(size, size);
+        if (target_int > max_key) return std::make_pair(size, size);
+        if (target_int < min_key) return std::make_pair(size, size);
 
         uint32_t left = 0, right = (uint32_t) string_segments.size() - 1;
         while (left != right - 1) {
             uint32_t mid = (right + left) / 2;
-            if (target_x < string_segments[mid].x) right = mid;
+            if (target_int < string_segments[mid].x) right = mid;
             else left = mid;
         }
 
@@ -42,7 +34,7 @@ namespace adgMod {
         uint64_t lower = result - error > 0 ? (uint64_t) std::floor(result - error) : 0;
         uint64_t upper = (uint64_t) std::ceil(result + error);
         if (lower >= size) return std::make_pair(size, size);
-
+        upper = upper < size ? upper : size - 1;
 //                printf("%s %s %s\n", string_keys[lower].c_str(), string(target_x.data(), target_x.size()).c_str(), string_keys[upper].c_str());
 //                assert(target_x >= string_keys[lower] && target_x <= string_keys[upper]);
         return std::make_pair(lower, upper);
@@ -62,23 +54,23 @@ namespace adgMod {
 
         if (string_keys.empty()) assert(false);
 
-        std::vector<struct point> points;
-        int i = 0;
-        for (string &s : string_keys) {
-            points.emplace_back((double) stoull(s), (double) i);
-            ++i;
-        }
 
-        std::vector<struct segment> segs = plr.train(points, !level);
+        uint64_t temp = atoll(string_keys.back().c_str());
+        min_key = atoll(string_keys.front().c_str());
+        max_key = atoll(string_keys.back().c_str());
+        size = string_keys.size();
+
+
+        std::deque<struct segment> segs = plr.train(string_keys, !level);
         if (segs.empty()) return false;
 
-        for (struct segment &s : segs) {
-            string_segments.emplace_back(generate_key((uint64_t) s.start), s.slope, s.intercept);
+        while (!segs.empty()) {
+            segment& s = segs.front();
+            string_segments.emplace_back(s.start, s.slope, s.intercept);
+            segs.pop_front();
         }
-        string_segments.emplace_back(string_keys.back(), 0, 0);
-        min_key = string_keys.front();
-        max_key = string_keys.back();
-        size = string_keys.size();
+        string_segments.emplace_back(temp, 0, 0);
+
 
         for (auto& str: string_segments) {
             //printf("%s %f\n", str.first.c_str(), str.second);
@@ -111,14 +103,20 @@ namespace adgMod {
             }
         }
         adgMod::db->ReturnCurrentVersion(c);
-        delete vas;
+
 
         instance->PauseTimer(8, true);
+        instance->IncrementCounter(7, self->string_segments.size());
+        instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
+        self->WriteModel(vas->version->vset_->dbname_ + "/" + to_string(vas->level) + ".model");
+        self->string_segments.clear();
+        self->num_entries_accumulated.array.clear();
+        delete vas;
     }
 
     void LearnedIndexData::FileLearn(void *arg) {
         Stats* instance = Stats::GetInstance();
-        instance->StartTimer(8);
+        instance->StartTimer(11);
 
         MetaAndSelf* mas = reinterpret_cast<MetaAndSelf*>(arg);
         LearnedIndexData* self = mas->self;
@@ -133,7 +131,7 @@ namespace adgMod {
         adgMod::db->ReturnCurrentVersion(c);
         delete mas;
 
-        instance->PauseTimer(8, true);
+        instance->PauseTimer(11, true);
     }
 
     bool LearnedIndexData::Learned(Version* version, int v_count, int level) {
@@ -178,6 +176,7 @@ namespace adgMod {
 
         std::ofstream output_file(filename);
         output_file.precision(15);
+        output_file << adgMod::block_num_entries << " " << adgMod::block_size << " " << adgMod::entry_size << "\n";
         for (Segment& item: string_segments) {
             output_file << item.x << " " << item.k << " " << item.b << "\n";
         }
@@ -191,13 +190,14 @@ namespace adgMod {
         std::ifstream input_file(filename);
 
         if (!input_file.good()) return;
+        input_file >> adgMod::block_num_entries >> adgMod::block_size >> adgMod::entry_size;
         while (true) {
             string x;
             double k, b;
             input_file >> x;
             if (x == "StartAcc") break;
             input_file >> k >> b;
-            string_segments.emplace_back(x, k, b);
+            string_segments.emplace_back(atoll(x.c_str()), k, b);
         }
         input_file >> min_key >> max_key >> size;
         while (true) {
@@ -228,7 +228,7 @@ namespace adgMod {
         return file_learned_index_data[meta->number]->FillData(version ,meta);
     }
 
-    std::vector<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
+    std::deque<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
         return file_learned_index_data[meta->number]->string_keys;
     }
 

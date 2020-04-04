@@ -41,9 +41,11 @@ namespace adgMod {
 
         void RecordLevel(int level);
         void ReportLevelStats();
+        void ResetLevel();
 
         void ResetCounter(int id);
         void IncrementCounter(int id);
+        void IncrementCounter(int id, int n);
         int ReportCounter(int id);
 
         void ReportEventWithTime(const string& event);

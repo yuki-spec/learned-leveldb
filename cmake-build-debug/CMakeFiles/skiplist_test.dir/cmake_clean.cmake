@@ -1,8 +1,10 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/skiplist_test.dir/db/skiplist_test.cc.o"
-  "CMakeFiles/skiplist_test.dir/util/testharness.cc.o"
-  "CMakeFiles/skiplist_test.dir/util/testutil.cc.o"
-  "skiplist_test"
+  "CMakeFiles/skiplist_test.dir/db/skiplist_test.cc.obj"
+  "CMakeFiles/skiplist_test.dir/util/testharness.cc.obj"
+  "CMakeFiles/skiplist_test.dir/util/testutil.cc.obj"
+  "libskiplist_test.dll.a"
+  "skiplist_test.exe"
+  "skiplist_test.exe.manifest"
   "skiplist_test.pdb"
 )
 

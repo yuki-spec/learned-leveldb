@@ -88,9 +88,9 @@ int main(int argc, char *argv[]) {
             ("i,iteration", "the number of iterations of a same size", cxxopts::value<int>(num_iteration)->default_value("1"))
             ("m,modification", "if set, run our modified version", cxxopts::value<int>(adgMod::MOD)->default_value("0"))
             ("h,help", "print help message", cxxopts::value<bool>()->default_value("false"))
-            ("d,directory", "the directory of db", cxxopts::value<string>(db_location)->default_value("/users/yifann/testdb"))
+            ("d,directory", "the directory of db", cxxopts::value<string>(db_location)->default_value("/mnt/ssd/testdb"))
             ("k,key_size", "the size of key", cxxopts::value<int>(adgMod::key_size)->default_value("8"))
-            ("v,value_size", "the size of value", cxxopts::value<int>(adgMod::value_size)->default_value("120"))
+            ("v,value_size", "the size of value", cxxopts::value<int>(adgMod::value_size)->default_value("8"))
             ("single_timing", "print the time of every single get", cxxopts::value<bool>(print_single_timing)->default_value("false"))
             ("p,profile_out", "the file for profiler output", cxxopts::value<string>(profiler_out)->default_value("/tmp/profiler.out"))
             ("file_info", "print the file structure info", cxxopts::value<bool>(print_file_info)->default_value("false"))
@@ -127,13 +127,12 @@ int main(int argc, char *argv[]) {
 
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
     for (size_t outer = 0; outer < num_pairs.size(); ++outer) {
-        vector<size_t> time_sums(11, 0);
+        vector<size_t> time_sums(20, 0);
         adgMod::test_num_level_segments =  (uint32_t) floor(num_pairs[outer] *  test_num_segments_base);
         for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
             string command = "rm -rf " + db_location;
             system(command.c_str());
 
-            std::uniform_int_distribution<uint64_t > uniform_dist(0, (uint64_t) floor(num_pairs[outer] * num_pairs_base) - 1);
             std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
 
             DB* db;
@@ -145,7 +144,7 @@ int main(int argc, char *argv[]) {
             //options.comparator = new NumericalComparator;
             adgMod::block_restart_interval = options.block_restart_interval =
                 adgMod::MOD ? 1 : adgMod::block_restart_interval;
-            read_options.fill_cache = false;
+            //read_options.fill_cache = false;
             write_options.sync = false;
 
             Status status = DB::Open(options, db_location, &db);
@@ -158,9 +157,9 @@ int main(int argc, char *argv[]) {
             for (int cut = cut_size - 1; cut >= 0; --cut) {
                 PutAndPrefetch(keys.size() * cut / cut_size, keys.size() * (cut + 1) / cut_size, keys, cut_size);
             }
-            //adgMod::level_learning_enabled = true;
+            adgMod::level_learning_enabled = true;
 
-            for (int i = 0; i < 6; ++i) {
+            for (int i = 0; i < 7; ++i) {
                 printf("Counter %d: %d\n", i, instance->ReportCounter(i));
                 instance->ResetCounter(i);
             }
@@ -171,8 +170,13 @@ int main(int argc, char *argv[]) {
 #endif
             //for (int s = 7; s <= 10; ++s)
             //    time_sums[s] += instance->ReportTime(s);
-            instance->ResetTimer(4);
-            instance->ResetTimer(6);
+            for (int s = 0; s < 7; ++s) {
+                instance->ResetTimer(s);
+            }
+            for (int s = 12; s < 20; ++s) {
+                instance->ResetTimer(s);
+            }
+            instance->ResetLevel();
 
             //sleep(10);
 
@@ -183,10 +187,13 @@ int main(int argc, char *argv[]) {
             instance->StartTimer(10);
             for (int i = 0; i < keys.size(); ++i) {
                 string value;
+                string& key = keys[uniform_dist_file(e1)];
                 instance->StartTimer(4);
-                status = db->Get(read_options, keys[uniform_dist_file(e1)], &value);
+                status = db->Get(read_options, key, &value);
                 instance->PauseTimer(4);
-                assert(status.ok() && "File Get Error");
+                //cout << "Get: " << key << endl;
+                //assert(status.ok() && "File Get Error");
+                if (!status.ok()) cout << "Not Found: " << key << endl;
             }
             instance->PauseTimer(10, true);
 
@@ -200,12 +207,11 @@ int main(int argc, char *argv[]) {
             //instance->ResetTimer(6);
 
 
-            for (int i = 0; i < 6; ++i) {
+            for (int i = 0; i < 7; ++i) {
                 printf("Counter %d: %d\n", i, instance->ReportCounter(i));
                 instance->ResetCounter(i);
             }
-
-
+            instance->ReportLevelStats();
 
 
 
@@ -220,6 +226,7 @@ int main(int argc, char *argv[]) {
             instance->ReportTimeSeries(8);
             instance->ReportTimeSeries(9);
             instance->ReportTimeSeries(10);
+            instance->ReportTimeSeries(11);
             delete db;
 
         }

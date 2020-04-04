@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <deque>
 
 
 struct point {
@@ -50,18 +51,18 @@ private:
 
 public:
     GreedyPLR(double gamma);
-    struct segment process(struct point& pt);
+    struct segment process(const struct point& pt);
     struct segment finish();
 };
 
 class PLR {
 private:
     double gamma;
-    std::vector<struct segment> segments;
+    std::deque<struct segment> segments;
 
 public:
     PLR(double gamma);
-    std::vector<struct segment>& train(std::vector<struct point>& points, bool file);
+    std::deque<struct segment>& train(std::deque<std::string>& keys, bool file);
 //    std::vector<double> predict(std::vector<double> xx);
 //    double mae(std::vector<double> y_true, std::vector<double> y_pred);
 };

@@ -9,6 +9,7 @@
 #include <deque>
 #include <set>
 #include <string>
+#include <mod/Vlog.h>
 
 #include "db/dbformat.h"
 #include "db/log_writer.h"
@@ -70,18 +71,22 @@ class DBImpl : public DB {
   // bytes.
   void RecordReadSample(Slice key);
 
+  static void BGWork(void* db);
+
+
   virtual void PrintFileInfo();
   Version* GetCurrentVersion();
   void ReturnCurrentVersion(Version* version);
   void WaitForBackground();
   std::atomic<int> version_count;
+  adgMod::VLog* vlog;
 
-  static void BGWork(void* db);
 
 
 
 private:
   friend class DB;
+  friend class TableCache;
   struct CompactionState;
   struct Writer;
 
@@ -131,6 +136,7 @@ private:
   // log-file/memtable and writes a new descriptor iff successful.
   // Errors are recorded in bg_error_.
   void CompactMemTable() EXCLUSIVE_LOCKS_REQUIRED(mutex_);
+  void CompactMemTable(MemTable* table) EXCLUSIVE_LOCKS_REQUIRED(mutex_);
 
   Status RecoverLogFile(uint64_t log_number, bool last_log, bool* save_manifest,
                         VersionEdit* edit, SequenceNumber* max_sequence)

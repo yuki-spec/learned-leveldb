@@ -1594,6 +1594,33 @@ mod/Counter.cpp.s:
 	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Counter.cpp.s
 .PHONY : mod/Counter.cpp.s
 
+mod/Vlog.o: mod/Vlog.cpp.o
+
+.PHONY : mod/Vlog.o
+
+# target to build an object file
+mod/Vlog.cpp.o:
+	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Vlog.cpp.o
+.PHONY : mod/Vlog.cpp.o
+
+mod/Vlog.i: mod/Vlog.cpp.i
+
+.PHONY : mod/Vlog.i
+
+# target to preprocess a source file
+mod/Vlog.cpp.i:
+	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Vlog.cpp.i
+.PHONY : mod/Vlog.cpp.i
+
+mod/Vlog.s: mod/Vlog.cpp.s
+
+.PHONY : mod/Vlog.s
+
+# target to generate assembly for a file
+mod/Vlog.cpp.s:
+	$(MAKE) -f CMakeFiles/leveldb.dir/build.make CMakeFiles/leveldb.dir/mod/Vlog.cpp.s
+.PHONY : mod/Vlog.cpp.s
+
 mod/learned_index.o: mod/learned_index.cpp.o
 
 .PHONY : mod/learned_index.o
@@ -3157,6 +3184,9 @@ help:
 	@echo "... mod/Counter.o"
 	@echo "... mod/Counter.i"
 	@echo "... mod/Counter.s"
+	@echo "... mod/Vlog.o"
+	@echo "... mod/Vlog.i"
+	@echo "... mod/Vlog.s"
 	@echo "... mod/learned_index.o"
 	@echo "... mod/learned_index.i"
 	@echo "... mod/learned_index.s"

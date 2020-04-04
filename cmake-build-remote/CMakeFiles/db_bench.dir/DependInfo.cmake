@@ -13,7 +13,9 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
+  "INTERNAL_TIMER"
   "LEVELDB_PLATFORM_POSIX=1"
+  "RECORD_LEVEL_INFO"
   )
 
 # The include file search paths:

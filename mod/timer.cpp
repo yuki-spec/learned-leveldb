@@ -13,13 +13,15 @@ namespace adgMod {
 
     void Timer::Start() {
         assert(!started);
-        time_started = __rdtsc();
+        unsigned int dummy = 0;
+        time_started = __rdtscp(&dummy);
         started = true;
     }
 
     void Timer::Pause(bool record) {
         assert(started);
-        uint64_t time_elapse = __rdtsc() - time_started;
+        unsigned int dummy = 0;
+        uint64_t time_elapse = __rdtscp(&dummy) - time_started;
         timestamp_accumulated += time_elapse / reference_frequency;
 
         if (record) {

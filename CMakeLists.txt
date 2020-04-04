@@ -30,6 +30,7 @@ option(LEVELDB_INSTALL "Install LevelDB's header and library" ON)
 option(LEVEL_SWITCH "Record file info in each level" OFF)
 option(INTERNAL_TIMER_SWITCH "Enable internal timer" OFF)
 option(PROFILER_SWITCH "Enable profiler" OFF)
+option(NDEBUG_SWITCH "disable assertion" OFF)
 
 if (LEVEL_SWITCH)
   add_definitions(-DRECORD_LEVEL_INFO)
@@ -42,6 +43,9 @@ endif(INTERNAL_TIMER_SWITCH)
 if (PROFILER_SWITCH)
   add_definitions(-DPROFILER)
 endif(PROFILER_SWITCH)
+
+
+
 
 include(TestBigEndian)
 test_big_endian(LEVELDB_IS_BIG_ENDIAN)
@@ -68,6 +72,16 @@ include(CheckCXXSourceCompiles)
 # Test whether -Wthread-safety is available. See
 # https://clang.llvm.org/docs/ThreadSafetyAnalysis.html
 # -Werror is necessary because unknown attributes only generate warnings.
+
+#list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety)
+if (NDEBUG_SWITCH)
+  add_definitions(-DNDEBUG)
+  list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety -O3)
+else (NDEBUG_SWITCH)
+  list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety)
+endif(NDEBUG_SWITCH)
+
+
 set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety)
 check_cxx_source_compiles("
@@ -109,7 +123,7 @@ if(BUILD_SHARED_LIBS)
   add_compile_options(-fvisibility=hidden)
 endif(BUILD_SHARED_LIBS)
 
-add_library(leveldb "" mod/stats.h mod/stats.cpp mod/timer.cpp mod/timer.h mod/learned_index.cpp mod/learned_index.h mod/util.cpp mod/util.h mod/Counter.cpp mod/Counter.h)
+add_library(leveldb "")
 target_sources(leveldb
   PRIVATE
     "${PROJECT_BINARY_DIR}/${LEVELDB_PORT_CONFIG_DIR}/port_config.h"
@@ -190,6 +204,12 @@ target_sources(leveldb
     "${PROJECT_SOURCE_DIR}/mod/learned_index.h"
     "${PROJECT_SOURCE_DIR}/mod/util.cpp"
     "${PROJECT_SOURCE_DIR}/mod/util.h"
+    "${PROJECT_SOURCE_DIR}/mod/Vlog.cpp"
+    "${PROJECT_SOURCE_DIR}/mod/Vlog.h"
+        "${PROJECT_SOURCE_DIR}/mod/Counter.cpp"
+        "${PROJECT_SOURCE_DIR}/mod/Counter.h"
+        "${PROJECT_SOURCE_DIR}/mod/timer.cpp"
+        "${PROJECT_SOURCE_DIR}/mod/timer.h"
 
   # Only CMake 3.3+ supports PUBLIC sources in targets exported by "install".
   $<$<VERSION_GREATER:CMAKE_VERSION,3.2>:PUBLIC>

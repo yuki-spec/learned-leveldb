@@ -12,6 +12,7 @@ class Counter {
 public:
     Counter() : count(0) {};
     void Increment();
+    void Increment(int n);
     void Reset();
     int Report();
 };

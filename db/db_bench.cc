@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <mod/util.h>
 
 #include "leveldb/cache.h"
 #include "leveldb/db.h"
@@ -111,6 +112,11 @@ static bool FLAGS_reuse_logs = false;
 // Use the db with the following name.
 static const char* FLAGS_db = nullptr;
 
+
+//#define __OPTIMIZE__
+//#define NDEBUG
+
+
 namespace leveldb {
 
 namespace {
@@ -212,6 +218,7 @@ class Stats {
   void Stop() {
     finish_ = g_env->NowMicros();
     seconds_ = (finish_ - start_) * 1e-6;
+    seconds_ = (finish_ - start_) * 1e-6;
   }
 
   void AddMessage(Slice msg) { AppendWithSpace(&message_, msg); }
@@ -268,8 +275,12 @@ class Stats {
     }
     AppendWithSpace(&extra, message_);
 
-    fprintf(stdout, "%-12s : %11.3f micros/op;%s%s\n", name.ToString().c_str(),
-            seconds_ * 1e6 / done_, (extra.empty() ? "" : " "), extra.c_str());
+      fprintf(stdout, "%-12s : %11.3f micros/op;%s%s;%10.3f\n",
+              name.ToString().c_str(),
+              seconds_ * 1e6 / done_,
+              (extra.empty() ? "" : " "),
+              extra.c_str(),
+              seconds_);
     if (FLAGS_histogram) {
       fprintf(stdout, "Microseconds per op:\n%s\n", hist_.ToString().c_str());
     }
@@ -727,15 +738,16 @@ class Benchmark {
         const int k = seq ? i + j : (thread->rand.Next() % FLAGS_num);
         char key[100];
         snprintf(key, sizeof(key), "%016d", k);
-        batch.Put(key, gen.Generate(value_size_));
+        //batch.Put(key, gen.Generate(value_size_));
+        db_->Put(write_options_, key, gen.Generate(value_size_));
         bytes += value_size_ + strlen(key);
         thread->stats.FinishedSingleOp();
       }
-      s = db_->Write(write_options_, &batch);
-      if (!s.ok()) {
-        fprintf(stderr, "put error: %s\n", s.ToString().c_str());
-        exit(1);
-      }
+//      s = db_->Write(write_options_, &batch);
+//      if (!s.ok()) {
+//        fprintf(stderr, "put error: %s\n", s.ToString().c_str());
+//        exit(1);
+//      }
     }
     thread->stats.AddBytes(bytes);
   }
@@ -960,8 +972,10 @@ int main(int argc, char** argv) {
       FLAGS_bloom_bits = n;
     } else if (sscanf(argv[i], "--open_files=%d%c", &n, &junk) == 1) {
       FLAGS_open_files = n;
+    } else if (sscanf(argv[i], "--mod=%d%c", &n, &junk) == 1) {
+      adgMod::MOD = n;
     } else if (strncmp(argv[i], "--db=", 5) == 0) {
-      FLAGS_db = argv[i] + 5;
+        FLAGS_db = argv[i] + 5;
     } else {
       fprintf(stderr, "Invalid flag '%s'\n", argv[i]);
       exit(1);

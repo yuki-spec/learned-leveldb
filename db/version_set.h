@@ -123,6 +123,7 @@ class Version {
  private:
   friend class Compaction;
   friend class VersionSet;
+  friend class adgMod::LearnedIndexData;
 
   class LevelFileNumIterator;
 
@@ -290,6 +291,7 @@ class VersionSet {
 
  private:
   class Builder;
+  friend class adgMod::LearnedIndexData;
 
   friend class Compaction;
   friend class Version;

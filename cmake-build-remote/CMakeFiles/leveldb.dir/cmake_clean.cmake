@@ -16,6 +16,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/leveldb.dir/db/write_batch.cc.o"
   "CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.o"
   "CMakeFiles/leveldb.dir/mod/Counter.cpp.o"
+  "CMakeFiles/leveldb.dir/mod/Vlog.cpp.o"
   "CMakeFiles/leveldb.dir/mod/learned_index.cpp.o"
   "CMakeFiles/leveldb.dir/mod/plr.cpp.o"
   "CMakeFiles/leveldb.dir/mod/stats.cpp.o"

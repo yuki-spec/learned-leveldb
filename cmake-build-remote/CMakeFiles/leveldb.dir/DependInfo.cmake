@@ -21,6 +21,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/users/yifann/research/leveldb/leveldb/db/write_batch.cc" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/db/write_batch.cc.o"
   "/users/yifann/research/leveldb/leveldb/helpers/memenv/memenv.cc" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.o"
   "/users/yifann/research/leveldb/leveldb/mod/Counter.cpp" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/mod/Counter.cpp.o"
+  "/users/yifann/research/leveldb/leveldb/mod/Vlog.cpp" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/mod/Vlog.cpp.o"
   "/users/yifann/research/leveldb/leveldb/mod/learned_index.cpp" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/mod/learned_index.cpp.o"
   "/users/yifann/research/leveldb/leveldb/mod/plr.cpp" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/mod/plr.cpp.o"
   "/users/yifann/research/leveldb/leveldb/mod/stats.cpp" "/users/yifann/research/leveldb/leveldb/cmake-build-remote/CMakeFiles/leveldb.dir/mod/stats.cpp.o"
@@ -53,8 +54,10 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
+  "INTERNAL_TIMER"
   "LEVELDB_COMPILE_LIBRARY"
   "LEVELDB_PLATFORM_POSIX=1"
+  "RECORD_LEVEL_INFO"
   )
 
 # The include file search paths:

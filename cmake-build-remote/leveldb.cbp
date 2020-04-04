@@ -55,6 +55,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -82,6 +84,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -109,6 +113,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -136,6 +142,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -163,6 +171,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -190,6 +200,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -217,6 +229,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -244,6 +258,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -271,6 +287,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -298,6 +316,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -335,6 +355,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -362,6 +384,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -389,6 +413,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -416,6 +442,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -443,6 +471,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -470,6 +500,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -497,6 +529,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -524,6 +558,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -551,6 +587,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -578,6 +616,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -605,6 +645,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -632,6 +674,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -659,6 +703,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -686,6 +732,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -713,6 +761,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -740,6 +790,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -767,6 +819,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -794,6 +848,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -822,6 +878,8 @@
 				<Compiler>
 					<Add option="-DLEVELDB_COMPILE_LIBRARY"/>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -850,6 +908,8 @@
 				<Compiler>
 					<Add option="-DLEVELDB_COMPILE_LIBRARY"/>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -877,6 +937,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -904,6 +966,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -941,6 +1005,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -968,6 +1034,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1005,6 +1073,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1032,6 +1102,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1059,6 +1131,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1086,6 +1160,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1113,6 +1189,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1140,6 +1218,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1167,6 +1247,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1194,6 +1276,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1220,6 +1304,8 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1246,6 +1332,8 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1283,6 +1371,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1310,6 +1400,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1337,6 +1429,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1364,6 +1458,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1391,6 +1487,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1418,6 +1516,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1445,6 +1545,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1472,6 +1574,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1499,6 +1603,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1526,6 +1632,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1553,6 +1661,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1580,6 +1690,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1607,6 +1719,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1634,6 +1748,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1661,6 +1777,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1688,6 +1806,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1715,6 +1835,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1742,6 +1864,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1769,6 +1893,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1796,6 +1922,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1823,6 +1951,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1850,6 +1980,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1877,6 +2009,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1904,6 +2038,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1931,6 +2067,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -1958,6 +2096,8 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DLEVELDB_PLATFORM_POSIX=1"/>
+					<Add option="-DRECORD_LEVEL_INFO"/>
+					<Add option="-DINTERNAL_TIMER"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/cmake-build-remote/include"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb"/>
 					<Add directory="/users/yifann/research/leveldb/leveldb/include"/>
@@ -2216,6 +2356,12 @@
 			<Option target="leveldb"/>
 		</Unit>
 		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/Counter.h">
+			<Option target="leveldb"/>
+		</Unit>
+		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/Vlog.cpp">
+			<Option target="leveldb"/>
+		</Unit>
+		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/Vlog.h">
 			<Option target="leveldb"/>
 		</Unit>
 		<Unit filename="/users/yifann/research/leveldb/leveldb/mod/learned_index.cpp">

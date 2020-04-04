@@ -55,7 +55,7 @@ add_library(leveldb::leveldb STATIC IMPORTED)
 
 set_target_properties(leveldb::leveldb PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "tcmalloc;Threads::Threads"
+  INTERFACE_LINK_LIBRARIES "Threads::Threads"
 )
 
 if(CMAKE_VERSION VERSION_LESS 2.8.12)

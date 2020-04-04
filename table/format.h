@@ -22,6 +22,7 @@ struct ReadOptions;
 // BlockHandle is a pointer to the extent of a file that stores a data
 // block or a meta block.
 class BlockHandle {
+  friend class TableCache;
  public:
   // Maximum encoding length of a BlockHandle
   enum { kMaxEncodedLength = 10 + 10 };

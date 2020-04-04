@@ -94,8 +94,6 @@ private:
     Slice value_;
     Status status_;
 
-    Slice value2_;
-
     inline int Compare(const Slice &a, const Slice &b) const {
         return comparator_->Compare(a, b);
     }
@@ -179,9 +177,6 @@ public:
         uint32_t left = 0;
         uint32_t right = num_restarts_ - 1;
         adgMod::Stats *instance = adgMod::Stats::GetInstance();
-#ifdef INTERNAL_TIMER
-        instance->StartTimer(2);
-#endif
         while (left < right) {
             uint32_t mid = (left + right + 1) / 2;
             uint32_t region_offset = GetRestartPoint(mid);
@@ -204,18 +199,11 @@ public:
                 right = mid - 1;
             }
         }
-#ifdef INTERNAL_TIMER
-        instance->PauseTimer(2);
-        instance->StartTimer(3);
-#endif
 
         // Linear search (within restart block) for first key >= target
         SeekToRestartPoint(left);
         while (true) {
             if (!ParseNextKey() || Compare(key_, target) >= 0) {
-#ifdef INTERNAL_TIMER
-                instance->PauseTimer(3);
-#endif
                 return;
             }
         }
@@ -235,10 +223,11 @@ public:
 
 private:
     inline void Seek(uint32_t left, uint32_t right, const Slice& target) {
-        if (right > num_restarts_ - 1) right = num_restarts_ - 1;
+//        if (right > num_restarts_ - 1)
+//            right = num_restarts_ - 1;
 
         while (left < right) {
-            uint32_t mid = (left + right + 1) / 2;
+            uint32_t mid = (left + right) / 2;
             uint32_t region_offset = GetRestartPoint(mid);
             uint32_t shared, non_shared, value_length;
             const char *key_ptr =
@@ -253,24 +242,22 @@ private:
             if (comp < 0) {
                 // Key at "mid" is smaller than "target".  Therefore all
                 // blocks before "mid" are uninteresting.
-                left = mid;
-            } else if (comp == 0) {
-                left = mid;
-                break;
+                left = mid + 1;
             } else {
                 // Key at "mid" is >= "target".  Therefore all blocks at or
                 // after "mid" are uninteresting.
-                right = mid - 1;
+                right = mid;
             }
         }
 
         // Linear search (within restart block) for first key >= target
         SeekToRestartPoint(left);
-        while (true) {
-            if (!ParseNextKey() || Compare(key_, target) >= 0) {
-                return;
-            }
-        }
+        ParseNextKey();
+//        while (true) {
+//            if (!ParseNextKey() || Compare(key_, target) >= 0) {
+//                return;
+//            }
+//        }
     }
 
 

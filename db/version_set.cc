@@ -385,7 +385,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       files = &tmp[0];
       num_files = tmp.size();
     } else {
-        if (adgMod::MOD == 5) {
+        if (adgMod::MOD == 6 || adgMod::MOD == 7) {
             adgMod::LearnedIndexData* learned_this_level = learned_index_data_[level].get();
             if (learned_this_level->Learned(this, adgMod::db->version_count, level)) {
                 //std::cout << "using model" << std::endl;
@@ -396,7 +396,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
 
                 size_t index;
                 if (bounds.first <= learned_this_level->MaxPosition()) {
-                    assert(learned_this_level->num_entries_accumulated.Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper));
+                    learned_this_level->num_entries_accumulated.Search(user_key, bounds.first, bounds.second, &index, &position_lower, &position_upper);
 
                     //printf("%lu %lu %lu\n", index, position_lower, position_upper);
                     FileMetaData* file = files_[level][index];
@@ -469,10 +469,10 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       saver.user_key = user_key;
       saver.value = value;
 
-      if (level == 0 || adgMod::MOD == 0) {
+      if (level == 0 || adgMod::MOD == 0 || adgMod::MOD == 8) {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
                                       &saver, SaveValue);
-      } else if (adgMod::MOD == 5) {
+      } else {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
                                      &saver, SaveValue, f, position_lower, position_upper, learned, this);
       }
@@ -985,8 +985,8 @@ Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
   // Install the new version
   if (s.ok()) {
     ApplyToModel(edit, current_, v);
-    AppendVersion(v);
     adgMod::db->version_count += 1;
+    AppendVersion(v);
     log_number_ = edit->log_number_;
     prev_log_number_ = edit->prev_log_number_;
   } else {
@@ -1732,13 +1732,16 @@ bool Version::FillLevel(const ReadOptions &options, int level) {
     for (int j = 0; j < files_[level].size(); ++j) {
         FileMetaData* file = files_[level][j];
         adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[level].size();
-        assert(adgMod::file_data->FillData(this, file));
-        vector<string>& file_data = adgMod::file_data->GetData(file);
+        adgMod::file_data->FillData(this, file);
+        auto& file_data = adgMod::file_data->GetData(file);
         data->string_keys.insert(data->string_keys.end(), file_data.begin(), file_data.end());
+        file_data.clear();
+
 
         uint64_t current_total = data->num_entries_accumulated.NumEntries();
         const Slice& largest_key = file->largest.user_key();
         data->num_entries_accumulated.Add(current_total + adgMod::file_data->GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
+        adgMod::file_data->GetAccumulatedArray(file->number)->array.clear();
     }
     uint64_t size = data->string_keys.size();
     return true;
@@ -1746,7 +1749,7 @@ bool Version::FillLevel(const ReadOptions &options, int level) {
 
 void Version::WriteLevelModel() {
     for (int i = 1; i < config::kNumLevels; ++i) {
-        learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        //learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
     }
 }
 

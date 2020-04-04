@@ -36,6 +36,7 @@
 #include "util/env_posix_test_helper.h"
 #include "util/posix_logger.h"
 #include "mutexlock.h"
+#include "mod/util.h"
 
 namespace leveldb {
 
@@ -45,7 +46,7 @@ namespace {
 int g_open_read_only_file_limit = -1;
 
 // Up to 1000 mmap regions for 64-bit binaries; none for 32-bit.
-constexpr const int kDefaultMmapLimit = (sizeof(void*) >= 8) ? 1000 : 0;
+constexpr const int kDefaultMmapLimit = (sizeof(void*) >= 8) ? 65536 : 0;
 
 // Can be set using EnvPosixTestHelper::SetReadOnlyMMapLimit.
 int g_mmap_limit = kDefaultMmapLimit;
@@ -505,17 +506,18 @@ class PosixEnv : public Env {
 
   Status NewRandomAccessFile(const std::string& filename,
                              RandomAccessFile** result) override {
+
     *result = nullptr;
     int fd = ::open(filename.c_str(), O_RDONLY);
     if (fd < 0) {
       return PosixError(filename, errno);
     }
 
-    if (!mmap_limiter_.Acquire()) {
+    if (!mmap_limiter_.Acquire() || filename.find("vlog") != std::string::npos) {
+      posix_fadvise(fd, 0, 0, POSIX_FADV_RANDOM);
       *result = new PosixRandomAccessFile(filename, fd, &fd_limiter_);
       return Status::OK();
     }
-
     uint64_t file_size;
     Status status = GetFileSize(filename, &file_size);
     if (status.ok()) {
@@ -534,11 +536,47 @@ class PosixEnv : public Env {
       mmap_limiter_.Release();
     }
     return status;
+
   }
+
+
+
+
+    void NewRandomAccessFileLearned(const std::string& filename, RandomAccessFile** result) {
+        int fd = ::open(filename.c_str(), O_RDONLY);
+        //*result = new PosixRandomAccessFile(filename, fd, &fd_limiter_);
+
+        uint64_t file_size;
+        Status status = GetFileSize(filename, &file_size);
+        if (status.ok()) {
+            void* mmap_base =
+                    ::mmap(/*addr=*/nullptr, file_size, PROT_READ, MAP_SHARED, fd, 0);
+            if (mmap_base != MAP_FAILED) {
+                *result = new PosixMmapReadableFile(filename,
+                                                    reinterpret_cast<char*>(mmap_base),
+                                                    file_size, &mmap_limiter_);
+            } else {
+                status = PosixError(filename, errno);
+            }
+        }
+        ::close(fd);
+    }
+
+
+
+
+
+
 
   Status NewWritableFile(const std::string& filename,
                          WritableFile** result) override {
-    int fd = ::open(filename.c_str(), O_TRUNC | O_WRONLY | O_CREAT, 0644);
+    int fd;
+    if (filename.find("vlog") != std::string::npos) {
+        fd = ::open(filename.c_str(), O_RDWR | O_APPEND | O_CREAT, 0644);
+    } else {
+        fd = ::open(filename.c_str(), O_TRUNC | O_WRONLY | O_CREAT, 0644);
+    }
+
     if (fd < 0) {
       *result = nullptr;
       return PosixError(filename, errno);
@@ -742,9 +780,9 @@ class PosixEnv : public Env {
   }
 
 
-
-
  private:
+   friend class TableCache;
+
   void BackgroundThreadMain();
 
   static void BackgroundThreadEntryPoint(PosixEnv* env) {
@@ -818,7 +856,7 @@ PosixEnv::PosixEnv()
       started_background_thread_(false),
       background_learn_cv_(&background_learn_mutex_),
       started_learn_thread_(false),
-      mmap_limiter_(MaxMmaps()),
+      mmap_limiter_(/*MaxMmaps()*/ adgMod::fd_limit),
       fd_limiter_(MaxOpenFiles()) {
         compaction_awaiting.store(0);
       }

@@ -1,9 +1,11 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/dbformat_test.dir/db/dbformat_test.cc.o"
-  "CMakeFiles/dbformat_test.dir/util/testharness.cc.o"
-  "CMakeFiles/dbformat_test.dir/util/testutil.cc.o"
-  "dbformat_test"
+  "CMakeFiles/dbformat_test.dir/db/dbformat_test.cc.obj"
+  "CMakeFiles/dbformat_test.dir/util/testharness.cc.obj"
+  "CMakeFiles/dbformat_test.dir/util/testutil.cc.obj"
+  "dbformat_test.exe"
+  "dbformat_test.exe.manifest"
   "dbformat_test.pdb"
+  "libdbformat_test.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -27,15 +27,16 @@ namespace adgMod {
 
     class Segment {
     public:
-        Segment(string _x, double _k, double _b) : x(_x), k(_k), b(_b) {}
-        string x;
+        Segment(uint64_t _x, double _k, double _b) : x(_x), k(_k), b(_b) {}
+        uint64_t x;
         double k;
         double b;
     };
 
     class AccumulatedNumEntriesArray {
         friend class LearnedIndexData;
-    private:
+
+    public:
         std::vector<std::pair<uint64_t, string>> array;
     public:
         AccumulatedNumEntriesArray() = default;
@@ -65,7 +66,6 @@ namespace adgMod {
         friend class leveldb::Version;
         friend class leveldb::VersionSet;
     private:
-        bool string_mode;
         double error;
         std::atomic<bool> learned;
         std::atomic<bool> aborted;
@@ -77,21 +77,19 @@ namespace adgMod {
         bool level;
 
         std::vector<Segment> string_segments;
-        std::string min_key;
-        std::string max_key;
+        uint64_t min_key;
+        uint64_t max_key;
         uint64_t size;
 
 
 
     public:
-        std::vector<std::string> string_keys;
+        std::deque<std::string> string_keys;
         AccumulatedNumEntriesArray num_entries_accumulated;
 
-        explicit LearnedIndexData(int allowed_seek) :
-            string_mode(adgMod::string_mode), error(adgMod::model_error), learned(false), aborted(false), learning(false),
+        explicit LearnedIndexData(int allowed_seek) : error(adgMod::model_error), learned(false), aborted(false), learning(false),
             learned_not_atomic(false), allowed_seek(allowed_seek), current_seek(0), filled(false), level(false) {};
         LearnedIndexData(const LearnedIndexData& other) = delete;
-        void AddSegment(string&& x, double k, double b);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
         double GetError() const;
@@ -113,7 +111,7 @@ namespace adgMod {
     public:
         bool Learned(Version* version, FileMetaData* meta);
         bool FillData(Version* version, FileMetaData* meta);
-        std::vector<std::string>& GetData(FileMetaData* meta);
+        std::deque<std::string>& GetData(FileMetaData* meta);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key, int file_num);
         AccumulatedNumEntriesArray* GetAccumulatedArray(int file_num);
         ~FileLearnedIndexData();

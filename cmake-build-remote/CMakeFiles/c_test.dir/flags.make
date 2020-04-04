@@ -5,13 +5,13 @@
 # compile CXX with /usr/bin/c++
 C_FLAGS = -g   -std=c11
 
-C_DEFINES = -DLEVELDB_PLATFORM_POSIX=1
+C_DEFINES = -DINTERNAL_TIMER -DLEVELDB_PLATFORM_POSIX=1 -DRECORD_LEVEL_INFO
 
 C_INCLUDES = -I/users/yifann/research/leveldb/leveldb/cmake-build-remote/include -I/users/yifann/research/leveldb/leveldb -I/users/yifann/research/leveldb/leveldb/include 
 
 CXX_FLAGS = -g   -std=c++11
 
-CXX_DEFINES = -DLEVELDB_PLATFORM_POSIX=1
+CXX_DEFINES = -DINTERNAL_TIMER -DLEVELDB_PLATFORM_POSIX=1 -DRECORD_LEVEL_INFO
 
 CXX_INCLUDES = -I/users/yifann/research/leveldb/leveldb/cmake-build-remote/include -I/users/yifann/research/leveldb/leveldb -I/users/yifann/research/leveldb/leveldb/include 
 

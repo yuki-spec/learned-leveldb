@@ -36,17 +36,23 @@ namespace adgMod {
     extern leveldb::ReadOptions read_options;
     extern leveldb::WriteOptions write_options;
     extern FileLearnedIndexData* file_data;
+    extern uint64_t fd_limit;
+    extern bool use_filter;
+    extern bool restart_read;
 
     extern int file_allowed_seek;
     extern int level_allowed_seek;
     extern float reference_frequency;
-    extern uint64_t block_num_entries;
     extern bool block_num_entries_recorded;
     extern bool level_learning_enabled;
+    extern uint64_t block_num_entries;
+    extern uint64_t block_size;
+    extern uint64_t entry_size;
+
 
     uint64_t ExtractInteger(const char* pos, size_t size);
 //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);
-    string generate_key(uint64_t key);
+    string generate_key(const string& key);
     string generate_value(uint64_t value);
     uint64_t SliceToInteger(const Slice& slice);
     int compare(const Slice& slice, const string& string);

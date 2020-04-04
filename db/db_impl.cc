@@ -37,6 +37,7 @@
 #include "util/logging.h"
 #include "util/mutexlock.h"
 #include "mod/stats.h"
+#include "mod/Vlog.h"
 
 namespace leveldb {
 
@@ -123,7 +124,7 @@ Options SanitizeOptions(const std::string& dbname,
 
 static int TableCacheSize(const Options& sanitized_options) {
   // Reserve ten files or so for other uses and give the rest to TableCache.
-  return sanitized_options.max_open_files - kNumNonTableCacheFiles;
+  return /*sanitized_options.max_open_files*/ (int) adgMod::fd_limit - kNumNonTableCacheFiles;
 }
 
 DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
@@ -152,9 +153,8 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       versions_(new VersionSet(dbname_, &options_, table_cache_,
                                &internal_comparator_)),
       version_count(0) {
-        adgMod::env = raw_options.env;
         adgMod::db = this;
-        adgMod::file_data = new adgMod::FileLearnedIndexData();
+        vlog = new adgMod::VLog(dbname_ + "/vlog.txt");
       }
 
 DBImpl::~DBImpl() {
@@ -164,6 +164,12 @@ DBImpl::~DBImpl() {
   while (background_compaction_scheduled_) {
     background_work_finished_signal_.Wait();
   }
+
+  if (adgMod::MOD >= 7) {
+    CompactMemTable(imm_);
+    CompactMemTable(mem_);
+  }
+
   mutex_.Unlock();
 
   if (db_lock_ != nullptr) {
@@ -186,6 +192,7 @@ DBImpl::~DBImpl() {
   }
 
   delete adgMod::file_data;
+  delete vlog;
 }
 
 Status DBImpl::NewDB() {
@@ -572,6 +579,25 @@ void DBImpl::CompactMemTable() {
   } else {
     RecordBackgroundError(s);
   }
+}
+
+void DBImpl::CompactMemTable(MemTable *table) {
+    mutex_.AssertHeld();
+    if (table == nullptr) return;
+
+    // Save the contents of the memtable as a new Table
+    VersionEdit edit;
+    Version* base = versions_->current();
+    base->Ref();
+    Status s = WriteLevel0Table(table, &edit, base);
+    base->Unref();
+
+    // Replace immutable memtable with the generated Table
+    if (s.ok()) {
+        edit.SetPrevLogNumber(0);
+        edit.SetLogNumber(logfile_number_);  // Earlier logs no longer needed
+        s = versions_->LogAndApply(&edit, &mutex_);
+    }
 }
 
 void DBImpl::CompactRange(const Slice* begin, const Slice* end) {
@@ -1118,7 +1144,9 @@ int64_t DBImpl::TEST_MaxNextLevelOverlappingBytes() {
 
 Status DBImpl::Get(const ReadOptions& options, const Slice& key,
                    std::string* value) {
+
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
+
   Status s;
   MutexLock l(&mutex_);
   SequenceNumber snapshot;
@@ -1139,28 +1167,57 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
   bool have_stat_update = false;
   Version::GetStats stats;
 
+
   // Unlock while reading from files and memtables
   {
     mutex_.Unlock();
     // First look in the memtable, then in the immutable memtable (if any).
     LookupKey lkey(key, snapshot);
-    if (mem->Get(lkey, value, &s)) {
-      instance->IncrementCounter(3);
-#ifdef RECORD_LEVEL_INFO
-      instance->RecordLevel(8);
-#endif
-      // Done
-    } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
-      instance->IncrementCounter(3);
-#ifdef RECORD_LEVEL_INFO
-      instance->RecordLevel(8);
-#endif
-      // Done
+
+
+
+
+    if (adgMod::restart_read) {
+        instance->StartTimer(6);
+        s = current->Get(options, lkey, value, &stats);
+        instance->PauseTimer(6);
+        have_stat_update = true;
     } else {
-      instance->StartTimer(6);
-      s = current->Get(options, lkey, value, &stats);
-      instance->PauseTimer(6);
-      have_stat_update = true;
+        instance->StartTimer(14);
+        if (mem->Get(lkey, value, &s)) {
+            instance->IncrementCounter(3);
+            instance->PauseTimer(14);
+#ifdef RECORD_LEVEL_INFO
+            instance->RecordLevel(8);
+#endif
+            // Done
+        } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
+            instance->IncrementCounter(3);
+            instance->PauseTimer(14);
+#ifdef RECORD_LEVEL_INFO
+            instance->RecordLevel(8);
+#endif
+            // Done
+        } else {
+
+            instance->PauseTimer(14);
+
+            instance->StartTimer(6);
+            s = current->Get(options, lkey, value, &stats);
+            instance->PauseTimer(6);
+            have_stat_update = true;
+        }
+    }
+
+
+
+
+    if (adgMod::MOD >= 7 && s.ok()) {
+        instance->StartTimer(12);
+        uint64_t value_address = DecodeFixed64(value->c_str());
+        uint32_t value_size = DecodeFixed32(value->c_str() + sizeof(uint64_t));
+        *value = std::move(vlog->ReadRecord(value_address, value_size));
+        instance->PauseTimer(12);
     }
     mutex_.Lock();
   }
@@ -1171,6 +1228,7 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
   mem->Unref();
   if (imm != nullptr) imm->Unref();
   current->Unref();
+
   return s;
 }
 
@@ -1205,7 +1263,15 @@ void DBImpl::ReleaseSnapshot(const Snapshot* snapshot) {
 
 // Convenience methods
 Status DBImpl::Put(const WriteOptions& o, const Slice& key, const Slice& val) {
-  return DB::Put(o, key, val);
+  if (adgMod::MOD >= 7) {
+    uint64_t value_address = adgMod::db->vlog->AddRecord(key, val);
+    char buffer[sizeof(uint64_t) + sizeof(uint32_t)];
+    EncodeFixed64(buffer, value_address);
+    EncodeFixed32(buffer + sizeof(uint64_t), val.size());
+    return DB::Put(o, key, (Slice) {buffer, sizeof(uint64_t) + sizeof(uint32_t)});
+  } else {
+    return DB::Put(o, key, val);
+  }
 }
 
 Status DBImpl::Delete(const WriteOptions& options, const Slice& key) {
@@ -1242,24 +1308,27 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* updates) {
     // into mem_.
     {
       mutex_.Unlock();
-      status = log_->AddRecord(WriteBatchInternal::Contents(updates));
-      bool sync_error = false;
-      if (status.ok() && options.sync) {
-        status = logfile_->Sync();
-        if (!status.ok()) {
-          sync_error = true;
-        }
+      if (adgMod::MOD < 7) {
+          status = log_->AddRecord(WriteBatchInternal::Contents(updates));
+          bool sync_error = false;
+          if (status.ok() && options.sync) {
+              status = logfile_->Sync();
+              if (!status.ok()) {
+                  sync_error = true;
+              }
+          }
       }
+
       if (status.ok()) {
         status = WriteBatchInternal::InsertInto(updates, mem_);
       }
       mutex_.Lock();
-      if (sync_error) {
-        // The state of the log file is indeterminate: the log record we
-        // just added may or may not show up when the DB is re-opened.
-        // So we force the DB into a mode where all future writes fail.
-        RecordBackgroundError(status);
-      }
+//      if (sync_error) {
+//        // The state of the log file is indeterminate: the log record we
+//        // just added may or may not show up when the DB is re-opened.
+//        // So we force the DB into a mode where all future writes fail.
+//        RecordBackgroundError(status);
+//      }
     }
     if (updates == tmp_batch_) tmp_batch_->Clear();
 
@@ -1371,15 +1440,15 @@ Status DBImpl::MakeRoomForWrite(bool force) {
       // We have filled up the current memtable, but the previous
       // one is still being compacted, so we wait.
       Log(options_.info_log, "Current memtable full; waiting...\n");
-      instance->PauseTimer(9, true);
+      //instance->PauseTimer(9, true);
       background_work_finished_signal_.Wait();
-      instance->StartTimer(9);
+      //instance->StartTimer(9);
     } else if (versions_->NumLevelFiles(0) >= config::kL0_StopWritesTrigger) {
       // There are too many level-0 files.
       Log(options_.info_log, "Too many L0 files; waiting...\n");
-      instance->PauseTimer(9, true);
+      //instance->PauseTimer(9, true);
       background_work_finished_signal_.Wait();
-      instance->StartTimer(9);
+      //instance->StartTimer(9);
     } else {
       // Attempt to switch to a new memtable and trigger compaction of old
       assert(versions_->PrevLogNumber() == 0);
@@ -1503,6 +1572,7 @@ Status DB::Put(const WriteOptions& opt, const Slice& key, const Slice& value) {
 
 Status DB::Delete(const WriteOptions& opt, const Slice& key) {
   WriteBatch batch;
+
   batch.Delete(key);
   return Write(opt, &batch);
 }
@@ -1511,6 +1581,9 @@ DB::~DB() {}
 
 Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
   *dbptr = nullptr;
+
+  adgMod::env = options.env;
+  adgMod::file_data = new adgMod::FileLearnedIndexData();
 
   DBImpl* impl = new DBImpl(options, dbname);
   impl->mutex_.Lock();
@@ -1571,8 +1644,8 @@ Status DestroyDB(const std::string& dbname, const Options& options) {
     uint64_t number;
     FileType type;
     for (size_t i = 0; i < filenames.size(); i++) {
-      if (ParseFileName(filenames[i], &number, &type) &&
-          type != kDBLockFile) {  // Lock file will be deleted at end
+      if ((ParseFileName(filenames[i], &number, &type) &&
+          type != kDBLockFile) || filenames[i].find("vlog") != string::npos) {  // Lock file will be deleted at end
         Status del = env->DeleteFile(dbname + "/" + filenames[i]);
         if (result.ok() && !del.ok()) {
           result = del;

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS = -g   -std=c++11
 
-CXX_DEFINES = 
+CXX_DEFINES = -DINTERNAL_TIMER -DRECORD_LEVEL_INFO
 
 CXX_INCLUDES = -I/users/yifann/research/leveldb/leveldb/cmake-build-remote/include -I/users/yifann/research/leveldb/leveldb -I/users/yifann/research/leveldb/leveldb/include 
 

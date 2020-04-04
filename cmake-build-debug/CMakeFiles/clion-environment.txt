@@ -1,3 +1,4 @@
-ToolSet: 1.0 (remote)Options: 
+ToolSet: w64 4.0 (local)@C:\TDM-GCC-64
+Options: 
 
 Options:

@@ -1,62 +1,125 @@
 Determining if the function crc32c_value exists in the crc32c failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_b41b9/fast && /usr/bin/make -f CMakeFiles/cmTC_b41b9.dir/build.make CMakeFiles/cmTC_b41b9.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b41b9.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=crc32c_value   -o CMakeFiles/cmTC_b41b9.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.15/Modules/CheckFunctionExists.c
-Linking C executable cmTC_b41b9
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b41b9.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=crc32c_value    CMakeFiles/cmTC_b41b9.dir/CheckFunctionExists.c.o  -o cmTC_b41b9 -lcrc32c 
-/usr/bin/ld: cannot find -lcrc32c
-collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_b41b9.dir/build.make:86: recipe for target 'cmTC_b41b9' failed
-make[1]: *** [cmTC_b41b9] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_b41b9/fast' failed
-make: *** [cmTC_b41b9/fast] Error 2
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_e3978/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_e3978.dir\build.make CMakeFiles/cmTC_e3978.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e3978.dir/CheckFunctionExists.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -DCHECK_FUNCTION_EXISTS=crc32c_value   -o CMakeFiles\cmTC_e3978.dir\CheckFunctionExists.c.obj   -c "C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\share\cmake-3.15\Modules\CheckFunctionExists.c"
+Linking C executable cmTC_e3978.exe
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_e3978.dir\link.txt --verbose=1
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\cmTC_e3978.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTC_e3978.dir/objects.a @CMakeFiles\cmTC_e3978.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -DCHECK_FUNCTION_EXISTS=crc32c_value    -Wl,--whole-archive CMakeFiles\cmTC_e3978.dir/objects.a -Wl,--no-whole-archive  -o cmTC_e3978.exe -Wl,--out-implib,libcmTC_e3978.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\cmTC_e3978.dir\linklibs.rsp
+C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lcrc32c
+collect2.exe: error: ld returned 1 exit status
+CMakeFiles\cmTC_e3978.dir\build.make:87: recipe for target 'cmTC_e3978.exe' failed
+mingw32-make.exe[1]: *** [cmTC_e3978.exe] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_e3978/fast' failed
+mingw32-make.exe: *** [cmTC_e3978/fast] Error 2
 
 
 
 Determining if the function snappy_compress exists in the snappy failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_c1576/fast && /usr/bin/make -f CMakeFiles/cmTC_c1576.dir/build.make CMakeFiles/cmTC_c1576.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c1576.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=snappy_compress   -o CMakeFiles/cmTC_c1576.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.15/Modules/CheckFunctionExists.c
-Linking C executable cmTC_c1576
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c1576.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=snappy_compress    CMakeFiles/cmTC_c1576.dir/CheckFunctionExists.c.o  -o cmTC_c1576 -lsnappy 
-/usr/bin/ld: cannot find -lsnappy
-collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_c1576.dir/build.make:86: recipe for target 'cmTC_c1576' failed
-make[1]: *** [cmTC_c1576] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_c1576/fast' failed
-make: *** [cmTC_c1576/fast] Error 2
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_3d7d5/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_3d7d5.dir\build.make CMakeFiles/cmTC_3d7d5.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3d7d5.dir/CheckFunctionExists.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -DCHECK_FUNCTION_EXISTS=snappy_compress   -o CMakeFiles\cmTC_3d7d5.dir\CheckFunctionExists.c.obj   -c "C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\share\cmake-3.15\Modules\CheckFunctionExists.c"
+Linking C executable cmTC_3d7d5.exe
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_3d7d5.dir\link.txt --verbose=1
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\cmTC_3d7d5.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTC_3d7d5.dir/objects.a @CMakeFiles\cmTC_3d7d5.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -DCHECK_FUNCTION_EXISTS=snappy_compress    -Wl,--whole-archive CMakeFiles\cmTC_3d7d5.dir/objects.a -Wl,--no-whole-archive  -o cmTC_3d7d5.exe -Wl,--out-implib,libcmTC_3d7d5.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\cmTC_3d7d5.dir\linklibs.rsp
+C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lsnappy
+collect2.exe: error: ld returned 1 exit status
+CMakeFiles\cmTC_3d7d5.dir\build.make:87: recipe for target 'cmTC_3d7d5.exe' failed
+mingw32-make.exe[1]: *** [cmTC_3d7d5.exe] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_3d7d5/fast' failed
+mingw32-make.exe: *** [cmTC_3d7d5/fast] Error 2
 
 
+
+Determining if the function malloc exists in the tcmalloc failed with the following output:
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_1884d/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_1884d.dir\build.make CMakeFiles/cmTC_1884d.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1884d.dir/CheckFunctionExists.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -DCHECK_FUNCTION_EXISTS=malloc   -o CMakeFiles\cmTC_1884d.dir\CheckFunctionExists.c.obj   -c "C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\share\cmake-3.15\Modules\CheckFunctionExists.c"
+<command-line>:0:23: warning: conflicting types for built-in function 'malloc'
+C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\share\cmake-3.15\Modules\CheckFunctionExists.c:7:3: note: in expansion of macro 'CHECK_FUNCTION_EXISTS'
+   CHECK_FUNCTION_EXISTS(void);
+   ^
+Linking C executable cmTC_1884d.exe
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_1884d.dir\link.txt --verbose=1
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\cmTC_1884d.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTC_1884d.dir/objects.a @CMakeFiles\cmTC_1884d.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -DCHECK_FUNCTION_EXISTS=malloc    -Wl,--whole-archive CMakeFiles\cmTC_1884d.dir/objects.a -Wl,--no-whole-archive  -o cmTC_1884d.exe -Wl,--out-implib,libcmTC_1884d.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\cmTC_1884d.dir\linklibs.rsp
+C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -ltcmalloc
+collect2.exe: error: ld returned 1 exit status
+CMakeFiles\cmTC_1884d.dir\build.make:87: recipe for target 'cmTC_1884d.exe' failed
+mingw32-make.exe[1]: *** [cmTC_1884d.exe] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_1884d/fast' failed
+mingw32-make.exe: *** [cmTC_1884d/fast] Error 2
+
+
+
+Determining if the fdatasync exist failed with the following output:
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_fe082/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_fe082.dir\build.make CMakeFiles/cmTC_fe082.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_fe082.dir/CheckSymbolExists.cxx.obj
+C:\TDM-GCC-64\bin\g++.exe     -o CMakeFiles\cmTC_fe082.dir\CheckSymbolExists.cxx.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\CheckSymbolExists.cxx
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\CheckSymbolExists.cxx: In function 'int main(int, char**)':
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\CheckSymbolExists.cxx:8:19: error: 'fdatasync' was not declared in this scope
+   return ((int*)(&fdatasync))[argc];
+                   ^
+CMakeFiles\cmTC_fe082.dir\build.make:64: recipe for target 'CMakeFiles/cmTC_fe082.dir/CheckSymbolExists.cxx.obj' failed
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_fe082.dir/CheckSymbolExists.cxx.obj] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_fe082/fast' failed
+mingw32-make.exe: *** [cmTC_fe082/fast] Error 2
+
+
+File C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fdatasync
+  return ((int*)(&fdatasync))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
 
 Determining if the F_FULLFSYNC exist failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_e292e/fast && /usr/bin/make -f CMakeFiles/cmTC_e292e.dir/build.make CMakeFiles/cmTC_e292e.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e292e.dir/CheckSymbolExists.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_e292e.dir/CheckSymbolExists.cxx.o -c /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘F_FULLFSYNC’ was not declared in this scope
-   return ((int*)(&F_FULLFSYNC))[argc];
-                   ^
-CMakeFiles/cmTC_e292e.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_e292e.dir/CheckSymbolExists.cxx.o' failed
-make[1]: *** [CMakeFiles/cmTC_e292e.dir/CheckSymbolExists.cxx.o] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_e292e/fast' failed
-make: *** [cmTC_e292e/fast] Error 2
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_c5c22/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_c5c22.dir\build.make CMakeFiles/cmTC_c5c22.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c5c22.dir/CheckSymbolExists.cxx.obj
+C:\TDM-GCC-64\bin\g++.exe     -o CMakeFiles\cmTC_c5c22.dir\CheckSymbolExists.cxx.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\CheckSymbolExists.cxx
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\CheckSymbolExists.cxx: In function 'int main(int, char**)':
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\CheckSymbolExists.cxx:8:19: error: 'F_FULLFSYNC' was not declared in this scope
+   return ((int*)(&F_FULLFSYNC))[argc];
+                   ^
+CMakeFiles\cmTC_c5c22.dir\build.make:64: recipe for target 'CMakeFiles/cmTC_c5c22.dir/CheckSymbolExists.cxx.obj' failed
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_c5c22.dir/CheckSymbolExists.cxx.obj] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_c5c22/fast' failed
+mingw32-make.exe: *** [cmTC_c5c22/fast] Error 2
 
 
-File /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+File C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
 /* */
 #include <fcntl.h>
 
@@ -72,30 +135,30 @@ int main(int argc, char** argv)
 }
 
 Performing C++ SOURCE FILE Test HAVE_CLANG_THREAD_SAFETY failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_2a1f0/fast && /usr/bin/make -f CMakeFiles/cmTC_2a1f0.dir/build.make CMakeFiles/cmTC_2a1f0.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_2a1f0.dir/src.cxx.o
-/usr/bin/c++    -DHAVE_CLANG_THREAD_SAFETY -Werror   -o CMakeFiles/cmTC_2a1f0.dir/src.cxx.o -c /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx:2:34: error: ‘lockable’ attribute directive ignored [-Werror=attributes]
- struct __attribute__((lockable)) Lock {
-                                  ^
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx:3:59: error: ‘exclusive_lock_function’ attribute directive ignored [-Werror=attributes]
-   void Acquire() __attribute__((exclusive_lock_function()));
-                                                           ^
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx:4:51: error: ‘unlock_function’ attribute directive ignored [-Werror=attributes]
-   void Release() __attribute__((unlock_function()));
-                                                   ^
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx:8:46: error: ‘guarded_by’ attribute directive ignored [-Werror=attributes]
-   int data_ __attribute__((guarded_by(lock_)));
-                                              ^
-cc1plus: all warnings being treated as errors
-CMakeFiles/cmTC_2a1f0.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_2a1f0.dir/src.cxx.o' failed
-make[1]: *** [CMakeFiles/cmTC_2a1f0.dir/src.cxx.o] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_2a1f0/fast' failed
-make: *** [cmTC_2a1f0/fast] Error 2
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_5a950/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_5a950.dir\build.make CMakeFiles/cmTC_5a950.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_5a950.dir/src.cxx.obj
+C:\TDM-GCC-64\bin\g++.exe    -DHAVE_CLANG_THREAD_SAFETY -Werror   -o CMakeFiles\cmTC_5a950.dir\src.cxx.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx:2:34: error: 'lockable' attribute directive ignored [-Werror=attributes]
+ struct __attribute__((lockable)) Lock {
+                                  ^
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx:3:59: error: 'exclusive_lock_function' attribute directive ignored [-Werror=attributes]
+   void Acquire() __attribute__((exclusive_lock_function()));
+                                                           ^
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx:4:51: error: 'unlock_function' attribute directive ignored [-Werror=attributes]
+   void Release() __attribute__((unlock_function()));
+                                                   ^
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx:8:46: error: 'guarded_by' attribute directive ignored [-Werror=attributes]
+   int data_ __attribute__((guarded_by(lock_)));
+                                              ^
+cc1plus.exe: all warnings being treated as errors
+CMakeFiles\cmTC_5a950.dir\build.make:64: recipe for target 'CMakeFiles/cmTC_5a950.dir/src.cxx.obj' failed
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_5a950.dir/src.cxx.obj] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_5a950/fast' failed
+mingw32-make.exe: *** [cmTC_5a950/fast] Error 2
 
 
 Source file was:
@@ -110,103 +173,42 @@ struct ThreadSafeType {
 };
 int main() { return 0; }
 
-Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/make cmTC_2e11d/fast && /usr/bin/make -f CMakeFiles/cmTC_2e11d.dir/build.make CMakeFiles/cmTC_2e11d.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_2e11d.dir/src.c.o
-/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_2e11d.dir/src.c.o   -c /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_2e11d
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2e11d.dir/link.txt --verbose=1
-/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    CMakeFiles/cmTC_2e11d.dir/src.c.o  -o cmTC_2e11d 
-CMakeFiles/cmTC_2e11d.dir/src.c.o: In function `main':
-src.c:(.text+0x3c): undefined reference to `pthread_create'
-src.c:(.text+0x48): undefined reference to `pthread_detach'
-src.c:(.text+0x59): undefined reference to `pthread_join'
-src.c:(.text+0x6d): undefined reference to `pthread_atfork'
-collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_2e11d.dir/build.make:86: recipe for target 'cmTC_2e11d' failed
-make[1]: *** [cmTC_2e11d] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_2e11d/fast' failed
-make: *** [cmTC_2e11d/fast] Error 2
-
-
-Source file was:
-#include <pthread.h>
-
-void* test_func(void* data)
-{
-  return data;
-}
-
-int main(void)
-{
-  pthread_t thread;
-  pthread_create(&thread, NULL, test_func, NULL);
-  pthread_detach(thread);
-  pthread_join(thread, NULL);
-  pthread_atfork(NULL, NULL, NULL);
-  pthread_exit(NULL);
-
-  return 0;
-}
-
-Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/make cmTC_80987/fast && /usr/bin/make -f CMakeFiles/cmTC_80987.dir/build.make CMakeFiles/cmTC_80987.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_80987.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_80987.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.15/Modules/CheckFunctionExists.c
-Linking C executable cmTC_80987
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_80987.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_80987.dir/CheckFunctionExists.c.o  -o cmTC_80987 -lpthreads 
-/usr/bin/ld: cannot find -lpthreads
-collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_80987.dir/build.make:86: recipe for target 'cmTC_80987' failed
-make[1]: *** [cmTC_80987] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_80987/fast' failed
-make: *** [cmTC_80987/fast] Error 2
-
-
-
 Determining if the function sqlite3_open exists in the sqlite3 failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_069ba/fast && /usr/bin/make -f CMakeFiles/cmTC_069ba.dir/build.make CMakeFiles/cmTC_069ba.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_069ba.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=sqlite3_open   -o CMakeFiles/cmTC_069ba.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.15/Modules/CheckFunctionExists.c
-Linking C executable cmTC_069ba
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_069ba.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=sqlite3_open    CMakeFiles/cmTC_069ba.dir/CheckFunctionExists.c.o  -o cmTC_069ba -lsqlite3 
-/usr/bin/ld: cannot find -lsqlite3
-collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_069ba.dir/build.make:86: recipe for target 'cmTC_069ba' failed
-make[1]: *** [cmTC_069ba] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_069ba/fast' failed
-make: *** [cmTC_069ba/fast] Error 2
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_d158a/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_d158a.dir\build.make CMakeFiles/cmTC_d158a.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d158a.dir/CheckFunctionExists.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -DCHECK_FUNCTION_EXISTS=sqlite3_open   -o CMakeFiles\cmTC_d158a.dir\CheckFunctionExists.c.obj   -c "C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\share\cmake-3.15\Modules\CheckFunctionExists.c"
+Linking C executable cmTC_d158a.exe
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_d158a.dir\link.txt --verbose=1
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\cmTC_d158a.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTC_d158a.dir/objects.a @CMakeFiles\cmTC_d158a.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -DCHECK_FUNCTION_EXISTS=sqlite3_open    -Wl,--whole-archive CMakeFiles\cmTC_d158a.dir/objects.a -Wl,--no-whole-archive  -o cmTC_d158a.exe -Wl,--out-implib,libcmTC_d158a.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\cmTC_d158a.dir\linklibs.rsp
+C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/5.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lsqlite3
+collect2.exe: error: ld returned 1 exit status
+CMakeFiles\cmTC_d158a.dir\build.make:87: recipe for target 'cmTC_d158a.exe' failed
+mingw32-make.exe[1]: *** [cmTC_d158a.exe] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_d158a/fast' failed
+mingw32-make.exe: *** [cmTC_d158a/fast] Error 2
 
 
 
 Performing C++ SOURCE FILE Test HAVE_KYOTOCABINET failed with the following output:
-Change Dir: /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_95fdc/fast && /usr/bin/make -f CMakeFiles/cmTC_95fdc.dir/build.make CMakeFiles/cmTC_95fdc.dir/build
-make[1]: Entering directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_95fdc.dir/src.cxx.o
-/usr/bin/c++    -DHAVE_KYOTOCABINET   -o CMakeFiles/cmTC_95fdc.dir/src.cxx.o -c /users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx
-/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx:2:22: fatal error: kcpolydb.h: No such file or directory
-compilation terminated.
-CMakeFiles/cmTC_95fdc.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_95fdc.dir/src.cxx.o' failed
-make[1]: *** [CMakeFiles/cmTC_95fdc.dir/src.cxx.o] Error 1
-make[1]: Leaving directory '/users/yifann/research/leveldb/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_95fdc/fast' failed
-make: *** [cmTC_95fdc/fast] Error 2
+Run Build Command(s):C:/TDM-GCC-64/bin/mingw32-make.exe cmTC_1cbef/fast && C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTC_1cbef.dir\build.make CMakeFiles/cmTC_1cbef.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_1cbef.dir/src.cxx.obj
+C:\TDM-GCC-64\bin\g++.exe    -DHAVE_KYOTOCABINET   -o CMakeFiles\cmTC_1cbef.dir\src.cxx.obj -c C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx
+C:\Users\daiyi\Desktop\Research\temp\leveldb\cmake-build-debug\CMakeFiles\CMakeTmp\src.cxx:2:22: fatal error: kcpolydb.h: No such file or directory
+compilation terminated.
+CMakeFiles\cmTC_1cbef.dir\build.make:64: recipe for target 'CMakeFiles/cmTC_1cbef.dir/src.cxx.obj' failed
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_1cbef.dir/src.cxx.obj] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/daiyi/Desktop/Research/temp/leveldb/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:120: recipe for target 'cmTC_1cbef/fast' failed
+mingw32-make.exe: *** [cmTC_1cbef/fast] Error 2
 
 
 Source file was:

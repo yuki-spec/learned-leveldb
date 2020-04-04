@@ -1,8 +1,10 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/status_test.dir/util/status_test.cc.o"
-  "CMakeFiles/status_test.dir/util/testharness.cc.o"
-  "CMakeFiles/status_test.dir/util/testutil.cc.o"
-  "status_test"
+  "CMakeFiles/status_test.dir/util/status_test.cc.obj"
+  "CMakeFiles/status_test.dir/util/testharness.cc.obj"
+  "CMakeFiles/status_test.dir/util/testutil.cc.obj"
+  "libstatus_test.dll.a"
+  "status_test.exe"
+  "status_test.exe.manifest"
   "status_test.pdb"
 )
 

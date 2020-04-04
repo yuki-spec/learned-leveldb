@@ -25,10 +25,7 @@ get_intersetction(struct line l1, struct line l2) {
     double b = l2.a;
     double c = l1.b;
     double d = l2.b;
-    struct point p{
-            .x = (d - c) / (a - b),
-            .y = (a * d - b * c) / (a - b)
-    };
+    struct point p {(d - c) / (a - b), (a * d - b * c) / (a - b)};
     return p;
 }
 
@@ -44,19 +41,13 @@ is_below(struct point pt, struct line l) {
 
 struct point
 get_upper_bound(struct point pt, double gamma) {
-    struct point p{
-            .x = pt.x,
-            .y = pt.y + gamma
-    };
+    struct point p {pt.x, pt.y + gamma};
     return p;
 }
 
 struct point
 get_lower_bound(struct point pt, double gamma) {
-    struct point p{
-            .x = pt.x,
-            .y = pt.y - gamma
-    };
+    struct point p {pt.x, pt.y - gamma};
     return p;
 }
 
@@ -68,7 +59,7 @@ GreedyPLR::GreedyPLR(double gamma) {
 int counter = 0;
 
 struct segment
-GreedyPLR::process(struct point& pt) {
+GreedyPLR::process(const struct point& pt) {
     this->last_pt = pt;
     if (this->state.compare("need2") == 0) {
         this->s0 = pt;
@@ -164,18 +155,20 @@ PLR::PLR(double gamma) {
     this->gamma = gamma;
 }
 
-std::vector <segment>&
-PLR::train(std::vector <point>& points, bool file) {
+std::deque <segment>&
+PLR::train(std::deque<string>& keys, bool file) {
     GreedyPLR plr(this->gamma);
     int count = 0;
-    for (struct point &pt : points) {
-        struct segment seg = plr.process(pt);
+    size_t size = keys.size();
+    for (int i = 0; i < size; ++i) {
+        struct segment seg = plr.process(point((double) stoull(keys.front()), i));
         if (seg.start != 0 ||
             seg.stop != 0 ||
             seg.slope != 0 ||
             seg.intercept != 0) {
             this->segments.push_back(seg);
         }
+        keys.pop_front();
 
         if (!file && ++count % 10 == 0 && adgMod::env->compaction_awaiting.load() != 0) {
             segments.clear();

@@ -15,7 +15,7 @@ namespace adgMod {
 
     Stats* Stats::singleton = nullptr;
 
-    Stats::Stats() : timers(12, Timer{}), level_stats(9, 0), counters(10), initial_time(__rdtsc()) {}
+    Stats::Stats() : timers(20, Timer{}), level_stats(9, 0), counters(10), initial_time(__rdtsc()) {}
 
     Stats* Stats::GetInstance() {
         if (!singleton) singleton = new Stats();
@@ -52,7 +52,7 @@ namespace adgMod {
 
     void Stats::ReportTimeSeries(uint32_t id) {
         printf("TimeSeries %u: ", id);
-        timers[id].ReportTimeSeries();
+        //timers[id].ReportTimeSeries();
         printf("\n");
     }
 
@@ -68,9 +68,19 @@ namespace adgMod {
         }
     }
 
+    void Stats::ResetLevel() {
+        for (auto& item: level_stats) {
+            item = 0;
+        }
+    }
+
 
     void Stats::IncrementCounter(int id) {
         counters[id].Increment();
+    }
+
+    void Stats::IncrementCounter(int id, int n) {
+        counters[id].Increment(n);
     }
 
     int Stats::ReportCounter(int id) {
@@ -83,7 +93,7 @@ namespace adgMod {
 
     void Stats::ReportEventWithTime(const string &event) {
         uint64_t time_absolute = __rdtsc() - initial_time;
-        printf("%s %lu\n", event.c_str(), (uint64_t) (time_absolute / reference_frequency));
+        //printf("%s %lu\n", event.c_str(), (uint64_t) (time_absolute / reference_frequency));
     }
 
 
