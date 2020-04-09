@@ -342,17 +342,14 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
 #endif
 
     if (iiter->Valid()) {
-      instance->StartTimer(7);
       Slice handle_value = iiter->value();
       FilterBlockReader* filter = rep_->filter;
       BlockHandle handle;
       if (filter != nullptr && handle.DecodeFrom(&handle_value).ok() &&
           !filter->KeyMayMatch(handle.offset(), k)) {
         // Not found
-        instance->PauseTimer(7);
         instance->IncrementCounter(5);
       } else {
-        instance->PauseTimer(7);
 #ifdef INTERNAL_TIMER
         instance->StartTimer(5);
 #endif
@@ -415,6 +412,7 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
     assert(index_iter->Valid());
     Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
     uint64_t num_entries_this_block = block_iter->num_restarts_ * adgMod::block_restart_interval;
+
     if (!adgMod::block_num_entries_recorded) {
       adgMod::block_num_entries = num_entries_this_block;
       adgMod::block_num_entries_recorded = true;
@@ -425,8 +423,6 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
       adgMod::block_size = temp.size() + kBlockTrailerSize;
     }
 
-
-
     ParsedInternalKey parsed_key;
     for (block_iter->SeekToRestartPoint(0); block_iter->ParseNextKey();) {
         ParseInternalKey(block_iter->key(), &parsed_key);
@@ -434,7 +430,9 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
     }
 
     uint64_t current_total = data->num_entries_accumulated.NumEntries();
-    data->num_entries_accumulated.Add(current_total + num_entries_this_block, std::string(parsed_key.user_key.data(), parsed_key.user_key.size()));
+    if (!data->Learned()) {
+        data->num_entries_accumulated.Add(current_total + num_entries_this_block, std::string(parsed_key.user_key.data(), parsed_key.user_key.size()));
+    }
     delete block_iter;
   }
   delete index_iter;

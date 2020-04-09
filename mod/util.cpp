@@ -27,11 +27,12 @@ namespace adgMod {
     bool use_filter = false;
     bool restart_read = false;
 
-    int file_allowed_seek = 1;
-    int level_allowed_seek = file_allowed_seek * 1000;
+    int file_allowed_seek = 10;
+    int level_allowed_seek = file_allowed_seek * 100;
     float reference_frequency = 2.6;
     bool block_num_entries_recorded = false;
-    bool level_learning_enabled = true;
+    bool level_learning_enabled = false;
+    bool file_learning_enabled = false;
     uint64_t block_num_entries = 0;
     uint64_t block_size = 0;
     uint64_t entry_size = 0;

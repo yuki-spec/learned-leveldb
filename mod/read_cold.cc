@@ -81,7 +81,7 @@ enum LoadType {
 };
 
 int main(int argc, char *argv[]) {
-    int num_gets, num_iteration;
+    int num_operations, num_iteration, num_mix;
     float test_num_segments_base;
     float num_pair_step;
     string db_location, profiler_out, input_filename;
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
     commandline_options.add_options()
-            ("n,get_number", "the number of gets (to be multiplied by 1024)", cxxopts::value<int>(num_gets)->default_value("1024"))
+            ("n,get_number", "the number of gets (to be multiplied by 1024)", cxxopts::value<int>(num_operations)->default_value("1024"))
             ("s,step", "the step of the loop of the size of db", cxxopts::value<float>(num_pair_step)->default_value("1"))
             ("i,iteration", "the number of iterations of a same size", cxxopts::value<int>(num_iteration)->default_value("1"))
             ("m,modification", "if set, run our modified version", cxxopts::value<int>(adgMod::MOD)->default_value("0"))
@@ -111,7 +111,8 @@ int main(int argc, char *argv[]) {
             ("u,unlimit_fd", "unlimit fd", cxxopts::value<bool>(unlimit_fd)->default_value("false"))
             ("x,dummy", "dummy option")
             ("l,load_type", "load type", cxxopts::value<int>(load_type)->default_value("0"))
-            ("filter", "use filter", cxxopts::value<bool>(adgMod::use_filter)->default_value("false"));
+            ("filter", "use filter", cxxopts::value<bool>(adgMod::use_filter)->default_value("false"))
+            ("mix", "mix read and write", cxxopts::value<int>(num_mix)->default_value(to_string(std::numeric_limits<int>::max())));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -119,7 +120,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::default_random_engine e1, e2;
-    num_gets *= 1024;
+    num_operations *= 1024;
 
     adgMod::fd_limit = unlimit_fd ? 1024 * 1024 : 1024;
     adgMod::restart_read = true;
@@ -161,13 +162,11 @@ int main(int argc, char *argv[]) {
             string command = "rm -rf " + db_location;
             system(command.c_str());
             system("sudo fstrim -a -v");
+            system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
             cout << "delete and trim complete" << endl;
 
             status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
-
-
-
 
 
             instance->StartTimer(9);
@@ -226,10 +225,11 @@ int main(int argc, char *argv[]) {
             status = DB::Open(options, db_location, &db);
             adgMod::db->WaitForBackground();
             if (adgMod::MOD == 6 || adgMod::MOD == 7) {
+                Version* current = adgMod::db->versions_->current();
                 for (int i = 1; i < config::kNumLevels; ++i) {
-                    Version* current = adgMod::db->versions_->current();
                     LearnedIndexData::Learn(new VersionAndSelf{current, adgMod::db->version_count, current->learned_index_data_[i].get(), i});
                 }
+                current->FileLearn();
             }
             cout << "Shutting down" << endl;
             adgMod::db->WaitForBackground();
@@ -248,7 +248,7 @@ int main(int argc, char *argv[]) {
 
         }
 
-        if (evict) system("sync; echo 1 | sudo tee /proc/sys/vm/drop_caches");
+        if (evict) system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
 
         cout << "Starting up" << endl;
         status = DB::Open(options, db_location, &db);
@@ -270,22 +270,26 @@ int main(int argc, char *argv[]) {
 //        return 0;
 
         instance->StartTimer(10);
-        for (int i = 0; i < num_gets; ++i) {
-            string value;
-            const string& key = keys[uniform_dist_file(e1) % (keys.size() - 1)];
-            instance->StartTimer(4);
-            status = db->Get(read_options, key, &value);
-            instance->PauseTimer(4);
-            //cout << "Get " << key << " : " << value << endl;
+        for (int i = 0; i < num_operations; ++i) {
 
-            if (!status.ok()) {
-                cout << key << " Not Found" << endl;
-                //assert(status.ok() && "File Get Error");
+            if (i != 0 && i % num_mix == 0) {
+                status = db->Put(write_options, keys[uniform_dist_file(e1) % (keys.size() - 1)], {values.data() + uniform_dist_value(e2), (uint64_t) adgMod::value_size});
+                assert(status.ok() && "Mix Put Error");
+            } else {
+                string value;
+                const string& key = keys[uniform_dist_file(e1) % (keys.size() - 1)];
+                instance->StartTimer(4);
+                status = db->Get(read_options, key, &value);
+                instance->PauseTimer(4);
+
+                //cout << "Get " << key << " : " << value << endl;
+                if (!status.ok()) {
+                    cout << key << " Not Found" << endl;
+                    //assert(status.ok() && "File Get Error");
+                }
             }
-
-
         }
-        instance->PauseTimer(10, true);
+        instance->PauseTimer(10);
 
         instance->ReportTime();
 

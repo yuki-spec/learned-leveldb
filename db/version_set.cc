@@ -1735,27 +1735,41 @@ bool Version::FillLevel(const ReadOptions &options, int level) {
         adgMod::file_data->FillData(this, file);
         auto& file_data = adgMod::file_data->GetData(file);
         data->string_keys.insert(data->string_keys.end(), file_data.begin(), file_data.end());
-        file_data.clear();
+        //file_data.clear();
 
 
         uint64_t current_total = data->num_entries_accumulated.NumEntries();
         const Slice& largest_key = file->largest.user_key();
         data->num_entries_accumulated.Add(current_total + adgMod::file_data->GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
-        adgMod::file_data->GetAccumulatedArray(file->number)->array.clear();
+        //adgMod::file_data->GetAccumulatedArray(file->number)->array.clear();
     }
-    uint64_t size = data->string_keys.size();
     return true;
 }
 
 void Version::WriteLevelModel() {
     for (int i = 1; i < config::kNumLevels; ++i) {
-        //learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        for (FileMetaData* file_meta : files_[i]) {
+            adgMod::file_data->GetModel(file_meta)->WriteModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+        }
     }
 }
 
 void Version::ReadLevelModel() {
     for (int i = 1; i < config::kNumLevels; ++i) {
-        learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+
+        //learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        for (FileMetaData* file_meta : files_[i]) {
+            adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+        }
+    }
+}
+
+void Version::FileLearn() {
+    for (int i = 1; i < config::kNumLevels; ++i) {
+        for (FileMetaData* file_meta : files_[i]) {
+            adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{this, adgMod::db->version_count, file_meta, adgMod::file_data->GetModel(file_meta)});
+        }
     }
 }
 

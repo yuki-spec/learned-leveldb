@@ -1147,6 +1147,8 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
 
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
 
+
+
   Status s;
   MutexLock l(&mutex_);
   SequenceNumber snapshot;
@@ -1168,49 +1170,33 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
   Version::GetStats stats;
 
 
+
   // Unlock while reading from files and memtables
   {
     mutex_.Unlock();
     // First look in the memtable, then in the immutable memtable (if any).
     LookupKey lkey(key, snapshot);
-
-
-
-
-    if (adgMod::restart_read) {
+    instance->StartTimer(14);
+    if (mem->Get(lkey, value, &s)) {
+        instance->IncrementCounter(3);
+        instance->PauseTimer(14);
+#ifdef RECORD_LEVEL_INFO
+        instance->RecordLevel(8);
+#endif
+        // Done
+    } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
+        instance->IncrementCounter(3);
+        instance->PauseTimer(14);
+#ifdef RECORD_LEVEL_INFO
+        instance->RecordLevel(8);
+#endif
+        // Done
+    } else {
+        instance->PauseTimer(14);
         instance->StartTimer(6);
         s = current->Get(options, lkey, value, &stats);
         instance->PauseTimer(6);
-        have_stat_update = true;
-    } else {
-        instance->StartTimer(14);
-        if (mem->Get(lkey, value, &s)) {
-            instance->IncrementCounter(3);
-            instance->PauseTimer(14);
-#ifdef RECORD_LEVEL_INFO
-            instance->RecordLevel(8);
-#endif
-            // Done
-        } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
-            instance->IncrementCounter(3);
-            instance->PauseTimer(14);
-#ifdef RECORD_LEVEL_INFO
-            instance->RecordLevel(8);
-#endif
-            // Done
-        } else {
-
-            instance->PauseTimer(14);
-
-            instance->StartTimer(6);
-            s = current->Get(options, lkey, value, &stats);
-            instance->PauseTimer(6);
-            have_stat_update = true;
-        }
     }
-
-
-
 
     if (adgMod::MOD >= 7 && s.ok()) {
         instance->StartTimer(12);
@@ -1222,13 +1208,12 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
     mutex_.Lock();
   }
 
-  if (have_stat_update && current->UpdateStats(stats)) {
-    //MaybeScheduleCompaction();
-  }
+//  if (have_stat_update && current->UpdateStats(stats)) {
+//    MaybeScheduleCompaction();
+//  }
   mem->Unref();
   if (imm != nullptr) imm->Unref();
   current->Unref();
-
   return s;
 }
 

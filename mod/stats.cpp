@@ -52,7 +52,7 @@ namespace adgMod {
 
     void Stats::ReportTimeSeries(uint32_t id) {
         printf("TimeSeries %u: ", id);
-        //timers[id].ReportTimeSeries();
+        timers[id].ReportTimeSeries();
         printf("\n");
     }
 
@@ -93,7 +93,7 @@ namespace adgMod {
 
     void Stats::ReportEventWithTime(const string &event) {
         uint64_t time_absolute = __rdtsc() - initial_time;
-        //printf("%s %lu\n", event.c_str(), (uint64_t) (time_absolute / reference_frequency));
+        printf("%s %lu\n", event.c_str(), (uint64_t) (time_absolute / reference_frequency));
     }
 
 

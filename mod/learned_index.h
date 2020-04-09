@@ -94,6 +94,7 @@ namespace adgMod {
         uint64_t MaxPosition() const;
         double GetError() const;
         bool Learn();
+        bool Learned();
         bool Learned(Version* version, int v_count, int level);
         bool Learned(Version* version, int v_count, FileMetaData* meta);
         static void Learn(void* arg);
@@ -114,6 +115,7 @@ namespace adgMod {
         std::deque<std::string>& GetData(FileMetaData* meta);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key, int file_num);
         AccumulatedNumEntriesArray* GetAccumulatedArray(int file_num);
+        LearnedIndexData* GetModel(FileMetaData* meta);
         ~FileLearnedIndexData();
     };
 

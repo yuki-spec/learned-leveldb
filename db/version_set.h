@@ -119,6 +119,7 @@ class Version {
   bool FillLevel(const ReadOptions& options, int level);
   void WriteLevelModel();
   void ReadLevelModel();
+  void FileLearn();
 
  private:
   friend class Compaction;

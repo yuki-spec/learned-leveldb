@@ -7,19 +7,32 @@
 #ifndef STORAGE_LEVELDB_DB_TABLE_CACHE_H_
 #define STORAGE_LEVELDB_DB_TABLE_CACHE_H_
 
-#include <stdint.h>
-
+#include <cstdint>
 #include <string>
 
 #include "db/dbformat.h"
 #include "leveldb/cache.h"
 #include "leveldb/table.h"
+#include "table/filter_block.h"
 #include "port/port.h"
 #include "version_edit.h"
 
 namespace leveldb {
 
 class Env;
+
+class FilterAndFile {
+public:
+    RandomAccessFile* file;
+    FilterBlockReader* filter;
+
+
+    FilterAndFile() : file(nullptr), filter(nullptr) {}
+    ~FilterAndFile() {
+        delete file;
+        delete filter;
+    }
+};
 
 class TableCache {
  public:
@@ -53,8 +66,10 @@ class TableCache {
                  void (*handle_result)(void*, const Slice&, const Slice&),
                  FileMetaData* meta = nullptr, uint64_t lower = 0, uint64_t upper = 0, bool learned = false, Version* version = nullptr);
 
+
  private:
   Status FindTable(uint64_t file_number, uint64_t file_size, Cache::Handle**);
+  Cache::Handle* FindFile(const ReadOptions& options, uint64_t file_number, uint64_t file_size);
 
   Env* const env_;
   const std::string dbname_;

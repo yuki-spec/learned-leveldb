@@ -161,14 +161,13 @@ PLR::train(std::deque<string>& keys, bool file) {
     int count = 0;
     size_t size = keys.size();
     for (int i = 0; i < size; ++i) {
-        struct segment seg = plr.process(point((double) stoull(keys.front()), i));
+        struct segment seg = plr.process(point((double) stoull(keys[i]), i));
         if (seg.start != 0 ||
             seg.stop != 0 ||
             seg.slope != 0 ||
             seg.intercept != 0) {
             this->segments.push_back(seg);
         }
-        keys.pop_front();
 
         if (!file && ++count % 10 == 0 && adgMod::env->compaction_awaiting.load() != 0) {
             segments.clear();

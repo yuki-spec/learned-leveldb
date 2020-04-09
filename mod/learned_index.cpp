@@ -108,9 +108,9 @@ namespace adgMod {
         instance->PauseTimer(8, true);
         instance->IncrementCounter(7, self->string_segments.size());
         instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
-        self->WriteModel(vas->version->vset_->dbname_ + "/" + to_string(vas->level) + ".model");
-        self->string_segments.clear();
-        self->num_entries_accumulated.array.clear();
+        //self->WriteModel(vas->version->vset_->dbname_ + "/" + to_string(vas->level) + ".model");
+        //self->string_segments.clear();
+        //self->num_entries_accumulated.array.clear();
         delete vas;
     }
 
@@ -134,14 +134,21 @@ namespace adgMod {
         instance->PauseTimer(11, true);
     }
 
+    bool LearnedIndexData::Learned() {
+        if (learned_not_atomic) return true;
+        else if (learned.load()) {
+            learned_not_atomic = true;
+            return true;
+        } else return false;
+    }
+
     bool LearnedIndexData::Learned(Version* version, int v_count, int level) {
-        if (!level_learning_enabled) return false;
-        else if (learned_not_atomic) return true;
+        if (learned_not_atomic) return true;
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
         } else {
-            if (++current_seek >= allowed_seek && !learning.exchange(true)) {
+            if (level_learning_enabled && ++current_seek >= allowed_seek && !learning.exchange(true)) {
                 env->ScheduleLearning(&LearnedIndexData::Learn, new VersionAndSelf{version, v_count, this, level}, 0);
             }
             return false;
@@ -154,7 +161,7 @@ namespace adgMod {
             learned_not_atomic = true;
             return true;
         } else {
-            if (++current_seek >= allowed_seek && !learning.exchange(true)) {
+            if (file_learning_enabled && ++current_seek >= allowed_seek && !learning.exchange(true)) {
                 env->ScheduleLearning(&LearnedIndexData::FileLearn, new MetaAndSelf{version, v_count, meta, this}, 0);
             }
             return false;
@@ -215,17 +222,18 @@ namespace adgMod {
 
 
 
-
+    LearnedIndexData* FileLearnedIndexData::GetModel(FileMetaData *meta) {
+        leveldb::MutexLock l(&mutex);
+        if (file_learned_index_data.size() <= meta->number)
+            file_learned_index_data.resize(meta->number + 1, nullptr);
+        if (file_learned_index_data[meta->number] == nullptr)
+            file_learned_index_data[meta->number] = new LearnedIndexData(file_allowed_seek);
+        return file_learned_index_data[meta->number];
+    }
 
     bool FileLearnedIndexData::FillData(Version *version, FileMetaData *meta) {
-        {
-            leveldb::MutexLock l(&mutex);
-            if (file_learned_index_data.size() <= meta->number)
-                file_learned_index_data.resize(meta->number + 1, nullptr);
-            if (file_learned_index_data[meta->number] == nullptr)
-                file_learned_index_data[meta->number] = new LearnedIndexData(file_allowed_seek);
-        }
-        return file_learned_index_data[meta->number]->FillData(version ,meta);
+        LearnedIndexData* model = GetModel(meta);
+        return model->FillData(version, meta);
     }
 
     std::deque<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
@@ -233,12 +241,8 @@ namespace adgMod {
     }
 
     bool FileLearnedIndexData::Learned(Version* version, FileMetaData* meta) {
-        leveldb::MutexLock l(&mutex);
-        if (file_learned_index_data.size() <= meta->number)
-            file_learned_index_data.resize(meta->number + 1, nullptr);
-        if (file_learned_index_data[meta->number] == nullptr)
-            file_learned_index_data[meta->number] = new LearnedIndexData(file_allowed_seek);
-        return file_learned_index_data[meta->number]->Learned(version, db->version_count, meta);
+        LearnedIndexData* model = GetModel(meta);
+        return model->Learned(version, db->version_count, meta);
     }
 
     AccumulatedNumEntriesArray* FileLearnedIndexData::GetAccumulatedArray(int file_num) {
