@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     float test_num_segments_base;
     float num_pair_step;
     string db_location, profiler_out, input_filename;
-    bool print_single_timing, print_file_info, write, evict, unlimit_fd;
+    bool print_single_timing, print_file_info, evict, unlimit_fd;
     int load_type;
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
             ("e,model_error", "error in modesl", cxxopts::value<uint32_t>(adgMod::model_error)->default_value("8"))
             ("f,input_file", "the filename of input file", cxxopts::value<string>(input_filename)->default_value(""))
             ("multiple", "test: use larger keys", cxxopts::value<uint64_t>(adgMod::key_multiple)->default_value("1"))
-            ("w,write", "writedb", cxxopts::value<bool>(write)->default_value("false"))
+            ("w,write", "writedb", cxxopts::value<bool>(fresh_write)->default_value("false"))
             ("c,uncache", "evict cache", cxxopts::value<bool>(evict)->default_value("false"))
             ("u,unlimit_fd", "unlimit fd", cxxopts::value<bool>(unlimit_fd)->default_value("false"))
             ("x,dummy", "dummy option")
@@ -140,8 +140,11 @@ int main(int argc, char *argv[]) {
 
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
     vector<size_t> time_sums(20, 0);
+    string values(1024 * 1024, '0');
+    system("sudo fstrim -a -v");
+    
     for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
-        string values(1024 * 1024, '0');
+
         std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
         std::uniform_int_distribution<uint64_t > uniform_dist_value(0, (uint64_t) values.size() - adgMod::value_size - 1);
 
@@ -158,10 +161,10 @@ int main(int argc, char *argv[]) {
         write_options.sync = false;
         instance->ResetAll(true);
 
-        if (write && iteration == 0) {
+
+        if (fresh_write && iteration == 0) {
             string command = "rm -rf " + db_location;
             system(command.c_str());
-            system("sudo fstrim -a -v");
             system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
             cout << "delete and trim complete" << endl;
 
@@ -245,7 +248,7 @@ int main(int argc, char *argv[]) {
                 }
                 adgMod::key_size = (int) keys.front().size();
             }
-
+            fresh_write = false;
         }
 
         if (evict) system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");

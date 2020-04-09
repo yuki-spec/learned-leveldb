@@ -39,6 +39,7 @@ namespace adgMod {
     extern uint64_t fd_limit;
     extern bool use_filter;
     extern bool restart_read;
+    extern bool fresh_write;
 
     extern int file_allowed_seek;
     extern int level_allowed_seek;

@@ -26,6 +26,7 @@ namespace adgMod {
     uint64_t fd_limit;
     bool use_filter = false;
     bool restart_read = false;
+    bool fresh_write = false;
 
     int file_allowed_seek = 10;
     int level_allowed_seek = file_allowed_seek * 100;

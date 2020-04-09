@@ -857,7 +857,7 @@ VersionSet::VersionSet(const std::string& dbname, const Options* options,
 }
 
 VersionSet::~VersionSet() {
-  current_->WriteLevelModel();
+  if (adgMod::fresh_write) current_->WriteLevelModel();
   current_->Unref();
 
   //assert(dummy_versions_.next_ == &dummy_versions_);  // List must be empty
@@ -1758,9 +1758,9 @@ void Version::WriteLevelModel() {
 void Version::ReadLevelModel() {
     for (int i = 1; i < config::kNumLevels; ++i) {
 
-        //learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
         for (FileMetaData* file_meta : files_[i]) {
-            adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+            //adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
         }
     }
 }
