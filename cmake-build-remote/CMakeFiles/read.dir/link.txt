@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/read.dir/util/testharness.cc.o CMakeFiles/read.dir/util/testutil.cc.o CMakeFiles/read.dir/mod/read.cc.o  -o read libleveldb.a -ltcmalloc -lpthread 

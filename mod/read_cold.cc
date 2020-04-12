@@ -84,8 +84,8 @@ int main(int argc, char *argv[]) {
     int num_operations, num_iteration, num_mix;
     float test_num_segments_base;
     float num_pair_step;
-    string db_location, profiler_out, input_filename;
-    bool print_single_timing, print_file_info, evict, unlimit_fd;
+    string db_location, profiler_out, input_filename, distribution_filename;
+    bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false;
     int load_type;
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
@@ -112,7 +112,8 @@ int main(int argc, char *argv[]) {
             ("x,dummy", "dummy option")
             ("l,load_type", "load type", cxxopts::value<int>(load_type)->default_value("0"))
             ("filter", "use filter", cxxopts::value<bool>(adgMod::use_filter)->default_value("false"))
-            ("mix", "mix read and write", cxxopts::value<int>(num_mix)->default_value(to_string(std::numeric_limits<int>::max())));
+            ("mix", "mix read and write", cxxopts::value<int>(num_mix)->default_value(to_string(std::numeric_limits<int>::max())))
+            ("distribution", "operation distribution", cxxopts::value<string>(distribution_filename)->default_value(""));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -127,6 +128,7 @@ int main(int argc, char *argv[]) {
     //db_location += to_string(adgMod::MOD);
 
     vector<string> keys;
+    vector<uint64_t> distribution;
     //keys.reserve(100000000000 / adgMod::value_size);
     if (!input_filename.empty()) {
         ifstream input(input_filename);
@@ -272,15 +274,25 @@ int main(int argc, char *argv[]) {
 //        delete db;
 //        return 0;
 
+        if (!distribution_filename.empty()) {
+            use_distribution = true;
+            ifstream input(distribution_filename);
+            uint64_t index;
+            while (input >> index) {
+                distribution.push_back(index);
+            }
+        }
+
         instance->StartTimer(10);
         for (int i = 0; i < num_operations; ++i) {
+            uint64_t index = use_distribution ? distribution[i] : uniform_dist_file(e1) % (keys.size() - 1);
 
             if (i != 0 && i % num_mix == 0) {
-                status = db->Put(write_options, keys[uniform_dist_file(e1) % (keys.size() - 1)], {values.data() + uniform_dist_value(e2), (uint64_t) adgMod::value_size});
+                status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e2), (uint64_t) adgMod::value_size});
                 assert(status.ok() && "Mix Put Error");
             } else {
                 string value;
-                const string& key = keys[uniform_dist_file(e1) % (keys.size() - 1)];
+                const string& key = keys[index];
                 instance->StartTimer(4);
                 status = db->Get(read_options, key, &value);
                 instance->PauseTimer(4);

@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2019.3.3\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\read_cold.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\read_cold.dir/objects.a @CMakeFiles\read_cold.dir\objects1.rsp
+C:\TDM-GCC-64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\read_cold.dir/objects.a -Wl,--no-whole-archive  -o read_cold.exe -Wl,--out-implib,libread_cold.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\read_cold.dir\linklibs.rsp

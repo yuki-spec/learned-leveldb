@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/table_test.dir/util/testharness.cc.o CMakeFiles/table_test.dir/util/testutil.cc.o CMakeFiles/table_test.dir/table/table_test.cc.o  -o table_test libleveldb.a -ltcmalloc -lpthread 
