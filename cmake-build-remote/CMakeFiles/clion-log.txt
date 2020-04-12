@@ -1,4 +1,0 @@
-/usr/local/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DINTERNAL_TIMER_SWITCH=ON -DLEVEL_SWITCH=ON -G "CodeBlocks - Unix Makefiles" /users/yifann/research/leveldb/leveldb
--- Configuring done
--- Generating done
--- Build files have been written to: /users/yifann/research/leveldb/leveldb/cmake-build-remote

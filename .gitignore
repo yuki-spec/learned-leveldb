@@ -4,8 +4,7 @@
 .DS_Store
 .idea/*
 ./cmake/*
-./cmake-build-debug/*
-./cmake-build-remote/*
+cmake-*
 
 # Build directory.
 build/
