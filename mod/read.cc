@@ -8,7 +8,6 @@
 #include "learned_index.h"
 #include <cstring>
 #include "cxxopts.hpp"
-#include <gperftools/profiler.h>
 #include <unistd.h>
 #include <fstream>
 

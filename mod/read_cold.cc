@@ -8,7 +8,6 @@
 #include "learned_index.h"
 #include <cstring>
 #include "cxxopts.hpp"
-#include <gperftools/profiler.h>
 #include <unistd.h>
 #include <fstream>
 #include "../db/version_set.h"
@@ -139,6 +138,16 @@ int main(int argc, char *argv[]) {
         }
         adgMod::key_size = (int) keys.front().size();
     }
+
+    if (!distribution_filename.empty()) {
+        use_distribution = true;
+        ifstream input(distribution_filename);
+        uint64_t index;
+        while (input >> index) {
+            distribution.push_back(index);
+        }
+    }
+
 
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
     vector<size_t> time_sums(20, 0);
@@ -273,15 +282,6 @@ int main(int argc, char *argv[]) {
 //        adgMod::db->WaitForBackground();
 //        delete db;
 //        return 0;
-
-        if (!distribution_filename.empty()) {
-            use_distribution = true;
-            ifstream input(distribution_filename);
-            uint64_t index;
-            while (input >> index) {
-                distribution.push_back(index);
-            }
-        }
 
         instance->StartTimer(10);
         for (int i = 0; i < num_operations; ++i) {

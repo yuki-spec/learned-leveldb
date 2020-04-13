@@ -1758,7 +1758,7 @@ void Version::WriteLevelModel() {
 void Version::ReadLevelModel() {
     for (int i = 1; i < config::kNumLevels; ++i) {
 
-        learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        //learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
         for (FileMetaData* file_meta : files_[i]) {
             //adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
         }

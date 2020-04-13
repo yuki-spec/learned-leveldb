@@ -33,7 +33,7 @@ namespace adgMod {
     float reference_frequency = 2.6;
     bool block_num_entries_recorded = false;
     bool level_learning_enabled = false;
-    bool file_learning_enabled = false;
+    bool file_learning_enabled = true;
     uint64_t block_num_entries = 0;
     uint64_t block_size = 0;
     uint64_t entry_size = 0;
