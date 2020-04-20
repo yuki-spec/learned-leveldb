@@ -47,6 +47,8 @@ namespace adgMod {
     extern bool block_num_entries_recorded;
     extern bool level_learning_enabled;
     extern bool file_learning_enabled;
+    extern bool load_level_model;
+    extern bool load_file_model;
     extern uint64_t block_num_entries;
     extern uint64_t block_size;
     extern uint64_t entry_size;

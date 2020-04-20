@@ -96,6 +96,8 @@ namespace adgMod {
                 if (db->version_count == vas->v_count) {
                     if (env->compaction_awaiting.load() == 0 && self->Learn()) {
                         instance->ReportEventWithTime("L " + to_string(vas->level));
+                        instance->IncrementCounter(7, self->string_segments.size());
+                        instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
                     } else {
                         self->learning.store(false);
                     }
@@ -106,8 +108,6 @@ namespace adgMod {
 
 
         instance->PauseTimer(8, true);
-        instance->IncrementCounter(7, self->string_segments.size());
-        instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
         //self->WriteModel(vas->version->vset_->dbname_ + "/" + to_string(vas->level) + ".model");
         //self->string_segments.clear();
         //self->num_entries_accumulated.array.clear();
@@ -125,6 +125,8 @@ namespace adgMod {
         if (db->version_count == mas->v_count && self->FillData(c, mas->meta)) {
             self->Learn();
             instance->ReportEventWithTime("FL " + to_string(mas->meta->number));
+            instance->IncrementCounter(7, self->string_segments.size());
+            instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
         } else {
             self->learning.store(false);
         }

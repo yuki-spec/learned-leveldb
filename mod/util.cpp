@@ -34,6 +34,8 @@ namespace adgMod {
     bool block_num_entries_recorded = false;
     bool level_learning_enabled = false;
     bool file_learning_enabled = true;
+    bool load_level_model = true;
+    bool load_file_model = true;
     uint64_t block_num_entries = 0;
     uint64_t block_size = 0;
     uint64_t entry_size = 0;

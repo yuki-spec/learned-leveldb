@@ -152,8 +152,17 @@ void TableCache::Evict(uint64_t file_number) {
 }
 
 bool TableCache::FillData(const ReadOptions& options, FileMetaData *meta, adgMod::LearnedIndexData* data) {
+    Cache::Handle* handle = nullptr;
+    FindTable(meta->number, meta->file_size, &handle);
+    Table* t = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
+    s = t->InternalGet(options, k, arg, handle_result, meta, lower, upper, learned, version);
+    instance->StartTimer(1);
+    cache_->Release(handle);
+    instance->PauseTimer(1);
+
+
     Cache::Handle* cache_handle = FindFile(options, meta->number, meta->file_size);
-    FilterAndFile* filter_and_file = reinterpret_cast<FilterAndFile*>(file_cache->Value(cache_handle));
+    TableAndFile* filter_and_file = reinterpret_cast<TableAndFile*>(file_cache->Value(cache_handle));
     RandomAccessFile* file = filter_and_file->file;
 
     Table* table;
@@ -195,45 +204,45 @@ Cache::Handle* TableCache::FindFile(const ReadOptions& options, uint64_t file_nu
         std::string filename = TableFileName(dbname_, file_number);
         env_->NewRandomAccessFileLearned(filename, &file);
 
-        if (adgMod::use_filter) {
-
-            // Load footer
-            char footer_scratch[Footer::kEncodedLength];
-            Slice footer_slice;
-            Status s = file->Read(file_size - Footer::kEncodedLength, Footer::kEncodedLength, &footer_slice, footer_scratch);
-            assert(s.ok());
-            Footer footer;
-            s = footer.DecodeFrom(&footer_slice);
-            assert(s.ok());
-
-            if (options_.filter_policy != nullptr) {
-                // Load meta index block
-
-                BlockContents meta_contents;
-                s = ReadBlock(file, options, footer.metaindex_handle(), &meta_contents);
-                assert(s.ok());
-                Block* meta_block = new Block(meta_contents);
-                Iterator* meta_iter = meta_block->NewIterator(BytewiseComparator());
-                string filter_name = "filter." + (string) options_.filter_policy->Name();
-                meta_iter->Seek(filter_name);
-                assert(meta_iter->Valid() && meta_iter->key() == filter_name);
-
-                // Load filter meta block
-                Slice filter_handle_slice = meta_iter->value();
-                BlockHandle filter_handle;
-                s = filter_handle.DecodeFrom(&filter_handle_slice);
-                assert(s.ok());
-                BlockContents filter_contents;
-                s = ReadBlock(file, options, filter_handle, &filter_contents);
-                filter = new FilterBlockReader(options_.filter_policy, filter_contents.data);
-            }
-        }
+//        if (adgMod::use_filter) {
+//
+//            // Load footer
+//            char footer_scratch[Footer::kEncodedLength];
+//            Slice footer_slice;
+//            Status s = file->Read(file_size - Footer::kEncodedLength, Footer::kEncodedLength, &footer_slice, footer_scratch);
+//            assert(s.ok());
+//            Footer footer;
+//            s = footer.DecodeFrom(&footer_slice);
+//            assert(s.ok());
+//
+//            if (options_.filter_policy != nullptr) {
+//                // Load meta index block
+//
+//                BlockContents meta_contents;
+//                s = ReadBlock(file, options, footer.metaindex_handle(), &meta_contents);
+//                assert(s.ok());
+//                Block* meta_block = new Block(meta_contents);
+//                Iterator* meta_iter = meta_block->NewIterator(BytewiseComparator());
+//                string filter_name = "filter." + (string) options_.filter_policy->Name();
+//                meta_iter->Seek(filter_name);
+//                assert(meta_iter->Valid() && meta_iter->key() == filter_name);
+//
+//                // Load filter meta block
+//                Slice filter_handle_slice = meta_iter->value();
+//                BlockHandle filter_handle;
+//                s = filter_handle.DecodeFrom(&filter_handle_slice);
+//                assert(s.ok());
+//                BlockContents filter_contents;
+//                s = ReadBlock(file, options, filter_handle, &filter_contents);
+//                filter = new FilterBlockReader(options_.filter_policy, filter_contents.data);
+//            }
+//        }
 
         // Insert Cache
-        FilterAndFile* filter_and_file = new FilterAndFile();
-        filter_and_file->file = file;
-        filter_and_file->filter = filter;
-        cache_handle = file_cache->Insert(cache_key, filter_and_file, 1, DeleteFilterAndFile);
+        TableAndFile* tf = new TableAndFile;
+        tf->file = file;
+        tf->table = nullptr;
+        cache_handle = file_cache->Insert(cache_key, tf, 1, DeleteEntry);
     }
 
     return cache_handle;

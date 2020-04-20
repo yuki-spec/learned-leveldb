@@ -11,6 +11,12 @@
 #include <unistd.h>
 #include <fstream>
 
+#ifdef PROFILER
+#include <gperftools/profiler.h>
+#endif
+
+
+
 using namespace leveldb;
 using namespace adgMod;
 using std::string;

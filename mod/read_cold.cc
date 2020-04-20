@@ -84,8 +84,10 @@ int main(int argc, char *argv[]) {
     float test_num_segments_base;
     float num_pair_step;
     string db_location, profiler_out, input_filename, distribution_filename;
-    bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false;
+    bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false, pause;
+    bool change_level_load, change_file_load, change_level_learning, change_file_learning;
     int load_type;
+    string db_location_copy;
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
     commandline_options.add_options()
@@ -98,7 +100,6 @@ int main(int argc, char *argv[]) {
             ("k,key_size", "the size of key", cxxopts::value<int>(adgMod::key_size)->default_value("8"))
             ("v,value_size", "the size of value", cxxopts::value<int>(adgMod::value_size)->default_value("8"))
             ("single_timing", "print the time of every single get", cxxopts::value<bool>(print_single_timing)->default_value("false"))
-            ("p,profile_out", "the file for profiler output", cxxopts::value<string>(profiler_out)->default_value("/tmp/profiler.out"))
             ("file_info", "print the file structure info", cxxopts::value<bool>(print_file_info)->default_value("false"))
             ("test_num_segments", "test: number of segments per level", cxxopts::value<float>(test_num_segments_base)->default_value("1"))
             ("string_mode", "test: use string or int in model", cxxopts::value<bool>(adgMod::string_mode)->default_value("false"))
@@ -112,7 +113,12 @@ int main(int argc, char *argv[]) {
             ("l,load_type", "load type", cxxopts::value<int>(load_type)->default_value("0"))
             ("filter", "use filter", cxxopts::value<bool>(adgMod::use_filter)->default_value("false"))
             ("mix", "mix read and write", cxxopts::value<int>(num_mix)->default_value(to_string(std::numeric_limits<int>::max())))
-            ("distribution", "operation distribution", cxxopts::value<string>(distribution_filename)->default_value(""));
+            ("distribution", "operation distribution", cxxopts::value<string>(distribution_filename)->default_value(""))
+            ("change_level_load", "load level model", cxxopts::value<bool>(change_level_load)->default_value("false"))
+            ("change_file_load", "enable level learning", cxxopts::value<bool>(change_file_load)->default_value("false"))
+            ("change_level_learning", "load file model", cxxopts::value<bool>(change_level_learning)->default_value("false"))
+            ("change_file_learning", "enable file learning", cxxopts::value<bool>(change_file_learning)->default_value("false"))
+            ("p,pause", "pause between operation", cxxopts::value<bool>(pause)->default_value("false"));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -120,11 +126,15 @@ int main(int argc, char *argv[]) {
     }
 
     std::default_random_engine e1, e2;
-    num_operations *= 1024;
+    num_operations *= num_pairs_base;
+    db_location_copy = db_location;
 
     adgMod::fd_limit = unlimit_fd ? 1024 * 1024 : 1024;
     adgMod::restart_read = true;
-    //db_location += to_string(adgMod::MOD);
+    adgMod::level_learning_enabled ^= change_level_learning;
+    adgMod::file_learning_enabled ^= change_file_learning;
+    adgMod::load_level_model ^= change_level_load;
+    adgMod::load_file_model ^= change_file_load;
 
     vector<string> keys;
     vector<uint64_t> distribution;
@@ -150,12 +160,12 @@ int main(int argc, char *argv[]) {
 
 
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
-    vector<size_t> time_sums(20, 0);
+    vector<vector<size_t>> times(20);
     string values(1024 * 1024, '0');
-    system("sudo fstrim -a -v");
     
     for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
-
+        system("sudo fstrim -a -v");
+        db_location = db_location_copy;
         std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
         std::uniform_int_distribution<uint64_t > uniform_dist_value(0, (uint64_t) values.size() - adgMod::value_size - 1);
 
@@ -262,6 +272,20 @@ int main(int argc, char *argv[]) {
             fresh_write = false;
         }
 
+
+
+        if (num_mix < num_operations) {
+            string db_location_mix = db_location + "_mix";
+            string remove_command = "rm -rf " + db_location_mix;
+            string copy_command = "cp -r " + db_location + " " + db_location_mix;
+            system(remove_command.c_str());
+            system(copy_command.c_str());
+            db_location = db_location_mix;
+        }
+
+
+
+
         if (evict) system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
 
         cout << "Starting up" << endl;
@@ -283,8 +307,10 @@ int main(int argc, char *argv[]) {
 //        delete db;
 //        return 0;
 
-        instance->StartTimer(10);
+
         for (int i = 0; i < num_operations; ++i) {
+            instance->StartTimer(10);
+
             uint64_t index = use_distribution ? distribution[i] : uniform_dist_file(e1) % (keys.size() - 1);
 
             if (i != 0 && i % num_mix == 0) {
@@ -303,8 +329,10 @@ int main(int argc, char *argv[]) {
                     //assert(status.ok() && "File Get Error");
                 }
             }
+            instance->PauseTimer(10, true);
+            if (pause) usleep(100);
         }
-        instance->PauseTimer(10);
+
 
         instance->ReportTime();
 
@@ -316,20 +344,31 @@ int main(int argc, char *argv[]) {
         }
         instance->ReportLevelStats();
 
-        for (int s = 0; s < time_sums.size(); ++s) {
-            time_sums[s] += instance->ReportTime(s);
+        for (int s = 0; s < times.size(); ++s) {
+            times[s].push_back(instance->ReportTime(s));
         }
         adgMod::db->WaitForBackground();
-        //sleep(10);
+        sleep(10);
         instance->ReportTimeSeries(7);
         instance->ReportTimeSeries(8);
         instance->ReportTimeSeries(9);
         instance->ReportTimeSeries(10);
         instance->ReportTimeSeries(11);
+
         delete db;
     }
 
-    for (int s = 0; s < time_sums.size(); ++s) {
-        printf("Time Average for Timer %d : %lu\n", s, time_sums[s] / num_iteration);
+
+    for (int s = 0; s < times.size(); ++s) {
+        vector<uint64_t>& time = times[s];
+        vector<double> diff(time.size());
+        if (time.empty()) continue;
+
+        double sum = std::accumulate(time.begin(), time.end(), 0.0);
+        double mean = sum / time.size();
+        std::transform(time.begin(), time.end(), diff.begin(), [mean] (double x) { return x - mean; });
+        double stdev = std::sqrt(std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0) / time.size());
+
+        printf("Timer %d MEAN: %lu, STDDEV: %f\n", s, (uint64_t) mean, stdev);
     }
 }

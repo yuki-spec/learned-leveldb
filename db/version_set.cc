@@ -1747,7 +1747,7 @@ bool Version::FillLevel(const ReadOptions &options, int level) {
 }
 
 void Version::WriteLevelModel() {
-    for (int i = 1; i < config::kNumLevels; ++i) {
+    for (int i = 0; i < config::kNumLevels; ++i) {
         learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
         for (FileMetaData* file_meta : files_[i]) {
             adgMod::file_data->GetModel(file_meta)->WriteModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
@@ -1756,17 +1756,20 @@ void Version::WriteLevelModel() {
 }
 
 void Version::ReadLevelModel() {
-    for (int i = 1; i < config::kNumLevels; ++i) {
+    for (int i = 0; i < config::kNumLevels; ++i) {
 
-        //learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+        if (adgMod::load_level_model)
+            learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
+
         for (FileMetaData* file_meta : files_[i]) {
-            //adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+            if (adgMod::load_file_model)
+                adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
         }
     }
 }
 
 void Version::FileLearn() {
-    for (int i = 1; i < config::kNumLevels; ++i) {
+    for (int i = 0; i < config::kNumLevels; ++i) {
         for (FileMetaData* file_meta : files_[i]) {
             adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{this, adgMod::db->version_count, file_meta, adgMod::file_data->GetModel(file_meta)});
         }
