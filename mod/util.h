@@ -8,19 +8,41 @@
 #include <cstdint>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 #include "db/db_impl.h"
 #include "leveldb/slice.h"
 #include "leveldb/env.h"
+#include "Counter.h"
+#include "event.h"
 
 
 using std::string;
 using std::vector;
+using std::map;
 using leveldb::Slice;
 
 
 namespace adgMod {
 
     class FileLearnedIndexData;
+
+    class FileStats {
+    public:
+        uint64_t start;
+        uint64_t end;
+        int level;
+        uint32_t num_lookup;
+
+        explicit FileStats(int level_) : start(0), end(0), level(level_), num_lookup(0) {
+            uint32_t dummy;
+            start = __rdtscp(&dummy);
+        };
+
+        void Finish() {
+            uint32_t dummy;
+            end = __rdtscp(&dummy);
+        }
+    };
 
     extern int MOD;
     extern bool string_mode;
@@ -52,6 +74,14 @@ namespace adgMod {
     extern uint64_t block_num_entries;
     extern uint64_t block_size;
     extern uint64_t entry_size;
+
+    extern vector<Counter> levelled_counters;
+    extern vector<vector<Event*>> events;
+    extern leveldb::port::Mutex compaction_counter_mutex;
+    extern leveldb::port::Mutex learn_counter_mutex;
+    extern leveldb::port::Mutex file_stats_mutex;
+    extern map<int, FileStats> file_stats;
+
 
 
     uint64_t ExtractInteger(const char* pos, size_t size);

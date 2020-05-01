@@ -210,6 +210,8 @@ target_sources(leveldb
         "${PROJECT_SOURCE_DIR}/mod/Counter.h"
         "${PROJECT_SOURCE_DIR}/mod/timer.cpp"
         "${PROJECT_SOURCE_DIR}/mod/timer.h"
+        "${PROJECT_SOURCE_DIR}/mod/event.cpp"
+        "${PROJECT_SOURCE_DIR}/mod/event.h"
 
   # Only CMake 3.3+ supports PUBLIC sources in targets exported by "install".
   $<$<VERSION_GREATER:CMAKE_VERSION,3.2>:PUBLIC>

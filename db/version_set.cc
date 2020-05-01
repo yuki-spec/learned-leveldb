@@ -469,24 +469,36 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       saver.user_key = user_key;
       saver.value = value;
 
-      if (level == 0 || adgMod::MOD == 0 || adgMod::MOD == 8) {
+      instance->StartTimer(6);
+      if (adgMod::MOD == 0 || adgMod::MOD == 8) {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                      &saver, SaveValue);
+                                      &saver, SaveValue, level, f);
       } else {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                     &saver, SaveValue, f, position_lower, position_upper, learned, this);
+                                     &saver, SaveValue, level, f, position_lower, position_upper, learned, this);
       }
+      auto temp = instance->PauseTimer(6, true);
+
+      if (saver.state == kNotFound) adgMod::levelled_counters[8].Increment(level, temp.second - temp.first);
+      else if (saver.state == kFound) adgMod::levelled_counters[7].Increment(level, temp.second - temp.first);
+      adgMod::file_stats_mutex.Lock();
+      auto iter = adgMod::file_stats.find(f->number);
+      if (iter != adgMod::file_stats.end()) {
+          iter->second.num_lookup += 1;
+      }
+      adgMod::file_stats_mutex.Unlock();
+
 
       if (!s.ok()) {
         return s;
       }
       switch (saver.state) {
         case kNotFound:
-          instance->IncrementCounter(4);
+          adgMod::levelled_counters[4].Increment(level);
           break;  // Keep searching in other files
         case kFound:
 #ifdef RECORD_LEVEL_INFO
-          instance->RecordLevel(level);
+          adgMod::levelled_counters[3].Increment(level);
 #endif
           return s;
         case kDeleted:
@@ -883,35 +895,19 @@ void VersionSet::AppendVersion(Version* v) {
 }
 
 void VersionSet::ApplyToModel(VersionEdit* edit, Version* previous, Version* current) {
-    std::set<int> changed_level, deleted_files;
+    std::set<int> changed_level;
     for (auto& item: edit->deleted_files_) {
         changed_level.insert(item.first);
-        deleted_files.insert(item.second);
     }
     for (auto& item: edit->new_files_) {
         changed_level.insert(item.first);
-        deleted_files.erase(item.second.number);
     }
-
 
     for (int i = 1; i < config::kNumLevels; ++i) {
         if (changed_level.count(i) == 0) {
             current->learned_index_data_[i] = previous->learned_index_data_[i];
         }
     }
-    for (auto& item: previous->file_learned_index_data_) {
-        if (!item.second->aborted.load() && deleted_files.find(item.first) == deleted_files.end()) {
-            current->file_learned_index_data_.emplace(item.first, item.second);
-            if (item.second->aborted.exchange(false)) {
-                item.second->learned.store(false);
-            }
-        }
-    }
-
-    string changed_level_string;
-    for (auto item: changed_level) changed_level_string += to_string(item);
-    adgMod::Stats* instance = adgMod::Stats::GetInstance();
-    if (!changed_level_string.empty()) instance->ReportEventWithTime("C " + changed_level_string);
 }
 
 Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
@@ -1750,28 +1746,32 @@ void Version::WriteLevelModel() {
     for (int i = 0; i < config::kNumLevels; ++i) {
         learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
         for (FileMetaData* file_meta : files_[i]) {
-            adgMod::file_data->GetModel(file_meta)->WriteModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+            adgMod::file_data->GetModel(file_meta->number)->WriteModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
         }
     }
 }
 
 void Version::ReadLevelModel() {
+    uint64_t file_max = 0;
     for (int i = 0; i < config::kNumLevels; ++i) {
 
         if (adgMod::load_level_model)
             learned_index_data_[i]->ReadModel(vset_->dbname_ + "/" + to_string(i) + ".model");
 
         for (FileMetaData* file_meta : files_[i]) {
-            if (adgMod::load_file_model)
-                adgMod::file_data->GetModel(file_meta)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+            if (adgMod::load_file_model) {
+                adgMod::file_data->GetModel(file_meta->number)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
+                file_max = file_max > file_meta->number ? file_max : file_meta->number;
+            }
         }
     }
+    adgMod::file_data->watermark = file_max;
 }
 
 void Version::FileLearn() {
     for (int i = 0; i < config::kNumLevels; ++i) {
         for (FileMetaData* file_meta : files_[i]) {
-            adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{this, adgMod::db->version_count, file_meta, adgMod::file_data->GetModel(file_meta)});
+            adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{this, adgMod::db->version_count, file_meta, adgMod::file_data->GetModel(file_meta->number), i});
         }
     }
 }

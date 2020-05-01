@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
             Status status = DB::Open(options, db_location, &db);
             assert(status.ok() && "Open Error");
 
-            instance->ResetAll(true);
+            instance->ResetAll();
 
             adgMod::level_learning_enabled = false;
             int cut_size = keys.size() / 100000;
@@ -164,10 +164,7 @@ int main(int argc, char *argv[]) {
             }
             adgMod::level_learning_enabled = true;
 
-            for (int i = 0; i < 7; ++i) {
-                printf("Counter %d: %d\n", i, instance->ReportCounter(i));
-                instance->ResetCounter(i);
-            }
+
 
             if (print_file_info && iteration == 0) db->PrintFileInfo();
 #ifdef PROFILER
@@ -181,7 +178,6 @@ int main(int argc, char *argv[]) {
             for (int s = 12; s < 20; ++s) {
                 instance->ResetTimer(s);
             }
-            instance->ResetLevel();
 
             //sleep(10);
 
@@ -212,11 +208,6 @@ int main(int argc, char *argv[]) {
             //instance->ResetTimer(6);
 
 
-            for (int i = 0; i < 7; ++i) {
-                printf("Counter %d: %d\n", i, instance->ReportCounter(i));
-                instance->ResetCounter(i);
-            }
-            instance->ReportLevelStats();
 
 
 
@@ -227,11 +218,7 @@ int main(int argc, char *argv[]) {
             }
             adgMod::db->WaitForBackground();
             sleep(10);
-            instance->ReportTimeSeries(7);
-            instance->ReportTimeSeries(8);
-            instance->ReportTimeSeries(9);
-            instance->ReportTimeSeries(10);
-            instance->ReportTimeSeries(11);
+
             delete db;
 
         }

@@ -15,7 +15,17 @@ namespace adgMod {
 
     Stats* Stats::singleton = nullptr;
 
-    Stats::Stats() : timers(20, Timer{}), level_stats(9, 0), counters(10), initial_time(__rdtsc()) {}
+    Stats::Stats() : timers(20, Timer{}), initial_time(__rdtsc()) {
+        levelled_counters[0].name = "LevelModel";
+        levelled_counters[1].name = "FileModel";
+        levelled_counters[2].name = "Baseline";
+        levelled_counters[3].name = "Succeeded";
+        levelled_counters[4].name = "FalseInternal";
+        levelled_counters[5].name = "Compaction";
+        levelled_counters[6].name = "Learn";
+        levelled_counters[7].name = "SuccessTime";
+        levelled_counters[8].name = "FalseTime";
+    }
 
     Stats* Stats::GetInstance() {
         if (!singleton) singleton = new Stats();
@@ -25,13 +35,11 @@ namespace adgMod {
     void Stats::StartTimer(uint32_t id) {
         Timer& timer = timers[id];
         timer.Start();
-        //if (id > 6) std::cout << "Timer " << id << " started." << std::endl;
     }
 
-    void Stats::PauseTimer(uint32_t id, bool record) {
+    std::pair<uint64_t, uint64_t> Stats::PauseTimer(uint32_t id, bool record) {
         Timer& timer = timers[id];
-        timer.Pause(record);
-        //if (id > 6) std::cout << "Timer " << id << " paused." << std::endl;
+        return timer.Pause(record);
     }
 
     void Stats::ResetTimer(uint32_t id) {
@@ -50,59 +58,27 @@ namespace adgMod {
         }
     }
 
-    void Stats::ReportTimeSeries(uint32_t id) {
-        printf("TimeSeries %u: ", id);
-        timers[id].ReportTimeSeries();
-        printf("\n");
+
+
+
+
+
+
+
+    uint64_t Stats::GetTime() {
+        unsigned int dummy = 0;
+        uint64_t time_elapse = __rdtscp(&dummy) - initial_time;
+        return time_elapse / reference_frequency;
     }
 
 
-
-    void Stats::RecordLevel(int level) {
-        level_stats[level]++;
-    }
-
-    void Stats::ReportLevelStats() {
-        for (int i = 0; i < level_stats.size(); ++i) {
-            printf("Level %d: %u\n", i, level_stats[i]);
+    void Stats::ResetAll() {
+        for (Timer& t: timers) t.Reset();
+        for (Counter& c: levelled_counters) c.Reset();
+        for (vector<Event*>& event_array : events) {
+            for (Event* e : event_array) delete e;
+            event_array.clear();
         }
-    }
-
-    void Stats::ResetLevel() {
-        for (auto& item: level_stats) {
-            item = 0;
-        }
-    }
-
-
-    void Stats::IncrementCounter(int id) {
-        counters[id].Increment();
-    }
-
-    void Stats::IncrementCounter(int id, int n) {
-        counters[id].Increment(n);
-    }
-
-    int Stats::ReportCounter(int id) {
-        return counters[id].Report();
-    }
-
-    void Stats::ResetCounter(int id) {
-        counters[id].Reset();
-    }
-
-    void Stats::ReportEventWithTime(const string &event) {
-        uint64_t time_absolute = __rdtsc() - initial_time;
-        printf("%s %lu\n", event.c_str(), (uint64_t) (time_absolute / reference_frequency));
-    }
-
-
-
-
-    void Stats::ResetAll(bool record) {
-        for (Timer& t: timers) t.Reset(record);
-        for (uint32_t& num: level_stats) num = 0;
-        for (Counter& c: counters) c.Reset();
         initial_time = __rdtsc();
     }
 

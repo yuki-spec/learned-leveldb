@@ -39,10 +39,9 @@ TableCache::TableCache(const std::string& dbname, const Options& options,
     : env_(options.env),
       dbname_(dbname),
       options_(options),
-      cache_(NewLRUCache(entries)),
-      file_cache(NewLRUCache(adgMod::fd_limit)) {}
+      cache_(NewLRUCache(entries)) {}
 
-TableCache::~TableCache() { delete cache_; delete file_cache; }
+TableCache::~TableCache() { delete cache_; }
 
 Status TableCache::FindTable(uint64_t file_number, uint64_t file_size,
                              Cache::Handle** handle) {
@@ -54,42 +53,73 @@ Status TableCache::FindTable(uint64_t file_number, uint64_t file_size,
   char buf[sizeof(file_number)];
   EncodeFixed64(buf, file_number);
   Slice key(buf, sizeof(buf));
-  *handle = cache_->Lookup(key);
+  Cache::Handle* cache_handle = cache_->Lookup(key);
+  TableAndFile* tf = cache_handle != nullptr ? reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle)) : new TableAndFile;
 
+  if (cache_handle == nullptr) {
+      std::string fname = TableFileName(dbname_, file_number);
 
-
-  if (*handle == nullptr) {
-
-    std::string fname = TableFileName(dbname_, file_number);
-    RandomAccessFile* file = nullptr;
-    Table* table = nullptr;
-    s = env_->NewRandomAccessFile(fname, &file);
-    if (!s.ok()) {
-      std::string old_fname = SSTTableFileName(dbname_, file_number);
-      if (env_->NewRandomAccessFile(old_fname, &file).ok()) {
-        s = Status::OK();
+      s = env_->NewRandomAccessFile(fname, &tf->file);
+      if (!s.ok()) {
+          std::string old_fname = SSTTableFileName(dbname_, file_number);
+          if (env_->NewRandomAccessFile(old_fname, &tf->file).ok()) {
+              s = Status::OK();
+          }
       }
-    }
-
-
-    if (s.ok()) {
-      s = Table::Open(options_, file, file_size, &table);
-    }
-
-
-    if (!s.ok()) {
-      assert(table == nullptr);
-      delete file;
-      // We do not cache error results so that if the error is transient,
-      // or somebody repairs the file, we recover automatically.
-    } else {
-      TableAndFile* tf = new TableAndFile;
-      tf->file = file;
-      tf->table = table;
-      *handle = cache_->Insert(key, tf, 1, &DeleteEntry);
-    }
   }
+
+  if (cache_handle == nullptr || tf->table == nullptr) {
+      if (s.ok()) {
+          s = Table::Open(options_, tf->file, file_size, &tf->table);
+      }
+  }
+
+  if (cache_handle == nullptr) {
+      if (s.ok()) {
+          cache_handle = cache_->Insert(key, tf, 1, DeleteEntry);
+      } else {
+          assert(tf->table == nullptr);
+          delete tf->file;
+      }
+  }
+
+  *handle = cache_handle;
   return s;
+
+
+
+//  if (*handle == nullptr) {
+//
+//    std::string fname = TableFileName(dbname_, file_number);
+//    RandomAccessFile* file = nullptr;
+//    Table* table = nullptr;
+//    s = env_->NewRandomAccessFile(fname, &file);
+//    if (!s.ok()) {
+//      std::string old_fname = SSTTableFileName(dbname_, file_number);
+//      if (env_->NewRandomAccessFile(old_fname, &file).ok()) {
+//        s = Status::OK();
+//      }
+//    }
+//
+//
+//    if (s.ok()) {
+//      s = Table::Open(options_, file, file_size, &table);
+//    }
+//
+//
+//    if (!s.ok()) {
+//      assert(table == nullptr);
+//      delete file;
+//      // We do not cache error results so that if the error is transient,
+//      // or somebody repairs the file, we recover automatically.
+//    } else {
+//      TableAndFile* tf = new TableAndFile;
+//      tf->file = file;
+//      tf->table = table;
+//      *handle = file_cache->Insert(key, tf, 1, &DeleteEntry);
+//    }
+//  }
+//  return s;
 }
 
 Iterator* TableCache::NewIterator(const ReadOptions& options,
@@ -116,14 +146,14 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
 
 Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
                        uint64_t file_size, const Slice& k, void* arg,
-                       void (*handle_result)(void*, const Slice&, const Slice&),
+                       void (*handle_result)(void*, const Slice&, const Slice&), int level,
                        FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version) {
   Cache::Handle* handle = nullptr;
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
 
-  if ((adgMod::MOD == 6 || adgMod::MOD == 7) && meta != nullptr) {
-      if (learned || adgMod::file_data->Learned(version, meta)) {
-          LevelRead(options, file_number, file_size, k, arg, handle_result, meta, lower, upper, learned, version);
+  if ((adgMod::MOD == 6 || adgMod::MOD == 7)) {
+      if (learned || adgMod::file_data->Learned(version, meta, level)) {
+          LevelRead(options, file_number, file_size, k, arg, handle_result, level, meta, lower, upper, learned, version);
           return Status::OK();
       }
   }
@@ -138,10 +168,9 @@ Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
   if (s.ok()) {
       Table* t = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
       s = t->InternalGet(options, k, arg, handle_result, meta, lower, upper, learned, version);
-      instance->StartTimer(1);
       cache_->Release(handle);
-      instance->PauseTimer(1);
   }
+  adgMod::levelled_counters[2].Increment(level);
   return s;
 }
 
@@ -153,24 +182,11 @@ void TableCache::Evict(uint64_t file_number) {
 
 bool TableCache::FillData(const ReadOptions& options, FileMetaData *meta, adgMod::LearnedIndexData* data) {
     Cache::Handle* handle = nullptr;
-    FindTable(meta->number, meta->file_size, &handle);
-    Table* t = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-    s = t->InternalGet(options, k, arg, handle_result, meta, lower, upper, learned, version);
-    instance->StartTimer(1);
-    cache_->Release(handle);
-    instance->PauseTimer(1);
-
-
-    Cache::Handle* cache_handle = FindFile(options, meta->number, meta->file_size);
-    TableAndFile* filter_and_file = reinterpret_cast<TableAndFile*>(file_cache->Value(cache_handle));
-    RandomAccessFile* file = filter_and_file->file;
-
-    Table* table;
-    Status s = Table::Open(options_, file, meta->file_size, &table);
+    Status s = FindTable(meta->number, meta->file_size, &handle);
+    Table* table = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
     assert(s.ok());
     table->FillData(options, data);
-    delete table;
-    file_cache->Release(cache_handle);
+    cache_->Release(handle);
     return true;
 }
 
@@ -194,11 +210,10 @@ Cache::Handle* TableCache::FindFile(const ReadOptions& options, uint64_t file_nu
     char buf[sizeof(file_number)];
     EncodeFixed64(buf, file_number);
     Slice cache_key(buf, sizeof(buf));
-    Cache::Handle* cache_handle = file_cache->Lookup(cache_key);
+    Cache::Handle* cache_handle = cache_->Lookup(cache_key);
 
     if (cache_handle == nullptr) {
         RandomAccessFile* file = nullptr;
-        FilterBlockReader* filter = nullptr;
 
         // Create new file
         std::string filename = TableFileName(dbname_, file_number);
@@ -242,7 +257,8 @@ Cache::Handle* TableCache::FindFile(const ReadOptions& options, uint64_t file_nu
         TableAndFile* tf = new TableAndFile;
         tf->file = file;
         tf->table = nullptr;
-        cache_handle = file_cache->Insert(cache_key, tf, 1, DeleteEntry);
+        //Table::Open(options_, tf->file, file_size, &tf->table);
+        cache_handle = cache_->Insert(cache_key, tf, 1, DeleteEntry);
     }
 
     return cache_handle;
@@ -250,7 +266,7 @@ Cache::Handle* TableCache::FindFile(const ReadOptions& options, uint64_t file_nu
 
 void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
                             uint64_t file_size, const Slice &k, void *arg,
-                            void (*handle_result)(void *, const Slice &, const Slice &),
+                            void (*handle_result)(void *, const Slice &, const Slice &), int level,
                             FileMetaData *meta, uint64_t lower, uint64_t upper, bool learned, Version *version) {
 
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
@@ -260,15 +276,14 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     instance->StartTimer(1);
 
     Cache::Handle* cache_handle = FindFile(options, file_number, file_size);
-    FilterAndFile* filter_and_file = reinterpret_cast<FilterAndFile*>(file_cache->Value(cache_handle));
+    TableAndFile* filter_and_file = reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle));
     RandomAccessFile* file = filter_and_file->file;
-    FilterBlockReader* filter = filter_and_file->filter;
 
     instance->PauseTimer(1);
 
 
     if (!learned) {
-        instance->IncrementCounter(1);
+        adgMod::levelled_counters[1].Increment(level);
         instance->StartTimer(2);
 
         ParsedInternalKey parsed_key;
@@ -279,7 +294,7 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
 
         instance->PauseTimer(2);
     } else {
-        instance->IncrementCounter(0);
+        adgMod::levelled_counters[0].Increment(level);
     }
 
 
@@ -291,10 +306,10 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
 
         // Check Filter Block
         uint64_t block_offset = i * adgMod::block_size;
-        if (filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
-            instance->IncrementCounter(5);
-            continue;
-        }
+//        if (filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
+//            instance->IncrementCounter(5);
+//            continue;
+//        }
 
         instance->StartTimer(5);
 
@@ -319,9 +334,7 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
             uint32_t shared, non_shared, value_length;
             const char* key_ptr = DecodeEntry(entries.data() + (mid - pos_block_lower) * adgMod::entry_size,
                     entries.data() + read_size, &shared, &non_shared, &value_length);
-            if (key_ptr == nullptr || (shared != 0)) {
-                assert(false && "Entry Corruption");
-            }
+            assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
             Slice mid_key(key_ptr, non_shared);
             int comp = adgMod::db->options_.comparator->Compare(mid_key, k);
             if (comp < 0) {
@@ -334,9 +347,7 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
         uint32_t shared, non_shared, value_length;
         const char* key_ptr = DecodeEntry(entries.data() + (left - pos_block_lower) * adgMod::entry_size,
                 entries.data() + read_size, &shared, &non_shared, &value_length);
-        if (key_ptr == nullptr || (shared != 0)) {
-            assert(false && "Entry Corruption");
-        }
+        assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
 
         instance->PauseTimer(3);
 
@@ -347,7 +358,7 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     }
     //delete file;
     instance->StartTimer(1);
-    file_cache->Release(cache_handle);
+    cache_->Release(cache_handle);
     instance->PauseTimer(1);
 }
 

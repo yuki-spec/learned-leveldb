@@ -5,16 +5,20 @@
 #ifndef PROJECT1_COUNTER_H
 #define PROJECT1_COUNTER_H
 
+#include "../db/dbformat.h"
+#include <vector>
 
 class Counter {
-    int count;
+    std::vector<uint64_t> counts;
 
 public:
-    Counter() : count(0) {};
-    void Increment();
-    void Increment(int n);
+    std::string name;
+
+    Counter() : counts(leveldb::config::kNumLevels + 1, 0) {};
+    void Increment(int level, uint64_t n = 1);
     void Reset();
-    int Report();
+    void Report();
+    int Sum();
 };
 
 

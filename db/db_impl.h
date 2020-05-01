@@ -135,7 +135,7 @@ private:
   // Compact the in-memory write buffer to disk.  Switches to a new
   // log-file/memtable and writes a new descriptor iff successful.
   // Errors are recorded in bg_error_.
-  void CompactMemTable() EXCLUSIVE_LOCKS_REQUIRED(mutex_);
+  int CompactMemTable() EXCLUSIVE_LOCKS_REQUIRED(mutex_);
   void CompactMemTable(MemTable* table) EXCLUSIVE_LOCKS_REQUIRED(mutex_);
 
   Status RecoverLogFile(uint64_t log_number, bool last_log, bool* save_manifest,

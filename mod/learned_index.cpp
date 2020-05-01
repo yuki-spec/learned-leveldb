@@ -11,13 +11,13 @@
 #include "util/mutexlock.h"
 #include "learned_index.h"
 #include "util.h"
-#include "plr.h"
 #include "db/version_set.h"
 
 namespace adgMod {
 
     std::pair<uint64_t, uint64_t> LearnedIndexData::GetPosition(const Slice& target_x) const {
         assert(string_segments.size() > 1);
+        ++served;
 
         uint64_t target_int = SliceToInteger(target_x);
         if (target_int > max_key) return std::make_pair(size, size);
@@ -61,16 +61,10 @@ namespace adgMod {
         size = string_keys.size();
 
 
-        std::deque<struct segment> segs = plr.train(string_keys, !level);
+        std::vector<Segment> segs = plr.train(string_keys, !is_level);
         if (segs.empty()) return false;
-
-        while (!segs.empty()) {
-            segment& s = segs.front();
-            string_segments.emplace_back(s.start, s.slope, s.intercept);
-            segs.pop_front();
-        }
-        string_segments.emplace_back(temp, 0, 0);
-
+        segs.push_back((Segment) {temp, 0, 0});
+        string_segments = std::move(segs);
 
         for (auto& str: string_segments) {
             //printf("%s %f\n", str.first.c_str(), str.second);
@@ -82,22 +76,23 @@ namespace adgMod {
 
     void LearnedIndexData::Learn(void *arg) {
         Stats* instance = Stats::GetInstance();
+        bool success = false;
+        bool entered = false;
         instance->StartTimer(8);
 
         VersionAndSelf* vas = reinterpret_cast<VersionAndSelf*>(arg);
         LearnedIndexData* self = vas->self;
-        self->level = true;
+        self->is_level = true;
+        self->level = vas->level;
 
         Version* c = db->GetCurrentVersion();
         if (db->version_count == vas->v_count){
+            entered = true;
             if (vas->version->FillLevel(adgMod::read_options, vas->level)) {
-                //instance->ReportEventWithTime("Fill " + to_string(vas->level));
                 self->filled = true;
                 if (db->version_count == vas->v_count) {
                     if (env->compaction_awaiting.load() == 0 && self->Learn()) {
-                        instance->ReportEventWithTime("L " + to_string(vas->level));
-                        instance->IncrementCounter(7, self->string_segments.size());
-                        instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
+                        success = true;
                     } else {
                         self->learning.store(false);
                     }
@@ -107,33 +102,49 @@ namespace adgMod {
         adgMod::db->ReturnCurrentVersion(c);
 
 
-        instance->PauseTimer(8, true);
-        //self->WriteModel(vas->version->vset_->dbname_ + "/" + to_string(vas->level) + ".model");
-        //self->string_segments.clear();
-        //self->num_entries_accumulated.array.clear();
+        auto time = instance->PauseTimer(8, true);
+
+        if (entered) {
+            self->cost = time.second - time.first;
+            learn_counter_mutex.Lock();
+            events[1].push_back(new LearnEvent(time, 0, self->level, success));
+            levelled_counters[6].Increment(vas->level);
+            learn_counter_mutex.Unlock();
+        }
+
         delete vas;
     }
 
     void LearnedIndexData::FileLearn(void *arg) {
         Stats* instance = Stats::GetInstance();
+        bool entered = false;
         instance->StartTimer(11);
 
         MetaAndSelf* mas = reinterpret_cast<MetaAndSelf*>(arg);
         LearnedIndexData* self = mas->self;
+        self->level = mas->level;
 
         Version* c = db->GetCurrentVersion();
         if (db->version_count == mas->v_count && self->FillData(c, mas->meta)) {
             self->Learn();
-            instance->ReportEventWithTime("FL " + to_string(mas->meta->number));
-            instance->IncrementCounter(7, self->string_segments.size());
-            instance->IncrementCounter(8, self->num_entries_accumulated.array.size());
+            entered = true;
         } else {
             self->learning.store(false);
         }
         adgMod::db->ReturnCurrentVersion(c);
-        delete mas;
 
-        instance->PauseTimer(11, true);
+
+        auto time = instance->PauseTimer(11, true);
+
+        if (entered) {
+            self->cost = time.second - time.first;
+            learn_counter_mutex.Lock();
+            events[1].push_back(new LearnEvent(time, 1, self->level, true));
+            levelled_counters[6].Increment(mas->level);
+            learn_counter_mutex.Unlock();
+        }
+
+        delete mas;
     }
 
     bool LearnedIndexData::Learned() {
@@ -157,14 +168,14 @@ namespace adgMod {
         }
     }
 
-    bool LearnedIndexData::Learned(Version* version, int v_count, FileMetaData *meta) {
+    bool LearnedIndexData::Learned(Version* version, int v_count, FileMetaData *meta, int level) {
         if (learned_not_atomic) return true;
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
         } else {
-            if (file_learning_enabled && ++current_seek >= allowed_seek && !learning.exchange(true)) {
-                env->ScheduleLearning(&LearnedIndexData::FileLearn, new MetaAndSelf{version, v_count, meta, this}, 0);
+            if (file_learning_enabled && (true || level != 0 && level != 1) && ++current_seek >= allowed_seek && !learning.exchange(true)) {
+                env->ScheduleLearning(&LearnedIndexData::FileLearn, new MetaAndSelf{version, v_count, meta, this, level}, 0);
             }
             return false;
         }
@@ -189,7 +200,7 @@ namespace adgMod {
         for (Segment& item: string_segments) {
             output_file << item.x << " " << item.k << " " << item.b << "\n";
         }
-        output_file << "StartAcc" << " " << min_key << " " << max_key << " " << size << "\n";
+        output_file << "StartAcc" << " " << min_key << " " << max_key << " " << size << " " << level << " " << cost << "\n";
         for (auto& pair: num_entries_accumulated.array) {
             output_file << pair.first << " " << pair.second << "\n";
         }
@@ -208,7 +219,7 @@ namespace adgMod {
             input_file >> k >> b;
             string_segments.emplace_back(atoll(x.c_str()), k, b);
         }
-        input_file >> min_key >> max_key >> size;
+        input_file >> min_key >> max_key >> size >> level >> cost;
         while (true) {
             uint64_t first;
             string second;
@@ -219,22 +230,26 @@ namespace adgMod {
         learned.store(true);
     }
 
+    void LearnedIndexData::ReportStats() {
+        printf("%d %d %lu %lu\n", level, served, string_segments.size(), cost);
+    }
 
 
 
 
 
-    LearnedIndexData* FileLearnedIndexData::GetModel(FileMetaData *meta) {
+
+    LearnedIndexData* FileLearnedIndexData::GetModel(int number) {
         leveldb::MutexLock l(&mutex);
-        if (file_learned_index_data.size() <= meta->number)
-            file_learned_index_data.resize(meta->number + 1, nullptr);
-        if (file_learned_index_data[meta->number] == nullptr)
-            file_learned_index_data[meta->number] = new LearnedIndexData(file_allowed_seek);
-        return file_learned_index_data[meta->number];
+        if (file_learned_index_data.size() <= number)
+            file_learned_index_data.resize(number + 1, nullptr);
+        if (file_learned_index_data[number] == nullptr)
+            file_learned_index_data[number] = new LearnedIndexData(file_allowed_seek);
+        return file_learned_index_data[number];
     }
 
     bool FileLearnedIndexData::FillData(Version *version, FileMetaData *meta) {
-        LearnedIndexData* model = GetModel(meta);
+        LearnedIndexData* model = GetModel(meta->number);
         return model->FillData(version, meta);
     }
 
@@ -242,9 +257,9 @@ namespace adgMod {
         return file_learned_index_data[meta->number]->string_keys;
     }
 
-    bool FileLearnedIndexData::Learned(Version* version, FileMetaData* meta) {
-        LearnedIndexData* model = GetModel(meta);
-        return model->Learned(version, db->version_count, meta);
+    bool FileLearnedIndexData::Learned(Version* version, FileMetaData* meta, int level) {
+        LearnedIndexData* model = GetModel(meta->number);
+        return model->Learned(version, db->version_count, meta, level);
     }
 
     AccumulatedNumEntriesArray* FileLearnedIndexData::GetAccumulatedArray(int file_num) {
@@ -256,8 +271,24 @@ namespace adgMod {
     }
 
     FileLearnedIndexData::~FileLearnedIndexData() {
-        for (auto pointer: file_learned_index_data) {
+        leveldb::MutexLock l(&mutex);
+        for (auto pointer : file_learned_index_data) {
             delete pointer;
+        }
+    }
+
+    void FileLearnedIndexData::Report() {
+        leveldb::MutexLock l(&mutex);
+
+        std::set<uint64_t> live_files;
+        adgMod::db->versions_->AddLiveFiles(&live_files);
+
+        for (size_t i = 0; i < file_learned_index_data.size(); ++i) {
+            auto pointer = file_learned_index_data[i];
+            if (i > watermark && pointer != nullptr && pointer->cost != 0) {
+                printf("FileModel %lu ", i);
+                pointer->ReportStats();
+            }
         }
     }
 

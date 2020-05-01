@@ -2,6 +2,7 @@
 // Created by daiyi on 2020/02/02.
 //
 
+#include <util/mutexlock.h>
 #include "util.h"
 #include "learned_index.h"
 
@@ -40,6 +41,13 @@ namespace adgMod {
     uint64_t block_size = 0;
     uint64_t entry_size = 0;
 
+
+    vector<Counter> levelled_counters(9);
+    vector<vector<Event*>> events(3);
+    leveldb::port::Mutex compaction_counter_mutex;
+    leveldb::port::Mutex learn_counter_mutex;
+    leveldb::port::Mutex file_stats_mutex;
+    map<int, FileStats> file_stats;
 
     uint64_t ExtractInteger(const char* pos, size_t size) {
         char* temp = new char[size + 1];

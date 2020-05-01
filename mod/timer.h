@@ -15,17 +15,14 @@ namespace adgMod {
 
     class Timer {
         uint64_t time_started;
-        uint64_t timestamp_accumulated;
+        uint64_t time_accumulated;
         bool started;
-        std::vector<std::pair<uint64_t, uint64_t>> time_series;
 
     public:
         void Start();
-        void Pause(bool record = false);
-        void Reset(bool record = false);
+        std::pair<uint64_t, uint64_t> Pause(bool record = false);
+        void Reset();
         uint64_t Time();
-        void ReportTimeSeries();
-
 
         Timer();
         ~Timer() = default;

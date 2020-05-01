@@ -87,6 +87,7 @@ class VersionEdit {
 
  private:
   friend class VersionSet;
+  friend class DBImpl;
 
   typedef std::set<std::pair<int, uint64_t> > DeletedFileSet;
 

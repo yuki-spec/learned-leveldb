@@ -9,7 +9,7 @@
 
 namespace adgMod {
 
-    Timer::Timer() : timestamp_accumulated(0), started(false) {}
+    Timer::Timer() : time_accumulated(0), started(false) {}
 
     void Timer::Start() {
         assert(!started);
@@ -18,37 +18,31 @@ namespace adgMod {
         started = true;
     }
 
-    void Timer::Pause(bool record) {
+    std::pair<uint64_t, uint64_t> Timer::Pause(bool record) {
         assert(started);
         unsigned int dummy = 0;
         uint64_t time_elapse = __rdtscp(&dummy) - time_started;
-        timestamp_accumulated += time_elapse / reference_frequency;
+        time_accumulated += time_elapse / reference_frequency;
 
         if (record) {
             Stats* instance = Stats::GetInstance();
             uint64_t start_absolute = time_started - instance->initial_time;
             uint64_t end_absolute = start_absolute + time_elapse;
-            time_series.emplace_back(start_absolute / reference_frequency, end_absolute / reference_frequency);
+            started = false;
+            return {start_absolute / reference_frequency, end_absolute / reference_frequency};
+        } else {
+            started = false;
+            return {0, 0};
         }
-
-        started = false;
     }
 
-    void Timer::Reset(bool record) {
-        timestamp_accumulated = 0;
+    void Timer::Reset() {
+        time_accumulated = 0;
         started = false;
-        if (record) {
-            time_series.clear();
-        }
     }
 
     uint64_t Timer::Time() {
         //assert(!started);
-        return timestamp_accumulated;
+        return time_accumulated;
     }
-
-    void Timer::ReportTimeSeries() {
-        for (auto& pair: time_series) printf("(%lu %lu)", pair.first, pair.second);
-    }
-
 }

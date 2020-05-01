@@ -2,21 +2,26 @@
 // Created by daiyi on 2020/02/12.
 //
 
+#include <iostream>
 #include "Counter.h"
 
 
-void Counter::Increment() {
-    ++count;
-}
-
-void Counter::Increment(int n) {
-    count += n;
+void Counter::Increment(int level, uint64_t n) {
+    counts[level] += n;
 }
 
 void Counter::Reset() {
-    count = 0;
+    for (uint64_t& count : counts) count = 0;
 }
 
-int Counter::Report() {
-    return count;
+void Counter::Report() {
+    std::cout << "Counter " << name << " " << Sum();
+    for (uint64_t count : counts) {
+        std::cout << " " << count;
+    }
+    std::cout << "\n";
+}
+
+int Counter::Sum() {
+    return std::accumulate(counts.begin(), counts.end(), 0.0);
 }

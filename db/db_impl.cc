@@ -284,6 +284,14 @@ void DBImpl::DeleteObsoleteFiles() {
       if (!keep) {
         if (type == kTableFile) {
           table_cache_->Evict(number);
+          adgMod::file_stats_mutex.Lock();
+          auto iter = adgMod::file_stats.find(number);
+          if (iter != adgMod::file_stats.end()) {
+              iter->second.Finish();
+          }
+          adgMod::file_stats_mutex.Unlock();
+//          adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(number);
+//          delete model;
         }
         Log(options_.info_log, "Delete type=%d #%lld\n", static_cast<int>(type),
             static_cast<unsigned long long>(number));
@@ -548,7 +556,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   return s;
 }
 
-void DBImpl::CompactMemTable() {
+int DBImpl::CompactMemTable() {
   mutex_.AssertHeld();
   assert(imm_ != nullptr);
 
@@ -579,6 +587,8 @@ void DBImpl::CompactMemTable() {
   } else {
     RecordBackgroundError(s);
   }
+
+  return edit.new_files_[0].first;
 }
 
 void DBImpl::CompactMemTable(MemTable *table) {
@@ -731,8 +741,13 @@ void DBImpl::BackgroundCompaction() {
   instance->StartTimer(7);
 
   if (imm_ != nullptr) {
-    CompactMemTable();
-    instance->PauseTimer(7, true);
+    int level = CompactMemTable();
+    auto time = instance->PauseTimer(7, true);
+
+    adgMod::compaction_counter_mutex.Lock();
+    adgMod::events[0].push_back(new CompactionEvent(time, to_string(level)));
+    adgMod::levelled_counters[5].Increment(level);
+    adgMod::compaction_counter_mutex.Unlock();
     return;
   }
 
@@ -784,6 +799,45 @@ void DBImpl::BackgroundCompaction() {
     c->ReleaseInputs();
     DeleteObsoleteFiles();
   }
+
+
+
+
+
+    if (c != nullptr) {
+        std::set<int> changed_level;
+        for (auto& item: c->edit()->deleted_files_) {
+            changed_level.insert(item.first);
+        }
+        for (auto& item: c->edit()->new_files_) {
+            changed_level.insert(item.first);
+        }
+
+        string changed_level_string;
+
+        auto time = instance->PauseTimer(7, true);
+
+        adgMod::compaction_counter_mutex.Lock();
+        for (auto item: changed_level) {
+            changed_level_string += to_string(item);
+            adgMod::levelled_counters[5].Increment(item);
+        }
+        adgMod::events[0].push_back(new CompactionEvent(time, std::move(changed_level_string)));
+        adgMod::compaction_counter_mutex.Unlock();
+
+
+
+    } else {
+        instance->PauseTimer(7);
+    }
+
+
+
+
+
+
+
+
   delete c;
 
   if (status.ok()) {
@@ -808,7 +862,7 @@ void DBImpl::BackgroundCompaction() {
     manual_compaction_ = nullptr;
   }
 
-  instance->PauseTimer(7, true);
+
 }
 
 void DBImpl::CleanupCompaction(CompactionState* compact) {
@@ -885,6 +939,11 @@ Status DBImpl::FinishCompactionOutputFile(CompactionState* compact,
   }
   delete compact->outfile;
   compact->outfile = nullptr;
+
+  adgMod::file_stats_mutex.Lock();
+  assert(adgMod::file_stats.find(output_number) == adgMod::file_stats.end());
+  adgMod::file_stats.insert({output_number, adgMod::FileStats(compact->compaction->level() + 1)});
+  adgMod::file_stats_mutex.Unlock();
 
   if (s.ok() && current_entries > 0) {
     // Verify that the table is usable
@@ -1178,24 +1237,18 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
     LookupKey lkey(key, snapshot);
     instance->StartTimer(14);
     if (mem->Get(lkey, value, &s)) {
-        instance->IncrementCounter(3);
+        adgMod::levelled_counters[3].Increment(7);
         instance->PauseTimer(14);
-#ifdef RECORD_LEVEL_INFO
-        instance->RecordLevel(8);
-#endif
         // Done
     } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
-        instance->IncrementCounter(3);
+        adgMod::levelled_counters[3].Increment(7);
         instance->PauseTimer(14);
-#ifdef RECORD_LEVEL_INFO
-        instance->RecordLevel(8);
-#endif
         // Done
     } else {
         instance->PauseTimer(14);
-        instance->StartTimer(6);
+        //instance->StartTimer(6);
         s = current->Get(options, lkey, value, &stats);
-        instance->PauseTimer(6);
+        //instance->PauseTimer(6);
     }
 
     if (adgMod::MOD >= 7 && s.ok()) {

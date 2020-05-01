@@ -10,6 +10,7 @@
 #include <cstring>
 #include "util.h"
 #include <atomic>
+#include "plr.h"
 
 
 
@@ -23,15 +24,6 @@ using leveldb::FileMetaData;
 namespace adgMod {
 
     class LearnedIndexData;
-
-
-    class Segment {
-    public:
-        Segment(uint64_t _x, double _k, double _b) : x(_x), k(_k), b(_b) {}
-        uint64_t x;
-        double k;
-        double b;
-    };
 
     class AccumulatedNumEntriesArray {
         friend class LearnedIndexData;
@@ -61,6 +53,7 @@ namespace adgMod {
         int v_count;
         FileMetaData* meta;
         LearnedIndexData* self;
+        int level;
     };
     class LearnedIndexData {
         friend class leveldb::Version;
@@ -74,7 +67,7 @@ namespace adgMod {
         int allowed_seek;
         int current_seek;
         bool filled;
-        bool level;
+        bool is_level;
 
         std::vector<Segment> string_segments;
         uint64_t min_key;
@@ -87,8 +80,13 @@ namespace adgMod {
         std::deque<std::string> string_keys;
         AccumulatedNumEntriesArray num_entries_accumulated;
 
+        int level;
+        mutable int served;
+        uint64_t cost;
+
+
         explicit LearnedIndexData(int allowed_seek) : error(adgMod::model_error), learned(false), aborted(false), learning(false),
-            learned_not_atomic(false), allowed_seek(allowed_seek), current_seek(0), filled(false), level(false) {};
+            learned_not_atomic(false), allowed_seek(allowed_seek), current_seek(0), filled(false), is_level(false), level(0), served(0), cost(0) {};
         LearnedIndexData(const LearnedIndexData& other) = delete;
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key) const;
         uint64_t MaxPosition() const;
@@ -96,12 +94,13 @@ namespace adgMod {
         bool Learn();
         bool Learned();
         bool Learned(Version* version, int v_count, int level);
-        bool Learned(Version* version, int v_count, FileMetaData* meta);
+        bool Learned(Version* version, int v_count, FileMetaData* meta, int level);
         static void Learn(void* arg);
         static void FileLearn(void* arg);
         bool FillData(Version* version, FileMetaData* meta);
         void WriteModel(const string& filename);
         void ReadModel(const string& filename);
+        void ReportStats();
     };
 
 
@@ -110,12 +109,16 @@ namespace adgMod {
         leveldb::port::Mutex mutex;
         std::vector<LearnedIndexData*> file_learned_index_data;
     public:
-        bool Learned(Version* version, FileMetaData* meta);
+        uint64_t watermark;
+
+
+        bool Learned(Version* version, FileMetaData* meta, int level);
         bool FillData(Version* version, FileMetaData* meta);
         std::deque<std::string>& GetData(FileMetaData* meta);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key, int file_num);
         AccumulatedNumEntriesArray* GetAccumulatedArray(int file_num);
-        LearnedIndexData* GetModel(FileMetaData* meta);
+        LearnedIndexData* GetModel(int number);
+        void Report();
         ~FileLearnedIndexData();
     };
 

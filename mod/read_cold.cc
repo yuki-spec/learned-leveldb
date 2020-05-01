@@ -23,7 +23,7 @@ using std::map;
 using std::ifstream;
 using std::string;
 
-int num_pairs_base = 1024;
+int num_pairs_base = 1000;
 
 
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
     commandline_options.add_options()
-            ("n,get_number", "the number of gets (to be multiplied by 1024)", cxxopts::value<int>(num_operations)->default_value("1024"))
+            ("n,get_number", "the number of gets (to be multiplied by 1024)", cxxopts::value<int>(num_operations)->default_value("1000"))
             ("s,step", "the step of the loop of the size of db", cxxopts::value<float>(num_pair_step)->default_value("1"))
             ("i,iteration", "the number of iterations of a same size", cxxopts::value<int>(num_iteration)->default_value("1"))
             ("m,modification", "if set, run our modified version", cxxopts::value<int>(adgMod::MOD)->default_value("0"))
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
             ("x,dummy", "dummy option")
             ("l,load_type", "load type", cxxopts::value<int>(load_type)->default_value("0"))
             ("filter", "use filter", cxxopts::value<bool>(adgMod::use_filter)->default_value("false"))
-            ("mix", "mix read and write", cxxopts::value<int>(num_mix)->default_value(to_string(std::numeric_limits<int>::max())))
+            ("mix", "mix read and write", cxxopts::value<int>(num_mix)->default_value("0"))
             ("distribution", "operation distribution", cxxopts::value<string>(distribution_filename)->default_value(""))
             ("change_level_load", "load level model", cxxopts::value<bool>(change_level_load)->default_value("false"))
             ("change_file_load", "enable level learning", cxxopts::value<bool>(change_file_load)->default_value("false"))
@@ -135,6 +135,8 @@ int main(int argc, char *argv[]) {
     adgMod::file_learning_enabled ^= change_file_learning;
     adgMod::load_level_model ^= change_level_load;
     adgMod::load_file_model ^= change_file_load;
+
+   // adgMod::file_learning_enabled = false;
 
     vector<string> keys;
     vector<uint64_t> distribution;
@@ -162,6 +164,10 @@ int main(int argc, char *argv[]) {
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
     vector<vector<size_t>> times(20);
     string values(1024 * 1024, '0');
+
+    if (num_mix != 0) {
+        system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
+    }
     
     for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
         system("sudo fstrim -a -v");
@@ -177,10 +183,10 @@ int main(int argc, char *argv[]) {
 
         options.create_if_missing = true;
         //options.comparator = new NumericalComparator;
-        adgMod::block_restart_interval = options.block_restart_interval = adgMod::MOD == 6 || adgMod::MOD == 7 ? 1 : adgMod::block_restart_interval;
+        //adgMod::block_restart_interval = options.block_restart_interval = adgMod::MOD == 8 || adgMod::MOD == 7 ? 1 : adgMod::block_restart_interval;
         //read_options.fill_cache = true;
         write_options.sync = false;
-        instance->ResetAll(true);
+        instance->ResetAll();
 
 
         if (fresh_write && iteration == 0) {
@@ -274,10 +280,11 @@ int main(int argc, char *argv[]) {
 
 
 
-        if (num_mix < num_operations) {
+        if (num_mix != 0) {
             string db_location_mix = db_location + "_mix";
             string remove_command = "rm -rf " + db_location_mix;
             string copy_command = "cp -r " + db_location + " " + db_location_mix;
+
             system(remove_command.c_str());
             system(copy_command.c_str());
             db_location = db_location_mix;
@@ -307,14 +314,26 @@ int main(int argc, char *argv[]) {
 //        delete db;
 //        return 0;
 
+        uint64_t last_read = 0, last_write = 0;
+        int last_level = 0, last_file = 0, last_baseline = 0, last_succeeded = 0, last_false = 0, last_compaction = 0, last_learn = 0;
+        std::vector<uint64_t> detailed_times;
+        bool start_new_event = true;
 
+        instance->StartTimer(13);
         for (int i = 0; i < num_operations; ++i) {
-            instance->StartTimer(10);
+
+            if (start_new_event) {
+                detailed_times.push_back(instance->GetTime());
+                start_new_event = false;
+            }
+
 
             uint64_t index = use_distribution ? distribution[i] : uniform_dist_file(e1) % (keys.size() - 1);
 
-            if (i != 0 && i % num_mix == 0) {
+            if ((i % 20) < num_mix) {
+                instance->StartTimer(10);
                 status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e2), (uint64_t) adgMod::value_size});
+                instance->PauseTimer(10);
                 assert(status.ok() && "Mix Put Error");
             } else {
                 string value;
@@ -329,31 +348,73 @@ int main(int argc, char *argv[]) {
                     //assert(status.ok() && "File Get Error");
                 }
             }
-            instance->PauseTimer(10, true);
             if (pause) usleep(100);
+
+            if ((i + 1) % (num_operations / 100) == 0) detailed_times.push_back(instance->GetTime());
+            if ((i + 1) % (num_operations / 10) == 0) {
+                int level_read = levelled_counters[0].Sum();
+                int file_read = levelled_counters[1].Sum();
+                int baseline_read = levelled_counters[2].Sum();
+                int succeeded_read = levelled_counters[3].Sum();
+                int false_read = levelled_counters[4].Sum();
+
+                compaction_counter_mutex.Lock();
+                int num_compaction = events[0].size();
+                compaction_counter_mutex.Unlock();
+                learn_counter_mutex.Lock();
+                int num_learn = events[1].size();
+                learn_counter_mutex.Unlock();
+
+                uint64_t read_time = instance->ReportTime(4);
+                uint64_t write_time = instance->ReportTime(10);
+                std::pair<uint64_t, uint64_t> time = {detailed_times.front(), detailed_times.back()};
+
+                events[2].push_back(new WorkloadEvent(time, level_read - last_level, file_read - last_file, baseline_read - last_baseline,
+                    succeeded_read - last_succeeded, false_read - last_false, num_compaction - last_compaction, num_learn - last_learn,
+                    read_time - last_read, write_time - last_write, std::move(detailed_times)));
+
+                last_level = level_read;
+                last_file = file_read;
+                last_baseline = baseline_read;
+                last_succeeded = succeeded_read;
+                last_false = false_read;
+                last_compaction = num_compaction;
+                last_learn = num_learn;
+                last_read = read_time;
+                last_write = write_time;
+                detailed_times.clear();
+                start_new_event = true;
+            }
+
         }
+        instance->PauseTimer(13, true);
+
 
 
         instance->ReportTime();
-
-
-
-        for (int i = 0; i < 10; ++i) {
-            printf("Counter %d: %d\n", i, instance->ReportCounter(i));
-            instance->ResetCounter(i);
-        }
-        instance->ReportLevelStats();
-
         for (int s = 0; s < times.size(); ++s) {
             times[s].push_back(instance->ReportTime(s));
         }
         adgMod::db->WaitForBackground();
         sleep(10);
-        instance->ReportTimeSeries(7);
-        instance->ReportTimeSeries(8);
-        instance->ReportTimeSeries(9);
-        instance->ReportTimeSeries(10);
-        instance->ReportTimeSeries(11);
+
+
+
+        for (auto& event_array : events) {
+            for (Event* e : event_array) e->Report();
+        }
+
+        for (Counter& c : levelled_counters) c.Report();
+
+        file_data->Report();
+
+        for (auto it : file_stats) {
+            printf("FileStats %d %d %lu %lu %u\n", it.first, it.second.level, it.second.start, it.second.end, it.second.num_lookup);
+        }
+
+
+
+
 
         delete db;
     }

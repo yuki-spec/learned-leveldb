@@ -16,11 +16,12 @@ struct line {
     double b;
 };
 
-struct segment {
-    double start;
-    double stop;
-    double slope;
-    double intercept;
+class Segment {
+public:
+    Segment(uint64_t _x, double _k, double _b) : x(_x), k(_k), b(_b) {}
+    uint64_t x;
+    double k;
+    double b;
 };
 
 double get_slope(struct point p1, struct point p2);
@@ -46,23 +47,23 @@ private:
     struct point sint;
 
     void setup();
-    struct segment current_segment();
-    struct segment process__(struct point pt);
+    Segment current_segment();
+    Segment process__(struct point pt);
 
 public:
     GreedyPLR(double gamma);
-    struct segment process(const struct point& pt);
-    struct segment finish();
+    Segment process(const struct point& pt);
+    Segment finish();
 };
 
 class PLR {
 private:
     double gamma;
-    std::deque<struct segment> segments;
+    std::vector<Segment> segments;
 
 public:
     PLR(double gamma);
-    std::deque<struct segment>& train(std::deque<std::string>& keys, bool file);
+    std::vector<Segment>& train(std::deque<std::string>& keys, bool file);
 //    std::vector<double> predict(std::vector<double> xx);
 //    double mae(std::vector<double> y_true, std::vector<double> y_pred);
 };

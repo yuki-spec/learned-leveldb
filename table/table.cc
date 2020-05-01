@@ -226,113 +226,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
   ParsedInternalKey parsed_key;
   ParseInternalKey(k, &parsed_key);
 
-  if ((adgMod::MOD == 6 || adgMod::MOD == 7) && meta != nullptr) {
-    size_t lower_pos = 0, upper_pos = 0;
-    bool use_model = false;
-    if (learned) {
-        use_model = true;
-        instance->IncrementCounter(0);
-        lower_pos = lower;
-        upper_pos = upper;
-    } else if (adgMod::file_data->Learned(version, meta)) {
-        use_model = true;
-        instance->IncrementCounter(1);
-#ifdef INTERNAL_TIMER
-        instance->StartTimer(2);
-#endif
-        auto bounds = adgMod::file_data->GetPosition(parsed_key.user_key, meta->number);
-#ifdef INTERNAL_TIMER
-        instance->PauseTimer(2);
-#endif
-        if (bounds.first == bounds.second) {
-            delete iiter;
-            return s;
-        }
 
-        lower_pos = bounds.first;
-        upper_pos = bounds.second;
-    }
-
-    if (use_model) {
-        size_t index_lower = lower_pos / adgMod::block_num_entries;
-        size_t index_upper = upper_pos / adgMod::block_num_entries;
-        for (uint64_t i = index_lower; i <= index_upper; ++i) {
-            size_t pos_block_lower = i == index_lower ? lower_pos % adgMod::block_num_entries : 0;
-            size_t pos_block_upper = i == index_upper ? upper_pos % adgMod::block_num_entries : adgMod::block_num_entries - 1;
-#ifdef INTERNAL_TIMER
-            instance->StartTimer(2);
-#endif
-            Block::Iter* index_iter = dynamic_cast<Block::Iter*>(iiter);
-            //printf("%u %lu %lu %lu\n", index_iter->num_restarts_, index, pos_lower, pos_upper);
-            index_iter->SeekToRestartPoint((uint32_t) i);
-            index_iter->ParseNextKey();
-
-            if (index_iter->Compare(index_iter->key(), k) < 0) {
-#ifdef INTERNAL_TIMER
-                instance->PauseTimer(2);
-#endif
-                if (i != index_upper) continue;
-                delete iiter;
-                return s;
-            }
-
-            Slice handle_value = index_iter->value();
-            FilterBlockReader* filter = rep_->filter;
-            BlockHandle handle;
-            if (filter != nullptr && handle.DecodeFrom(&handle_value).ok() &&
-                !filter->KeyMayMatch(handle.offset(), k)) {
-                instance->IncrementCounter(5);
-#ifdef INTERNAL_TIMER
-                instance->PauseTimer(2);
-#endif
-                if (i != index_upper) continue;
-                delete iiter;
-                return s;
-            }
-
-
-#ifdef INTERNAL_TIMER
-            instance->PauseTimer(2);
-            instance->StartTimer(5);
-#endif
-            Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
-#ifdef INTERNAL_TIMER
-            instance->PauseTimer(5);
-            instance->StartTimer(3);
-#endif
-            //printf("file_number: %d position: %d block_index: %d relative_pos: %d\n", meta->number, position, index, pos_in_block);
-            //fflush(stdout);
-            //printf("%u %u %lu %lu %lu\n", index_iter->num_restarts_, block_iter->num_restarts_, index, pos_lower, pos_upper);
-            block_iter->Seek((uint32_t) pos_block_lower, (uint32_t) pos_block_upper, k);
-#ifdef INTERNAL_TIMER
-            instance->PauseTimer(3);
-#endif
-            if (block_iter->Valid()) {
-                (*handle_result)(arg, block_iter->key(), block_iter->value());
-            }
-            s = block_iter->status();
-            delete block_iter;
-            if (s.ok()) {
-                s = iiter->status();
-            }
-
-
-            if (!VersionSet::IsFound(arg)) {
-                if (i != index_upper) {
-                    instance->IncrementCounter(6);
-                    continue;
-                }
-            }
-            delete iiter;
-            return s;
-        }
-    }
-  }
-
-
-
-
-    instance->IncrementCounter(2);
 #ifdef INTERNAL_TIMER
     instance->StartTimer(2);
 #endif
@@ -348,7 +242,6 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
       if (filter != nullptr && handle.DecodeFrom(&handle_value).ok() &&
           !filter->KeyMayMatch(handle.offset(), k)) {
         // Not found
-        instance->IncrementCounter(5);
       } else {
 #ifdef INTERNAL_TIMER
         instance->StartTimer(5);
@@ -411,22 +304,22 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
     index_iter->ParseNextKey();
     assert(index_iter->Valid());
     Block::Iter* block_iter = dynamic_cast<Block::Iter*>(BlockReader(this, options, index_iter->value()));
-    uint64_t num_entries_this_block = block_iter->num_restarts_ * adgMod::block_restart_interval;
-
-    if (!adgMod::block_num_entries_recorded) {
-      adgMod::block_num_entries = num_entries_this_block;
-      adgMod::block_num_entries_recorded = true;
-      adgMod::entry_size = block_iter->restarts_ / num_entries_this_block;
-      BlockHandle temp;
-      Slice temp_slice = index_iter->value();
-      temp.DecodeFrom(&temp_slice);
-      adgMod::block_size = temp.size() + kBlockTrailerSize;
-    }
 
     ParsedInternalKey parsed_key;
-    for (block_iter->SeekToRestartPoint(0); block_iter->ParseNextKey();) {
+    int num_entries_this_block = 0;
+    for (block_iter->SeekToRestartPoint(0); block_iter->ParseNextKey(); ++num_entries_this_block) {
         ParseInternalKey(block_iter->key(), &parsed_key);
         data->string_keys.emplace_back(parsed_key.user_key.data(), parsed_key.user_key.size());
+    }
+
+    if (!adgMod::block_num_entries_recorded) {
+        adgMod::block_num_entries = num_entries_this_block;
+        adgMod::block_num_entries_recorded = true;
+        adgMod::entry_size = block_iter->restarts_ / num_entries_this_block;
+        BlockHandle temp;
+        Slice temp_slice = index_iter->value();
+        temp.DecodeFrom(&temp_slice);
+        adgMod::block_size = temp.size() + kBlockTrailerSize;
     }
 
     uint64_t current_total = data->num_entries_accumulated.NumEntries();
