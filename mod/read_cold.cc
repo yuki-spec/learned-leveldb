@@ -24,6 +24,7 @@ using std::ifstream;
 using std::string;
 
 int num_pairs_base = 1000;
+int mix_base = 20;
 
 
 
@@ -125,7 +126,7 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    std::default_random_engine e1, e2;
+    std::default_random_engine e1, e2(255), e3;
     num_operations *= num_pairs_base;
     db_location_copy = db_location;
 
@@ -168,11 +169,17 @@ int main(int argc, char *argv[]) {
     if (num_mix != 0) {
         system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
     }
+
+    if (num_mix > 1000) {
+        mix_base = 1000;
+        num_mix -= 1000;
+    }
     
     for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
         system("sudo fstrim -a -v");
         db_location = db_location_copy;
         std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
+        std::uniform_int_distribution<uint64_t > uniform_dist_file2(0, (uint64_t) keys.size() - 1);
         std::uniform_int_distribution<uint64_t > uniform_dist_value(0, (uint64_t) values.size() - adgMod::value_size - 1);
 
         DB* db;
@@ -320,6 +327,7 @@ int main(int argc, char *argv[]) {
         bool start_new_event = true;
 
         instance->StartTimer(13);
+        uint64_t write_i = 0;
         for (int i = 0; i < num_operations; ++i) {
 
             if (start_new_event) {
@@ -328,15 +336,19 @@ int main(int argc, char *argv[]) {
             }
 
 
-            uint64_t index = use_distribution ? distribution[i] : uniform_dist_file(e1) % (keys.size() - 1);
+            if ((i % mix_base) < num_mix) {
+                uint64_t index = use_distribution ? distribution[i] : uniform_dist_file(e1) % (keys.size() - 1);
+                index = load_type == 0 ? write_i : index;
+                write_i = (write_i + 1) % keys.size();
 
-            if ((i % 20) < num_mix) {
                 instance->StartTimer(10);
-                status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e2), (uint64_t) adgMod::value_size});
+                status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
                 instance->PauseTimer(10);
                 assert(status.ok() && "Mix Put Error");
+                //cout << index << endl;
             } else {
                 string value;
+                uint64_t index = use_distribution ? distribution[i] : uniform_dist_file2(e2) % (keys.size() - 1);
                 const string& key = keys[index];
                 instance->StartTimer(4);
                 status = db->Get(read_options, key, &value);
@@ -348,15 +360,17 @@ int main(int argc, char *argv[]) {
                     //assert(status.ok() && "File Get Error");
                 }
             }
-            if (pause) usleep(100);
+            if (pause) {
+                if ((i + 1) % (num_operations / 10000) == 0) ::usleep(800000);
+            }
 
             if ((i + 1) % (num_operations / 100) == 0) detailed_times.push_back(instance->GetTime());
             if ((i + 1) % (num_operations / 10) == 0) {
                 int level_read = levelled_counters[0].Sum();
                 int file_read = levelled_counters[1].Sum();
                 int baseline_read = levelled_counters[2].Sum();
-                int succeeded_read = levelled_counters[3].Sum();
-                int false_read = levelled_counters[4].Sum();
+                int succeeded_read = levelled_counters[3].NumSum();
+                int false_read = levelled_counters[4].NumSum();
 
                 compaction_counter_mutex.Lock();
                 int num_compaction = events[0].size();
@@ -384,6 +398,10 @@ int main(int argc, char *argv[]) {
                 last_write = write_time;
                 detailed_times.clear();
                 start_new_event = true;
+                cout << (i + 1) / (num_operations / 10) << endl;
+                Version* current = adgMod::db->versions_->current();
+                printf("LevelSize %d %d %d %d %d %d\n", current->NumFiles(0), current->NumFiles(1), current->NumFiles(2), current->NumFiles(3),
+                       current->NumFiles(4), current->NumFiles(5));
             }
 
         }
@@ -409,9 +427,9 @@ int main(int argc, char *argv[]) {
         file_data->Report();
 
         for (auto it : file_stats) {
-            printf("FileStats %d %d %lu %lu %u\n", it.first, it.second.level, it.second.start, it.second.end, it.second.num_lookup);
+            printf("FileStats %d %d %lu %lu %u %u %lu %d\n", it.first, it.second.level, it.second.start,
+                it.second.end, it.second.num_lookup_pos, it.second.num_lookup_neg, it.second.size, it.first < file_data->watermark ? 0 : 1);
         }
-
 
 
 

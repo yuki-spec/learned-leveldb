@@ -21,23 +21,11 @@
 
 namespace leveldb {
 
-struct Table::Rep {
-  ~Rep() {
+Table::Rep::~Rep() {
     delete filter;
     delete[] filter_data;
     delete index_block;
-  }
-
-  Options options;
-  Status status;
-  RandomAccessFile* file;
-  uint64_t cache_id;
-  FilterBlockReader* filter;
-  const char* filter_data;
-
-  BlockHandle metaindex_handle;  // Handle to metaindex_block: saved from footer
-  Block* index_block;
-};
+}
 
 Status Table::Open(const Options& options, RandomAccessFile* file,
                    uint64_t size, Table** table) {
@@ -218,7 +206,7 @@ Iterator* Table::NewIterator(const ReadOptions& options) const {
 }
 
 Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
-                          void (*handle_result)(void*, const Slice&, const Slice&),
+                          void (*handle_result)(void*, const Slice&, const Slice&), int level,
                           FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version) {
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
   Status s;
@@ -236,14 +224,23 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
 #endif
 
     if (iiter->Valid()) {
+#ifdef INTERNAL_TIMER
+      instance->StartTimer(15);
+#endif
       Slice handle_value = iiter->value();
       FilterBlockReader* filter = rep_->filter;
       BlockHandle handle;
       if (filter != nullptr && handle.DecodeFrom(&handle_value).ok() &&
           !filter->KeyMayMatch(handle.offset(), k)) {
+#ifdef INTERNAL_TIMER
+          auto time = instance->PauseTimer(15, true);
+          adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+#endif
         // Not found
       } else {
 #ifdef INTERNAL_TIMER
+          auto time = instance->PauseTimer(15, true);
+          adgMod::levelled_counters[9].Increment(level, time.second - time.first);
         instance->StartTimer(5);
 #endif
         Iterator* block_iter = BlockReader(this, options, iiter->value());

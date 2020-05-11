@@ -479,28 +479,32 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       }
       auto temp = instance->PauseTimer(6, true);
 
-      if (saver.state == kNotFound) adgMod::levelled_counters[8].Increment(level, temp.second - temp.first);
-      else if (saver.state == kFound) adgMod::levelled_counters[7].Increment(level, temp.second - temp.first);
-      adgMod::file_stats_mutex.Lock();
-      auto iter = adgMod::file_stats.find(f->number);
-      if (iter != adgMod::file_stats.end()) {
-          iter->second.num_lookup += 1;
-      }
-      adgMod::file_stats_mutex.Unlock();
-
 
       if (!s.ok()) {
         return s;
       }
+
       switch (saver.state) {
-        case kNotFound:
-          adgMod::levelled_counters[4].Increment(level);
-          break;  // Keep searching in other files
-        case kFound:
-#ifdef RECORD_LEVEL_INFO
-          adgMod::levelled_counters[3].Increment(level);
-#endif
-          return s;
+        case kNotFound: {
+            adgMod::levelled_counters[4].Increment(level, temp.second - temp.first);
+            adgMod::file_stats_mutex.Lock();
+            auto iter = adgMod::file_stats.find(f->number);
+            if (iter != adgMod::file_stats.end()) {
+                iter->second.num_lookup_neg += 1;
+            }
+            adgMod::file_stats_mutex.Unlock();
+            break;  // Keep searching in other files
+        }
+        case kFound: {
+            adgMod::file_stats_mutex.Lock();
+            auto iter = adgMod::file_stats.find(f->number);
+            if (iter != adgMod::file_stats.end()) {
+                iter->second.num_lookup_pos += 1;
+            }
+            adgMod::file_stats_mutex.Unlock();
+            adgMod::levelled_counters[3].Increment(level, temp.second - temp.first);
+            return s;
+        }
         case kDeleted:
           s = Status::NotFound(Slice());  // Use empty error message for speed
           return s;
@@ -1761,8 +1765,19 @@ void Version::ReadLevelModel() {
         for (FileMetaData* file_meta : files_[i]) {
             if (adgMod::load_file_model) {
                 adgMod::file_data->GetModel(file_meta->number)->ReadModel(vset_->dbname_ + "/" + to_string(file_meta->number) + ".fmodel");
-                file_max = file_max > file_meta->number ? file_max : file_meta->number;
             }
+            file_max = file_max > file_meta->number ? file_max : file_meta->number;
+        }
+    }
+    adgMod::file_data->watermark = file_max;
+}
+
+void Version::ReadFileStats() {
+    uint64_t file_max = 0;
+    for (int i = 0; i < config::kNumLevels; ++i) {
+        for (FileMetaData* file_meta : files_[i]) {
+            adgMod::file_stats.insert({file_meta->number, adgMod::FileStats(i, file_meta->file_size)});
+            file_max = file_max > file_meta->number ? file_max : file_meta->number;
         }
     }
     adgMod::file_data->watermark = file_max;

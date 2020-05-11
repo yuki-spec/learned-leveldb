@@ -25,6 +25,8 @@ namespace adgMod {
         levelled_counters[6].name = "Learn";
         levelled_counters[7].name = "SuccessTime";
         levelled_counters[8].name = "FalseTime";
+        levelled_counters[9].name = "FilteredLookup";
+        levelled_counters[10].name = "PutWait";
     }
 
     Stats* Stats::GetInstance() {

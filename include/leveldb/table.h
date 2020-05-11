@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <db/version_edit.h>
+#include <table/format.h>
 
 #include "leveldb/export.h"
 #include "leveldb/iterator.h"
@@ -20,6 +21,7 @@ struct Options;
 class RandomAccessFile;
 struct ReadOptions;
 class TableCache;
+class FilterBlockReader;
 
 // A Table is a sorted map from strings to strings.  Tables are
 // immutable and persistent.  A Table may be safely accessed from
@@ -61,7 +63,22 @@ class LEVELDB_EXPORT Table {
 
  private:
   friend class TableCache;
-  struct Rep;
+
+
+    struct Rep {
+
+        ~Rep();
+
+        Options options;
+        Status status;
+        RandomAccessFile* file;
+        uint64_t cache_id;
+        FilterBlockReader* filter;
+        const char* filter_data;
+
+        BlockHandle metaindex_handle;  // Handle to metaindex_block: saved from footer
+        Block* index_block;
+    };
 
   static Iterator* BlockReader(void*, const ReadOptions&, const Slice&);
 
@@ -71,7 +88,7 @@ class LEVELDB_EXPORT Table {
   // to Seek(key).  May not make such a call if filter policy says
   // that key is not present.
   Status InternalGet(const ReadOptions&, const Slice& key, void* arg,
-                     void (*handle_result)(void* arg, const Slice& k, const Slice& v),
+                     void (*handle_result)(void* arg, const Slice& k, const Slice& v), int level,
                      FileMetaData* meta = nullptr, uint64_t lower = 0, uint64_t upper = 0, bool learned = false, Version* version = nullptr);
 
   void ReadMeta(const Footer& footer);

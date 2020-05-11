@@ -46,80 +46,85 @@ TableCache::~TableCache() { delete cache_; }
 Status TableCache::FindTable(uint64_t file_number, uint64_t file_size,
                              Cache::Handle** handle) {
 
-  adgMod::Stats* instance = adgMod::Stats::GetInstance();
-
+//  adgMod::Stats* instance = adgMod::Stats::GetInstance();
+//
+//
+//  Status s;
+//  char buf[sizeof(file_number)];
+//  EncodeFixed64(buf, file_number);
+//  Slice key(buf, sizeof(buf));
+//  Cache::Handle* cache_handle = cache_->Lookup(key);
+//  TableAndFile* tf = cache_handle != nullptr ? reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle)) : new TableAndFile;
+//
+//  if (cache_handle == nullptr) {
+//      std::string fname = TableFileName(dbname_, file_number);
+//
+//      s = env_->NewRandomAccessFile(fname, &tf->file);
+//      if (!s.ok()) {
+//          std::string old_fname = SSTTableFileName(dbname_, file_number);
+//          if (env_->NewRandomAccessFile(old_fname, &tf->file).ok()) {
+//              s = Status::OK();
+//          }
+//      }
+//  }
+//
+//  if (cache_handle == nullptr || tf->table == nullptr) {
+//      if (s.ok()) {
+//          s = Table::Open(options_, tf->file, file_size, &tf->table);
+//      }
+//  }
+//
+//  if (cache_handle == nullptr) {
+//      if (s.ok()) {
+//          cache_handle = cache_->Insert(key, tf, 1, DeleteEntry);
+//      } else {
+//          assert(tf->table == nullptr);
+//          delete tf->file;
+//      }
+//  }
+//
+//  *handle = cache_handle;
+//  return s;
 
   Status s;
   char buf[sizeof(file_number)];
   EncodeFixed64(buf, file_number);
   Slice key(buf, sizeof(buf));
-  Cache::Handle* cache_handle = cache_->Lookup(key);
-  TableAndFile* tf = cache_handle != nullptr ? reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle)) : new TableAndFile;
+  *handle = cache_->Lookup(key);
 
-  if (cache_handle == nullptr) {
-      std::string fname = TableFileName(dbname_, file_number);
 
-      s = env_->NewRandomAccessFile(fname, &tf->file);
-      if (!s.ok()) {
-          std::string old_fname = SSTTableFileName(dbname_, file_number);
-          if (env_->NewRandomAccessFile(old_fname, &tf->file).ok()) {
-              s = Status::OK();
-          }
+  if (*handle == nullptr) {
+
+    std::string fname = TableFileName(dbname_, file_number);
+    RandomAccessFile* file = nullptr;
+    Table* table = nullptr;
+    s = env_->NewRandomAccessFile(fname, &file);
+    if (!s.ok()) {
+      std::string old_fname = SSTTableFileName(dbname_, file_number);
+      if (env_->NewRandomAccessFile(old_fname, &file).ok()) {
+        s = Status::OK();
       }
-  }
+    }
 
-  if (cache_handle == nullptr || tf->table == nullptr) {
-      if (s.ok()) {
-          s = Table::Open(options_, tf->file, file_size, &tf->table);
-      }
-  }
 
-  if (cache_handle == nullptr) {
-      if (s.ok()) {
-          cache_handle = cache_->Insert(key, tf, 1, DeleteEntry);
-      } else {
-          assert(tf->table == nullptr);
-          delete tf->file;
-      }
-  }
+    if (s.ok()) {
+      s = Table::Open(options_, file, file_size, &table);
+    }
 
-  *handle = cache_handle;
+
+    if (!s.ok()) {
+      assert(table == nullptr);
+      delete file;
+      // We do not cache error results so that if the error is transient,
+      // or somebody repairs the file, we recover automatically.
+    } else {
+      TableAndFile* tf = new TableAndFile;
+      tf->file = file;
+      tf->table = table;
+      *handle = cache_->Insert(key, tf, 1, &DeleteEntry);
+    }
+  }
   return s;
-
-
-
-//  if (*handle == nullptr) {
-//
-//    std::string fname = TableFileName(dbname_, file_number);
-//    RandomAccessFile* file = nullptr;
-//    Table* table = nullptr;
-//    s = env_->NewRandomAccessFile(fname, &file);
-//    if (!s.ok()) {
-//      std::string old_fname = SSTTableFileName(dbname_, file_number);
-//      if (env_->NewRandomAccessFile(old_fname, &file).ok()) {
-//        s = Status::OK();
-//      }
-//    }
-//
-//
-//    if (s.ok()) {
-//      s = Table::Open(options_, file, file_size, &table);
-//    }
-//
-//
-//    if (!s.ok()) {
-//      assert(table == nullptr);
-//      delete file;
-//      // We do not cache error results so that if the error is transient,
-//      // or somebody repairs the file, we recover automatically.
-//    } else {
-//      TableAndFile* tf = new TableAndFile;
-//      tf->file = file;
-//      tf->table = table;
-//      *handle = file_cache->Insert(key, tf, 1, &DeleteEntry);
-//    }
-//  }
-//  return s;
 }
 
 Iterator* TableCache::NewIterator(const ReadOptions& options,
@@ -167,7 +172,7 @@ Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
 #endif
   if (s.ok()) {
       Table* t = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-      s = t->InternalGet(options, k, arg, handle_result, meta, lower, upper, learned, version);
+      s = t->InternalGet(options, k, arg, handle_result, level, meta, lower, upper, learned, version);
       cache_->Release(handle);
   }
   adgMod::levelled_counters[2].Increment(level);
@@ -275,24 +280,30 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
 
     instance->StartTimer(1);
 
-    Cache::Handle* cache_handle = FindFile(options, file_number, file_size);
-    TableAndFile* filter_and_file = reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle));
-    RandomAccessFile* file = filter_and_file->file;
+    //Cache::Handle* cache_handle = FindFile(options, file_number, file_size);
+    Cache::Handle* cache_handle = nullptr;
+    Status s = FindTable(file_number, file_size, &cache_handle);
+    TableAndFile* tf = reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle));
+    RandomAccessFile* file = tf->file;
+    FilterBlockReader* filter = tf->table->rep_->filter;
 
     instance->PauseTimer(1);
 
 
+
     if (!learned) {
-        adgMod::levelled_counters[1].Increment(level);
         instance->StartTimer(2);
 
         ParsedInternalKey parsed_key;
         ParseInternalKey(k, &parsed_key);
-        auto bounds = adgMod::file_data->GetPosition(parsed_key.user_key, meta->number);
+        adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
+        auto bounds = model->GetPosition(parsed_key.user_key);
         lower = bounds.first;
         upper = bounds.second;
 
         instance->PauseTimer(2);
+        if (lower > model->MaxPosition()) return;
+        adgMod::levelled_counters[1].Increment(level);
     } else {
         adgMod::levelled_counters[0].Increment(level);
     }
@@ -301,65 +312,77 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     // Get the position we want to read
     size_t index_lower = lower / adgMod::block_num_entries;
     size_t index_upper = upper / adgMod::block_num_entries;
-    for (uint64_t i = index_lower; i <= index_upper; ++i) {
 
-
-        // Check Filter Block
-        uint64_t block_offset = i * adgMod::block_size;
-//        if (filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
-//            instance->IncrementCounter(5);
-//            continue;
-//        }
-
-        instance->StartTimer(5);
-
-        size_t pos_block_lower = i == index_lower ? lower % adgMod::block_num_entries : 0;
-        size_t pos_block_upper = i == index_upper ? upper % adgMod::block_num_entries : adgMod::block_num_entries - 1;
-
-        // Read corresponding entries
-        size_t read_size = (pos_block_upper - pos_block_lower + 1) * adgMod::entry_size;
-        static char scratch[4096];
-        Slice entries;
-        Status s = file->Read(block_offset + pos_block_lower * adgMod::entry_size, read_size, &entries, scratch);
-        assert(s.ok());
-
-        instance->PauseTimer(5);
-        instance->StartTimer(3);
-
-
-        // Binary Search
-        uint64_t left = pos_block_lower, right = pos_block_upper;
-        while (left < right) {
-            uint32_t mid = (left + right) / 2;
-            uint32_t shared, non_shared, value_length;
-            const char* key_ptr = DecodeEntry(entries.data() + (mid - pos_block_lower) * adgMod::entry_size,
-                    entries.data() + read_size, &shared, &non_shared, &value_length);
-            assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
-            Slice mid_key(key_ptr, non_shared);
-            int comp = adgMod::db->options_.comparator->Compare(mid_key, k);
-            if (comp < 0) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-
+    uint64_t i = index_lower;
+    if (index_lower != index_upper) {
+        Block* index_block = tf->table->rep_->index_block;
+        uint32_t mid_index_entry = DecodeFixed32(index_block->data_ + index_block->restart_offset_ + index_lower * sizeof(uint32_t));
         uint32_t shared, non_shared, value_length;
-        const char* key_ptr = DecodeEntry(entries.data() + (left - pos_block_lower) * adgMod::entry_size,
+        const char* key_ptr = DecodeEntry(index_block->data_ + mid_index_entry,
+                                          index_block->data_ + index_block->restart_offset_, &shared, &non_shared, &value_length);
+        assert(key_ptr != nullptr && shared == 0 && "Index Entry Corruption");
+        Slice mid_key(key_ptr, non_shared);
+        int comp = tf->table->rep_->options.comparator->Compare(mid_key, k);
+        i = comp < 0 ? index_upper : index_lower;
+    }
+
+
+    // Check Filter Block
+    instance->StartTimer(15);
+    uint64_t block_offset = i * adgMod::block_size;
+    if (/*(level == 0 || level == 1 || level == 2) &&*/ filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
+        auto time = instance->PauseTimer(15, true);
+        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+        cache_->Release(cache_handle);
+        return;
+    }
+    auto time = instance->PauseTimer(15, true);
+    adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+    instance->StartTimer(5);
+
+    size_t pos_block_lower = i == index_lower ? lower % adgMod::block_num_entries : 0;
+    size_t pos_block_upper = i == index_upper ? upper % adgMod::block_num_entries : adgMod::block_num_entries - 1;
+
+    // Read corresponding entries
+    size_t read_size = (pos_block_upper - pos_block_lower + 1) * adgMod::entry_size;
+    static char scratch[4096];
+    Slice entries;
+    s = file->Read(block_offset + pos_block_lower * adgMod::entry_size, read_size, &entries, scratch);
+    assert(s.ok());
+
+    instance->PauseTimer(5);
+    instance->StartTimer(3);
+
+
+    // Binary Search
+    uint64_t left = pos_block_lower, right = pos_block_upper;
+    while (left < right) {
+        uint32_t mid = (left + right) / 2;
+        uint32_t shared, non_shared, value_length;
+        const char* key_ptr = DecodeEntry(entries.data() + (mid - pos_block_lower) * adgMod::entry_size,
                 entries.data() + read_size, &shared, &non_shared, &value_length);
         assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
-
-        instance->PauseTimer(3);
-
-        Slice key(key_ptr, non_shared), value(key_ptr + non_shared, value_length);
-        handle_result(arg, key, value);
-
-        if (VersionSet::IsFound(arg)) break;
+        Slice mid_key(key_ptr, non_shared);
+        int comp = tf->table->rep_->options.comparator->Compare(mid_key, k);
+        if (comp < 0) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
     }
-    //delete file;
-    instance->StartTimer(1);
+
+    uint32_t shared, non_shared, value_length;
+    const char* key_ptr = DecodeEntry(entries.data() + (left - pos_block_lower) * adgMod::entry_size,
+            entries.data() + read_size, &shared, &non_shared, &value_length);
+    assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
+
+    instance->PauseTimer(3);
+
+    Slice key(key_ptr, non_shared), value(key_ptr + non_shared, value_length);
+    handle_result(arg, key, value);
+
+    //cache handle;
     cache_->Release(cache_handle);
-    instance->PauseTimer(1);
 }
 
 

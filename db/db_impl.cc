@@ -193,6 +193,7 @@ DBImpl::~DBImpl() {
 
   delete adgMod::file_data;
   delete vlog;
+  adgMod::file_stats.clear();
 }
 
 Status DBImpl::NewDB() {
@@ -549,6 +550,11 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
                   meta.largest);
   }
 
+    adgMod::file_stats_mutex.Lock();
+    assert(adgMod::file_stats.find(meta.number) == adgMod::file_stats.end());
+    adgMod::file_stats.insert({meta.number, adgMod::FileStats(level, meta.file_size)});
+    adgMod::file_stats_mutex.Unlock();
+
   CompactionStats stats;
   stats.micros = env_->NowMicros() - start_micros;
   stats.bytes_written = meta.file_size;
@@ -558,7 +564,11 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
 
 int DBImpl::CompactMemTable() {
   mutex_.AssertHeld();
+//  assert(false);
   assert(imm_ != nullptr);
+
+    adgMod::Stats* instance = adgMod::Stats::GetInstance();
+    instance->StartTimer(16);
 
   // Save the contents of the memtable as a new Table
   VersionEdit edit;
@@ -587,6 +597,16 @@ int DBImpl::CompactMemTable() {
   } else {
     RecordBackgroundError(s);
   }
+
+    auto time = instance->PauseTimer(16, true);
+    adgMod::compaction_counter_mutex.Lock();
+    adgMod::events[0].push_back(new CompactionEvent(time, to_string(edit.new_files_[0].first)));
+    adgMod::levelled_counters[5].Increment(edit.new_files_[0].first, time.second - time.first);
+    adgMod::compaction_counter_mutex.Unlock();
+
+
+
+
 
   return edit.new_files_[0].first;
 }
@@ -742,12 +762,7 @@ void DBImpl::BackgroundCompaction() {
 
   if (imm_ != nullptr) {
     int level = CompactMemTable();
-    auto time = instance->PauseTimer(7, true);
-
-    adgMod::compaction_counter_mutex.Lock();
-    adgMod::events[0].push_back(new CompactionEvent(time, to_string(level)));
-    adgMod::levelled_counters[5].Increment(level);
-    adgMod::compaction_counter_mutex.Unlock();
+    instance->PauseTimer(7);
     return;
   }
 
@@ -781,6 +796,15 @@ void DBImpl::BackgroundCompaction() {
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size, f->smallest,
                        f->largest);
     status = versions_->LogAndApply(c->edit(), &mutex_);
+
+      adgMod::file_stats_mutex.Lock();
+      auto iter = adgMod::file_stats.find(f->number);
+      if (iter != adgMod::file_stats.end()) {
+        assert(iter->second.level == c->level());
+        iter->second.level += 1;
+      }
+      adgMod::file_stats_mutex.Unlock();
+
     if (!status.ok()) {
       RecordBackgroundError(status);
     }
@@ -820,7 +844,7 @@ void DBImpl::BackgroundCompaction() {
         adgMod::compaction_counter_mutex.Lock();
         for (auto item: changed_level) {
             changed_level_string += to_string(item);
-            adgMod::levelled_counters[5].Increment(item);
+            adgMod::levelled_counters[5].Increment(item, time.second - time.first);
         }
         adgMod::events[0].push_back(new CompactionEvent(time, std::move(changed_level_string)));
         adgMod::compaction_counter_mutex.Unlock();
@@ -942,7 +966,7 @@ Status DBImpl::FinishCompactionOutputFile(CompactionState* compact,
 
   adgMod::file_stats_mutex.Lock();
   assert(adgMod::file_stats.find(output_number) == adgMod::file_stats.end());
-  adgMod::file_stats.insert({output_number, adgMod::FileStats(compact->compaction->level() + 1)});
+  adgMod::file_stats.insert({output_number, adgMod::FileStats(compact->compaction->level() + 1, current_bytes)});
   adgMod::file_stats_mutex.Unlock();
 
   if (s.ok() && current_entries > 0) {
@@ -1264,6 +1288,7 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
 //  if (have_stat_update && current->UpdateStats(stats)) {
 //    MaybeScheduleCompaction();
 //  }
+
   mem->Unref();
   if (imm != nullptr) imm->Unref();
   current->Unref();
@@ -1467,6 +1492,7 @@ Status DBImpl::MakeRoomForWrite(bool force) {
       // this delay hands over some CPU to the compaction thread in
       // case it is sharing the same core as the writer.
       mutex_.Unlock();
+      adgMod::levelled_counters[10].Increment(0);
       env_->SleepForMicroseconds(1000);
       allow_delay = false;  // Do not delay a single write more than once
       mutex_.Lock();
@@ -1477,16 +1503,14 @@ Status DBImpl::MakeRoomForWrite(bool force) {
     } else if (imm_ != nullptr) {
       // We have filled up the current memtable, but the previous
       // one is still being compacted, so we wait.
+      adgMod::levelled_counters[10].Increment(1);
       Log(options_.info_log, "Current memtable full; waiting...\n");
-      //instance->PauseTimer(9, true);
       background_work_finished_signal_.Wait();
-      //instance->StartTimer(9);
     } else if (versions_->NumLevelFiles(0) >= config::kL0_StopWritesTrigger) {
       // There are too many level-0 files.
+      adgMod::levelled_counters[10].Increment(2);
       Log(options_.info_log, "Too many L0 files; waiting...\n");
-      //instance->PauseTimer(9, true);
       background_work_finished_signal_.Wait();
-      //instance->StartTimer(9);
     } else {
       // Attempt to switch to a new memtable and trigger compaction of old
       assert(versions_->PrevLogNumber() == 0);
@@ -1653,6 +1677,7 @@ Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
     impl->DeleteObsoleteFiles();
     //impl->MaybeScheduleCompaction();
     impl->versions_->current()->ReadLevelModel();
+    impl->versions_->current()->ReadFileStats();
   }
   impl->mutex_.Unlock();
   if (s.ok()) {

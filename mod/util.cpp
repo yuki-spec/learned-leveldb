@@ -42,7 +42,7 @@ namespace adgMod {
     uint64_t entry_size = 0;
 
 
-    vector<Counter> levelled_counters(9);
+    vector<Counter> levelled_counters(11);
     vector<vector<Event*>> events(3);
     leveldb::port::Mutex compaction_counter_mutex;
     leveldb::port::Mutex learn_counter_mutex;

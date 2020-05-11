@@ -25,24 +25,7 @@ using leveldb::Slice;
 namespace adgMod {
 
     class FileLearnedIndexData;
-
-    class FileStats {
-    public:
-        uint64_t start;
-        uint64_t end;
-        int level;
-        uint32_t num_lookup;
-
-        explicit FileStats(int level_) : start(0), end(0), level(level_), num_lookup(0) {
-            uint32_t dummy;
-            start = __rdtscp(&dummy);
-        };
-
-        void Finish() {
-            uint32_t dummy;
-            end = __rdtscp(&dummy);
-        }
-    };
+    class FileStats;
 
     extern int MOD;
     extern bool string_mode;
@@ -95,6 +78,28 @@ namespace adgMod {
     bool operator<=(const Slice& slice, const string& string);
     bool operator>=(const Slice& slice, const string& string);
     uint64_t get_time_difference(timespec start, timespec stop);
+
+    class FileStats {
+    public:
+        uint64_t start;
+        uint64_t end;
+        int level;
+        uint32_t num_lookup_neg;
+        uint32_t num_lookup_pos;
+        uint64_t size;
+
+        explicit FileStats(int level_, uint64_t size_) : start(0), end(0), level(level_), num_lookup_pos(0), num_lookup_neg(0), size(size_) {
+            adgMod::Stats* instance = adgMod::Stats::GetInstance();
+            uint32_t dummy;
+            start = (__rdtscp(&dummy) - instance->initial_time) / adgMod::reference_frequency;
+        };
+
+        void Finish() {
+            adgMod::Stats* instance = adgMod::Stats::GetInstance();
+            uint32_t dummy;
+            end = (__rdtscp(&dummy) - instance->initial_time) / adgMod::reference_frequency;
+        }
+    };
 }
 
 

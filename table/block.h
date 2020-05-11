@@ -38,6 +38,7 @@ public:
 
 private:
     friend class Table;
+    friend class TableCache;
 
     class Iter;
 

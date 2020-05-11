@@ -108,7 +108,7 @@ namespace adgMod {
             self->cost = time.second - time.first;
             learn_counter_mutex.Lock();
             events[1].push_back(new LearnEvent(time, 0, self->level, success));
-            levelled_counters[6].Increment(vas->level);
+            levelled_counters[6].Increment(vas->level, time.second - time.first);
             learn_counter_mutex.Unlock();
         }
 
@@ -140,7 +140,7 @@ namespace adgMod {
             self->cost = time.second - time.first;
             learn_counter_mutex.Lock();
             events[1].push_back(new LearnEvent(time, 1, self->level, true));
-            levelled_counters[6].Increment(mas->level);
+            levelled_counters[6].Increment(mas->level, time.second - time.first);
             learn_counter_mutex.Unlock();
         }
 
@@ -231,7 +231,7 @@ namespace adgMod {
     }
 
     void LearnedIndexData::ReportStats() {
-        printf("%d %d %lu %lu\n", level, served, string_segments.size(), cost);
+        printf("%d %d %lu %lu %lu\n", level, served, string_segments.size(), cost, size);
     }
 
 

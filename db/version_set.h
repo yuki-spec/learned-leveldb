@@ -120,6 +120,7 @@ class Version {
   void WriteLevelModel();
   void ReadLevelModel();
   void FileLearn();
+  void ReadFileStats();
 
  private:
   friend class Compaction;

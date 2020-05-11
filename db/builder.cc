@@ -54,11 +54,6 @@ Status BuildTable(const std::string& dbname, Env* env, const Options& options,
     delete file;
     file = nullptr;
 
-      adgMod::file_stats_mutex.Lock();
-      assert(adgMod::file_stats.find(meta->number) == adgMod::file_stats.end());
-      adgMod::file_stats.insert({meta->number, adgMod::FileStats(0)});
-      adgMod::file_stats_mutex.Unlock();
-
     if (s.ok()) {
       // Verify that the table is usable
       Iterator* it = table_cache->NewIterator(ReadOptions(), meta->number,

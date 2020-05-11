@@ -10,15 +10,16 @@
 
 class Counter {
     std::vector<uint64_t> counts;
-
+    std::vector<uint64_t> nums;
 public:
     std::string name;
 
-    Counter() : counts(leveldb::config::kNumLevels + 1, 0) {};
+    Counter() : counts(leveldb::config::kNumLevels + 1, 0), nums(leveldb::config::kNumLevels + 1, 0) {};
     void Increment(int level, uint64_t n = 1);
     void Reset();
     void Report();
     int Sum();
+    int NumSum();
 };
 
 

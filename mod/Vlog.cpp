@@ -38,11 +38,11 @@ uint64_t VLog::AddRecord(const Slice& key, const Slice& value) {
 string VLog::ReadRecord(uint64_t address, uint32_t size) {
     if (address >= vlog_size) return string(buffer.c_str() + address - vlog_size, size);
 
-    static char* scratch = new char[size];
+    char* scratch = new char[size];
     Slice value;
     reader->Read(address, size, &value, scratch);
     string result(value.data(), value.size());
-    //delete[] scratch;
+    delete[] scratch;
     return result;
 }
 
