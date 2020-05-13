@@ -27,6 +27,7 @@
 #include <type_traits>
 #include <utility>
 #include <db/db_impl.h>
+#include <db/version_edit.h>
 
 #include "leveldb/env.h"
 #include "leveldb/slice.h"
@@ -37,6 +38,7 @@
 #include "util/posix_logger.h"
 #include "mutexlock.h"
 #include "mod/util.h"
+#include "mod/learned_index.h"
 
 namespace leveldb {
 
@@ -779,6 +781,56 @@ class PosixEnv : public Env {
     background_learn_queue_.emplace(background_work_function, background_work_arg, priority);
   }
 
+  void PrepareLearn() {
+    while (true) {
+        prepare_queue_mutex.Lock();
+
+        uint32_t dummy;
+        uint64_t time_start = __rdtscp(&dummy) - adgMod::learn_trigger_time * 1000 * adgMod::reference_frequency;
+
+        while (true) {
+            if (learning_prepare.empty()) break;
+
+            auto& top = learning_prepare.front();
+            if (top.first > time_start) break;
+
+            FileMetaData* meta = top.second.second;
+            int level = top.second.first;
+
+            if (adgMod::learn_cb_model->CalculateCB(level, meta->file_size)) {
+                adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
+                ScheduleLearning(&adgMod::LearnedIndexData::FileLearn,
+                                 new adgMod::MetaAndSelf{nullptr, 0, meta, model, level}, level);
+            }
+            learning_prepare.pop();
+        }
+
+        while (learning_prepare.empty()) {
+            preparing_queue_cv.Wait();
+        }
+        prepare_queue_mutex.Unlock();
+        SleepForMicroseconds(adgMod::learn_trigger_time);
+    }
+  }
+
+  static void PrepareLearnEntryPoint(PosixEnv* env) {
+    env->PrepareLearn();
+  }
+
+  void PrepareLearning(uint64_t time_start, int level, FileMetaData* meta) {
+    MutexLock guard(&prepare_queue_mutex);
+    if (!preparing_thread_started) {
+        preparing_thread_started = true;
+        std::thread background_thread(PosixEnv::PrepareLearnEntryPoint, this);
+        background_thread.detach();
+    }
+
+    if (learning_prepare.empty()) preparing_queue_cv.Signal();
+    learning_prepare.emplace(std::make_pair(time_start, std::make_pair(level, meta)));
+  }
+
+
+
 
  private:
    friend class TableCache;
@@ -821,6 +873,11 @@ class PosixEnv : public Env {
   bool started_learn_thread_ GUARDED_BY(background_learn_mutex_);
   std::priority_queue<BackgroundWorkItem> background_learn_queue_ GUARDED_BY(background_learn_mutex_);
 
+  port::Mutex prepare_queue_mutex;
+  std::queue<std::pair<uint64_t, std::pair<int, FileMetaData*>>> learning_prepare;
+  bool preparing_thread_started;
+  port::CondVar preparing_queue_cv;
+
 
 
   PosixLockTable locks_;  // Thread-safe.
@@ -856,6 +913,8 @@ PosixEnv::PosixEnv()
       started_background_thread_(false),
       background_learn_cv_(&background_learn_mutex_),
       started_learn_thread_(false),
+      preparing_queue_cv(&prepare_queue_mutex),
+      preparing_thread_started(false),
       mmap_limiter_(/*MaxMmaps()*/ adgMod::fd_limit),
       fd_limiter_(MaxOpenFiles()) {
         compaction_awaiting.store(0);

@@ -469,13 +469,14 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       saver.user_key = user_key;
       saver.value = value;
 
+      bool model = false;
       instance->StartTimer(6);
       if (adgMod::MOD == 0 || adgMod::MOD == 8) {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
                                       &saver, SaveValue, level, f);
       } else {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                     &saver, SaveValue, level, f, position_lower, position_upper, learned, this);
+                                     &saver, SaveValue, level, f, position_lower, position_upper, learned, this, &model);
       }
       auto temp = instance->PauseTimer(6, true);
 
@@ -484,9 +485,11 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
         return s;
       }
 
+      adgMod::learn_cb_model->AddLookupData(level, saver.state == kFound, model, temp.second - temp.first);
+
       switch (saver.state) {
         case kNotFound: {
-            adgMod::levelled_counters[4].Increment(level, temp.second - temp.first);
+//            adgMod::levelled_counters[4].Increment(level, temp.second - temp.first);
             adgMod::file_stats_mutex.Lock();
             auto iter = adgMod::file_stats.find(f->number);
             if (iter != adgMod::file_stats.end()) {
@@ -502,7 +505,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
                 iter->second.num_lookup_pos += 1;
             }
             adgMod::file_stats_mutex.Unlock();
-            adgMod::levelled_counters[3].Increment(level, temp.second - temp.first);
+//            adgMod::levelled_counters[3].Increment(level, temp.second - temp.first);
             return s;
         }
         case kDeleted:

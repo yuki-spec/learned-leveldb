@@ -152,12 +152,14 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
 Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
                        uint64_t file_size, const Slice& k, void* arg,
                        void (*handle_result)(void*, const Slice&, const Slice&), int level,
-                       FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version) {
+                       FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version, bool* model) {
   Cache::Handle* handle = nullptr;
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
 
   if ((adgMod::MOD == 6 || adgMod::MOD == 7)) {
       if (learned || adgMod::file_data->Learned(version, meta, level)) {
+          assert(model != nullptr);
+          *model = true;
           LevelRead(options, file_number, file_size, k, arg, handle_result, level, meta, lower, upper, learned, version);
           return Status::OK();
       }
@@ -188,11 +190,13 @@ void TableCache::Evict(uint64_t file_number) {
 bool TableCache::FillData(const ReadOptions& options, FileMetaData *meta, adgMod::LearnedIndexData* data) {
     Cache::Handle* handle = nullptr;
     Status s = FindTable(meta->number, meta->file_size, &handle);
-    Table* table = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-    assert(s.ok());
-    table->FillData(options, data);
-    cache_->Release(handle);
-    return true;
+
+    if (s.ok()) {
+        Table* table = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
+        table->FillData(options, data);
+        cache_->Release(handle);
+        return true;
+    } else return false;
 }
 
 
@@ -277,31 +281,33 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
 
     // Get the file
-
+#ifdef INTERNAL_TIMER
     instance->StartTimer(1);
-
+#endif
     //Cache::Handle* cache_handle = FindFile(options, file_number, file_size);
     Cache::Handle* cache_handle = nullptr;
     Status s = FindTable(file_number, file_size, &cache_handle);
     TableAndFile* tf = reinterpret_cast<TableAndFile*>(cache_->Value(cache_handle));
     RandomAccessFile* file = tf->file;
     FilterBlockReader* filter = tf->table->rep_->filter;
-
+#ifdef INTERNAL_TIMER
     instance->PauseTimer(1);
-
+#endif
 
 
     if (!learned) {
+#ifdef INTERNAL_TIMER
         instance->StartTimer(2);
-
+#endif
         ParsedInternalKey parsed_key;
         ParseInternalKey(k, &parsed_key);
         adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
         auto bounds = model->GetPosition(parsed_key.user_key);
         lower = bounds.first;
         upper = bounds.second;
-
+#ifdef INTERNAL_TIMER
         instance->PauseTimer(2);
+#endif
         if (lower > model->MaxPosition()) return;
         adgMod::levelled_counters[1].Increment(level);
     } else {
@@ -328,17 +334,19 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
 
 
     // Check Filter Block
-    instance->StartTimer(15);
     uint64_t block_offset = i * adgMod::block_size;
-    if (/*(level == 0 || level == 1 || level == 2) &&*/ filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
-        auto time = instance->PauseTimer(15, true);
-        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+//    instance->StartTimer(15);
+    if ((level == 0 || level == 1 || level == 2) && filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
+//        auto time = instance->PauseTimer(15, true);
+//        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
         cache_->Release(cache_handle);
         return;
     }
-    auto time = instance->PauseTimer(15, true);
-    adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+//    auto time = instance->PauseTimer(15, true);
+//    adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+#ifdef INTERNAL_TIMER
     instance->StartTimer(5);
+#endif
 
     size_t pos_block_lower = i == index_lower ? lower % adgMod::block_num_entries : 0;
     size_t pos_block_upper = i == index_upper ? upper % adgMod::block_num_entries : adgMod::block_num_entries - 1;
@@ -349,9 +357,10 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     Slice entries;
     s = file->Read(block_offset + pos_block_lower * adgMod::entry_size, read_size, &entries, scratch);
     assert(s.ok());
-
+#ifdef INTERNAL_TIMER
     instance->PauseTimer(5);
     instance->StartTimer(3);
+#endif
 
 
     // Binary Search
@@ -375,9 +384,9 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     const char* key_ptr = DecodeEntry(entries.data() + (left - pos_block_lower) * adgMod::entry_size,
             entries.data() + read_size, &shared, &non_shared, &value_length);
     assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
-
+#ifdef INTERNAL_TIMER
     instance->PauseTimer(3);
-
+#endif
     Slice key(key_ptr, non_shared), value(key_ptr + non_shared, value_length);
     handle_result(arg, key, value);
 

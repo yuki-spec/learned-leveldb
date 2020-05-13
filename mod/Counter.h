@@ -8,7 +8,11 @@
 #include "../db/dbformat.h"
 #include <vector>
 
+
+
 class Counter {
+    friend class CBModel_Learn;
+private:
     std::vector<uint64_t> counts;
     std::vector<uint64_t> nums;
 public:

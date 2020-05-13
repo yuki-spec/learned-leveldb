@@ -192,6 +192,7 @@ DBImpl::~DBImpl() {
   }
 
   delete adgMod::file_data;
+  delete adgMod::learn_cb_model;
   delete vlog;
   adgMod::file_stats.clear();
 }
@@ -287,9 +288,10 @@ void DBImpl::DeleteObsoleteFiles() {
           table_cache_->Evict(number);
           adgMod::file_stats_mutex.Lock();
           auto iter = adgMod::file_stats.find(number);
-          if (iter != adgMod::file_stats.end()) {
-              iter->second.Finish();
-          }
+          assert(iter != adgMod::file_stats.end());
+          adgMod::FileStats& file_stat = iter->second;
+          file_stat.Finish();
+          adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos);
           adgMod::file_stats_mutex.Unlock();
 //          adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(number);
 //          delete model;
@@ -599,16 +601,17 @@ int DBImpl::CompactMemTable() {
   }
 
     auto time = instance->PauseTimer(16, true);
+    int level = edit.new_files_[0].first;
     adgMod::compaction_counter_mutex.Lock();
-    adgMod::events[0].push_back(new CompactionEvent(time, to_string(edit.new_files_[0].first)));
+    adgMod::events[0].push_back(new CompactionEvent(time, to_string(level)));
     adgMod::levelled_counters[5].Increment(edit.new_files_[0].first, time.second - time.first);
     adgMod::compaction_counter_mutex.Unlock();
 
+    env_->PrepareLearning(time.second, level, new FileMetaData(edit.new_files_[0].second));
 
 
 
-
-  return edit.new_files_[0].first;
+  return level;
 }
 
 void DBImpl::CompactMemTable(MemTable *table) {
@@ -964,10 +967,21 @@ Status DBImpl::FinishCompactionOutputFile(CompactionState* compact,
   delete compact->outfile;
   compact->outfile = nullptr;
 
+  int level = compact->compaction->level() + 1;
+  CompactionState::Output* output = compact->current_output();
+
   adgMod::file_stats_mutex.Lock();
   assert(adgMod::file_stats.find(output_number) == adgMod::file_stats.end());
   adgMod::file_stats.insert({output_number, adgMod::FileStats(compact->compaction->level() + 1, current_bytes)});
   adgMod::file_stats_mutex.Unlock();
+
+  uint32_t dummy;
+  FileMetaData* meta = new FileMetaData();
+  meta->number = output->number;
+  meta->file_size = output->file_size;
+  meta->smallest = output->smallest;
+  meta->largest = output->largest;
+  env_->PrepareLearning(__rdtscp(&dummy), level, meta);
 
   if (s.ok() && current_entries > 0) {
     // Verify that the table is usable
@@ -1031,6 +1045,9 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   std::string current_user_key;
   bool has_current_user_key = false;
   SequenceNumber last_sequence_for_key = kMaxSequenceNumber;
+
+//  vector<string> keys;
+
   for (; input->Valid() && !shutting_down_.load(std::memory_order_acquire);) {
     // Prioritize immutable compaction work
     if (has_imm_.load(std::memory_order_relaxed)) {
@@ -1046,6 +1063,10 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
     }
 
     Slice key = input->key();
+//    ParsedInternalKey parsed;
+//    ParseInternalKey(key, &parsed);
+//    keys.push_back(parsed.user_key);
+
     if (compact->compaction->ShouldStopBefore(key) &&
         compact->builder != nullptr) {
       status = FinishCompactionOutputFile(compact, input);
@@ -1259,28 +1280,40 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
     mutex_.Unlock();
     // First look in the memtable, then in the immutable memtable (if any).
     LookupKey lkey(key, snapshot);
+#ifdef INTERNAL_TIMER
     instance->StartTimer(14);
+#endif
     if (mem->Get(lkey, value, &s)) {
-        adgMod::levelled_counters[3].Increment(7);
+        //adgMod::levelled_counters[3].Increment(7);
+#ifdef INTERNAL_TIMER
         instance->PauseTimer(14);
+#endif
         // Done
     } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
-        adgMod::levelled_counters[3].Increment(7);
+        //adgMod::levelled_counters[3].Increment(7);
+#ifdef INTERNAL_TIMER
         instance->PauseTimer(14);
+#endif
         // Done
     } else {
+#ifdef INTERNAL_TIMER
         instance->PauseTimer(14);
+#endif
         //instance->StartTimer(6);
         s = current->Get(options, lkey, value, &stats);
         //instance->PauseTimer(6);
     }
 
     if (adgMod::MOD >= 7 && s.ok()) {
+#ifdef INTERNAL_TIMER
         instance->StartTimer(12);
+#endif
         uint64_t value_address = DecodeFixed64(value->c_str());
         uint32_t value_size = DecodeFixed32(value->c_str() + sizeof(uint64_t));
         *value = std::move(vlog->ReadRecord(value_address, value_size));
+#ifdef INTERNAL_TIMER
         instance->PauseTimer(12);
+#endif
     }
     mutex_.Lock();
   }
@@ -1646,6 +1679,7 @@ Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
 
   adgMod::env = options.env;
   adgMod::file_data = new adgMod::FileLearnedIndexData();
+  adgMod::learn_cb_model = new CBModel_Learn();
 
   DBImpl* impl = new DBImpl(options, dbname);
   impl->mutex_.Lock();

@@ -125,7 +125,7 @@ namespace adgMod {
         self->level = mas->level;
 
         Version* c = db->GetCurrentVersion();
-        if (db->version_count == mas->v_count && self->FillData(c, mas->meta)) {
+        if (self->FillData(c, mas->meta)) {
             self->Learn();
             entered = true;
         } else {
@@ -143,7 +143,7 @@ namespace adgMod {
             levelled_counters[6].Increment(mas->level, time.second - time.first);
             learn_counter_mutex.Unlock();
         }
-
+        delete mas->meta;
         delete mas;
     }
 
@@ -160,12 +160,13 @@ namespace adgMod {
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
-        } else {
-            if (level_learning_enabled && ++current_seek >= allowed_seek && !learning.exchange(true)) {
-                env->ScheduleLearning(&LearnedIndexData::Learn, new VersionAndSelf{version, v_count, this, level}, 0);
-            }
-            return false;
-        }
+        } return false;
+//        } else {
+//            if (level_learning_enabled && ++current_seek >= allowed_seek && !learning.exchange(true)) {
+//                env->ScheduleLearning(&LearnedIndexData::Learn, new VersionAndSelf{version, v_count, this, level}, 0);
+//            }
+//            return false;
+//        }
     }
 
     bool LearnedIndexData::Learned(Version* version, int v_count, FileMetaData *meta, int level) {
@@ -173,12 +174,13 @@ namespace adgMod {
         else if (learned.load()) {
             learned_not_atomic = true;
             return true;
-        } else {
-            if (file_learning_enabled && (true || level != 0 && level != 1) && ++current_seek >= allowed_seek && !learning.exchange(true)) {
-                env->ScheduleLearning(&LearnedIndexData::FileLearn, new MetaAndSelf{version, v_count, meta, this, level}, 0);
-            }
-            return false;
-        }
+        } else return false;
+//        } else {
+//            if (file_learning_enabled && (true || level != 0 && level != 1) && ++current_seek >= allowed_seek && !learning.exchange(true)) {
+//                env->ScheduleLearning(&LearnedIndexData::FileLearn, new MetaAndSelf{version, v_count, meta, this, level}, 0);
+//            }
+//            return false;
+//        }
     }
 
     bool LearnedIndexData::FillData(Version *version, FileMetaData *meta) {

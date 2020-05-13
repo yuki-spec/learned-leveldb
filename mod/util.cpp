@@ -24,10 +24,12 @@ namespace adgMod {
     leveldb::ReadOptions read_options;
     leveldb::WriteOptions write_options;
     FileLearnedIndexData* file_data = nullptr;
+    CBModel_Learn* learn_cb_model = nullptr;
     uint64_t fd_limit;
     bool use_filter = false;
     bool restart_read = false;
     bool fresh_write = false;
+    uint64_t learn_trigger_time = 20000;
 
     int file_allowed_seek = 10;
     int level_allowed_seek = file_allowed_seek * 100;

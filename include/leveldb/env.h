@@ -53,6 +53,7 @@ class SequentialFile;
 class Slice;
 class WritableFile;
 class PosixRandomAccessFile;
+class FileMetaData;
 
 
 class LEVELDB_EXPORT Env {
@@ -194,6 +195,7 @@ class LEVELDB_EXPORT Env {
   virtual void ClearPendingLearning() {};
   virtual void ScheduleLearning(void (*background_work_function)(void*), void* background_work_arg, int priority) {};
   virtual void NewRandomAccessFileLearned(const std::string& filename, RandomAccessFile** result) {};
+  virtual void PrepareLearning(uint64_t time_start, int level, FileMetaData* meta) {};
   std::atomic<int> compaction_awaiting;
 };
 

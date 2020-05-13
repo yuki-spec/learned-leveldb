@@ -14,6 +14,7 @@
 #include "leveldb/env.h"
 #include "Counter.h"
 #include "event.h"
+#include "CBMode_Learn.h"
 
 
 using std::string;
@@ -25,6 +26,7 @@ using leveldb::Slice;
 namespace adgMod {
 
     class FileLearnedIndexData;
+    class LearnedIndexData;
     class FileStats;
 
     extern int MOD;
@@ -41,10 +43,12 @@ namespace adgMod {
     extern leveldb::ReadOptions read_options;
     extern leveldb::WriteOptions write_options;
     extern FileLearnedIndexData* file_data;
+    extern CBModel_Learn* learn_cb_model;
     extern uint64_t fd_limit;
     extern bool use_filter;
     extern bool restart_read;
     extern bool fresh_write;
+    extern uint64_t learn_trigger_time;
 
     extern int file_allowed_seek;
     extern int level_allowed_seek;
