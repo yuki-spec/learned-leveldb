@@ -48,6 +48,7 @@ namespace adgMod {
     extern bool use_filter;
     extern bool restart_read;
     extern bool fresh_write;
+    extern bool reopen;
     extern uint64_t learn_trigger_time;
 
     extern int file_allowed_seek;

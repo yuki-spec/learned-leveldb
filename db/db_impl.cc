@@ -291,7 +291,7 @@ void DBImpl::DeleteObsoleteFiles() {
           assert(iter != adgMod::file_stats.end());
           adgMod::FileStats& file_stat = iter->second;
           file_stat.Finish();
-          adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos);
+          adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos, file_stat.size);
           adgMod::file_stats_mutex.Unlock();
 //          adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(number);
 //          delete model;
@@ -550,12 +550,16 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
     }
     edit->AddFile(level, meta.number, meta.file_size, meta.smallest,
                   meta.largest);
-  }
 
-    adgMod::file_stats_mutex.Lock();
-    assert(adgMod::file_stats.find(meta.number) == adgMod::file_stats.end());
-    adgMod::file_stats.insert({meta.number, adgMod::FileStats(level, meta.file_size)});
-    adgMod::file_stats_mutex.Unlock();
+
+      adgMod::file_stats_mutex.Lock();
+      assert(adgMod::file_stats.find(meta.number) == adgMod::file_stats.end());
+      adgMod::file_stats.insert({meta.number, adgMod::FileStats(level, meta.file_size)});
+      adgMod::file_stats_mutex.Unlock();
+
+  } else return Status::NotFound("Empty");
+
+
 
   CompactionStats stats;
   stats.micros = env_->NowMicros() - start_micros;
@@ -616,7 +620,7 @@ int DBImpl::CompactMemTable() {
 
 void DBImpl::CompactMemTable(MemTable *table) {
     mutex_.AssertHeld();
-    if (table == nullptr) return;
+    if (table == nullptr || !adgMod::fresh_write) return;
 
     // Save the contents of the memtable as a new Table
     VersionEdit edit;

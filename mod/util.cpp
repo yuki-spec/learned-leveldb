@@ -29,6 +29,7 @@ namespace adgMod {
     bool use_filter = false;
     bool restart_read = false;
     bool fresh_write = false;
+    bool reopen = false;
     uint64_t learn_trigger_time = 20000;
 
     int file_allowed_seek = 10;

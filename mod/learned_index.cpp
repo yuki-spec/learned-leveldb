@@ -143,7 +143,7 @@ namespace adgMod {
             levelled_counters[6].Increment(mas->level, time.second - time.first);
             learn_counter_mutex.Unlock();
         }
-        delete mas->meta;
+        if (!fresh_write) delete mas->meta;
         delete mas;
     }
 
