@@ -1782,7 +1782,7 @@ void Version::ReadLevelModel() {
 }
 
 void Version::ReadFileStats() {
-    if (!adgMod::fresh_write) return;
+    if (adgMod::fresh_write) return;
     uint64_t file_max = 0;
     for (int i = 0; i < config::kNumLevels; ++i) {
         for (FileMetaData* file_meta : files_[i]) {
