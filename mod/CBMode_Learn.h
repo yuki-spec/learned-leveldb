@@ -5,7 +5,7 @@
 #include "Counter.h"
 #include <vector>
 
-static const int file_average_limit[7] = {10, 20, 50, 50, 500, 5000, 50000};
+static const int file_average_limit[7] = {10, 20, 50, 50, 100, 500, 500};
 
 
 class CBModel_Learn {

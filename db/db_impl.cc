@@ -286,13 +286,16 @@ void DBImpl::DeleteObsoleteFiles() {
       if (!keep) {
         if (type == kTableFile) {
           table_cache_->Evict(number);
-          adgMod::file_stats_mutex.Lock();
-          auto iter = adgMod::file_stats.find(number);
-          assert(iter != adgMod::file_stats.end());
-          adgMod::FileStats& file_stat = iter->second;
-          file_stat.Finish();
-          adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos, file_stat.size);
-          adgMod::file_stats_mutex.Unlock();
+          if (!adgMod::fresh_write) {
+              adgMod::file_stats_mutex.Lock();
+              auto iter = adgMod::file_stats.find(number);
+              assert(iter != adgMod::file_stats.end());
+              adgMod::FileStats& file_stat = iter->second;
+              file_stat.Finish();
+              adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos, file_stat.size);
+              adgMod::file_stats_mutex.Unlock();
+          }
+
 //          adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(number);
 //          delete model;
         }
@@ -551,11 +554,13 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
     edit->AddFile(level, meta.number, meta.file_size, meta.smallest,
                   meta.largest);
 
+    if (!adgMod::fresh_write) {
+        adgMod::file_stats_mutex.Lock();
+        assert(adgMod::file_stats.find(meta.number) == adgMod::file_stats.end());
+        adgMod::file_stats.insert({meta.number, adgMod::FileStats(level, meta.file_size)});
+        adgMod::file_stats_mutex.Unlock();
+    }
 
-      adgMod::file_stats_mutex.Lock();
-      assert(adgMod::file_stats.find(meta.number) == adgMod::file_stats.end());
-      adgMod::file_stats.insert({meta.number, adgMod::FileStats(level, meta.file_size)});
-      adgMod::file_stats_mutex.Unlock();
 
   } else return Status::NotFound("Empty");
 
@@ -804,13 +809,15 @@ void DBImpl::BackgroundCompaction() {
                        f->largest);
     status = versions_->LogAndApply(c->edit(), &mutex_);
 
-      adgMod::file_stats_mutex.Lock();
-      auto iter = adgMod::file_stats.find(f->number);
-      if (iter != adgMod::file_stats.end()) {
-        assert(iter->second.level == c->level());
-        iter->second.level += 1;
-      }
-      adgMod::file_stats_mutex.Unlock();
+    if (!adgMod::fresh_write) {
+        adgMod::file_stats_mutex.Lock();
+        auto iter = adgMod::file_stats.find(f->number);
+        if (iter != adgMod::file_stats.end()) {
+            assert(iter->second.level == c->level());
+            iter->second.level += 1;
+        }
+        adgMod::file_stats_mutex.Unlock();
+    }
 
     if (!status.ok()) {
       RecordBackgroundError(status);
@@ -974,10 +981,13 @@ Status DBImpl::FinishCompactionOutputFile(CompactionState* compact,
   int level = compact->compaction->level() + 1;
   CompactionState::Output* output = compact->current_output();
 
-  adgMod::file_stats_mutex.Lock();
-  assert(adgMod::file_stats.find(output_number) == adgMod::file_stats.end());
-  adgMod::file_stats.insert({output_number, adgMod::FileStats(compact->compaction->level() + 1, current_bytes)});
-  adgMod::file_stats_mutex.Unlock();
+    if (!adgMod::fresh_write) {
+        adgMod::file_stats_mutex.Lock();
+        assert(adgMod::file_stats.find(output_number) == adgMod::file_stats.end());
+        adgMod::file_stats.insert({output_number, adgMod::FileStats(compact->compaction->level() + 1, current_bytes)});
+        adgMod::file_stats_mutex.Unlock();
+    }
+
 
   uint32_t dummy;
   FileMetaData* meta = new FileMetaData();

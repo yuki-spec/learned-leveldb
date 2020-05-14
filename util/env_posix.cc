@@ -818,7 +818,7 @@ class PosixEnv : public Env {
   }
 
   void PrepareLearning(uint64_t time_start, int level, FileMetaData* meta) {
-    if (adgMod::fresh_write) return;
+    if (adgMod::fresh_write || (adgMod::MOD != 6 && adgMod::MOD != 7)) return;
     MutexLock guard(&prepare_queue_mutex);
     if (!preparing_thread_started) {
         preparing_thread_started = true;

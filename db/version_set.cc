@@ -490,21 +490,27 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       switch (saver.state) {
         case kNotFound: {
 //            adgMod::levelled_counters[4].Increment(level, temp.second - temp.first);
-            adgMod::file_stats_mutex.Lock();
-            auto iter = adgMod::file_stats.find(f->number);
-            if (iter != adgMod::file_stats.end()) {
-                iter->second.num_lookup_neg += 1;
+            if (!adgMod::fresh_write) {
+                adgMod::file_stats_mutex.Lock();
+                auto iter = adgMod::file_stats.find(f->number);
+                if (iter != adgMod::file_stats.end()) {
+                    iter->second.num_lookup_neg += 1;
+                }
+                adgMod::file_stats_mutex.Unlock();
             }
-            adgMod::file_stats_mutex.Unlock();
+
             break;  // Keep searching in other files
         }
         case kFound: {
-            adgMod::file_stats_mutex.Lock();
-            auto iter = adgMod::file_stats.find(f->number);
-            if (iter != adgMod::file_stats.end()) {
-                iter->second.num_lookup_pos += 1;
+            if (!adgMod::fresh_write) {
+                adgMod::file_stats_mutex.Lock();
+                auto iter = adgMod::file_stats.find(f->number);
+                if (iter != adgMod::file_stats.end()) {
+                    iter->second.num_lookup_pos += 1;
+                }
+                adgMod::file_stats_mutex.Unlock();
             }
-            adgMod::file_stats_mutex.Unlock();
+
 //            adgMod::levelled_counters[3].Increment(level, temp.second - temp.first);
             return s;
         }
@@ -1776,6 +1782,7 @@ void Version::ReadLevelModel() {
 }
 
 void Version::ReadFileStats() {
+    if (!adgMod::fresh_write) return;
     uint64_t file_max = 0;
     for (int i = 0; i < config::kNumLevels; ++i) {
         for (FileMetaData* file_meta : files_[i]) {

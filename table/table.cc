@@ -225,7 +225,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
 
     if (iiter->Valid()) {
 #ifdef INTERNAL_TIMER
-//      instance->StartTimer(15);
+      instance->StartTimer(15);
 #endif
       Slice handle_value = iiter->value();
       FilterBlockReader* filter = rep_->filter;
@@ -234,14 +234,14 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k, void* arg,
           !filter->KeyMayMatch(handle.offset(), k)) {
 
 #ifdef INTERNAL_TIMER
-//          auto time = instance->PauseTimer(15, true);
-//          adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+        auto time = instance->PauseTimer(15, true);
+        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
 #endif
         // Not found
       } else {
 #ifdef INTERNAL_TIMER
-//          auto time = instance->PauseTimer(15, true);
-//          adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+        auto time = instance->PauseTimer(15, true);
+        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
         instance->StartTimer(5);
 #endif
         Iterator* block_iter = BlockReader(this, options, iiter->value());

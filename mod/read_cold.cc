@@ -126,7 +126,8 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    std::default_random_engine e1, e2(255), e3;
+    std::default_random_engine e1(0), e2(255), e3(0);
+    srand(0);
     num_operations *= num_pairs_base;
     db_location_copy = db_location;
 

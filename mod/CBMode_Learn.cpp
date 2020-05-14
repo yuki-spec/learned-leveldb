@@ -45,7 +45,9 @@ bool CBModel_Learn::CalculateCB(int level, uint64_t file_size) {
     double average_pos_time[2] = {0, 0}, average_neg_time[2] = {0, 0};
 
     for (int i = 0; i < 2; ++i) {
-        if (num_pos[i] + num_neg[i] < lookup_average_limit) return true;
+        if (num_pos[i] + num_neg[i] < lookup_average_limit) {
+            return num_files < file_average_limit[level];
+        }
 
         if (num_pos[i] < 100) {
             average_pos_lookups = 0;
