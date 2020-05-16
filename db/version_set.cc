@@ -469,14 +469,15 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
       saver.user_key = user_key;
       saver.value = value;
 
-      bool model = false;
+      adgMod::LearnedIndexData* model = nullptr;
+      bool file_learned = false;
       instance->StartTimer(6);
       if (adgMod::MOD == 0 || adgMod::MOD == 8) {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
                                       &saver, SaveValue, level, f);
       } else {
         s = vset_->table_cache_->Get(options, f->number, f->file_size, ikey,
-                                     &saver, SaveValue, level, f, position_lower, position_upper, learned, this, &model);
+                                     &saver, SaveValue, level, f, position_lower, position_upper, learned, this, &model, &file_learned);
       }
       auto temp = instance->PauseTimer(6, true);
 
@@ -485,11 +486,17 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
         return s;
       }
 
-      adgMod::learn_cb_model->AddLookupData(level, saver.state == kFound, model, temp.second - temp.first);
+      adgMod::learn_cb_model->AddLookupData(level, saver.state == kFound, file_learned, temp.second - temp.first);
+        if (model != nullptr) {
+            model->FillCBAStat(saver.state == kFound, file_learned, temp.second - temp.first);
+        }
+#ifdef RECORD_LEVEL_INFO
 
+#endif
       switch (saver.state) {
         case kNotFound: {
-//            adgMod::levelled_counters[4].Increment(level, temp.second - temp.first);
+#ifdef RECORD_LEVEL_INFO
+            adgMod::levelled_counters[4].Increment(level, temp.second - temp.first);
             if (!adgMod::fresh_write) {
                 adgMod::file_stats_mutex.Lock();
                 auto iter = adgMod::file_stats.find(f->number);
@@ -498,10 +505,12 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
                 }
                 adgMod::file_stats_mutex.Unlock();
             }
-
+#endif
             break;  // Keep searching in other files
         }
         case kFound: {
+#ifdef RECORD_LEVEL_INFO
+            adgMod::levelled_counters[3].Increment(level, temp.second - temp.first);
             if (!adgMod::fresh_write) {
                 adgMod::file_stats_mutex.Lock();
                 auto iter = adgMod::file_stats.find(f->number);
@@ -510,8 +519,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
                 }
                 adgMod::file_stats_mutex.Unlock();
             }
-
-//            adgMod::levelled_counters[3].Increment(level, temp.second - temp.first);
+#endif
             return s;
         }
         case kDeleted:

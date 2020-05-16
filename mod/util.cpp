@@ -31,6 +31,7 @@ namespace adgMod {
     bool fresh_write = false;
     bool reopen = false;
     uint64_t learn_trigger_time = 20000;
+    int policy = 0;
 
     int file_allowed_seek = 10;
     int level_allowed_seek = file_allowed_seek * 100;

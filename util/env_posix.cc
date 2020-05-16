@@ -782,25 +782,31 @@ class PosixEnv : public Env {
   }
 
   void PrepareLearn() {
+    adgMod::Stats* instance = adgMod::Stats::GetInstance();
+    prepare_queue_mutex.Lock();
     while (true) {
-        prepare_queue_mutex.Lock();
+
 
         uint32_t dummy;
-        uint64_t time_start = __rdtscp(&dummy) - adgMod::learn_trigger_time * 1000 * adgMod::reference_frequency;
+        uint64_t time_start = (__rdtscp(&dummy) - instance->initial_time) / adgMod::reference_frequency;// - adgMod::learn_trigger_time * 1000;
 
         while (true) {
             if (learning_prepare.empty()) break;
 
-            auto& top = learning_prepare.front();
-            if (top.first > time_start) break;
+            auto top = learning_prepare.front();
+            int level = top.second.first;
+            //if (top.first + adgMod::learn_trigger_time * 0 > time_start) break;
 
             FileMetaData* meta = top.second.second;
-            int level = top.second.first;
 
-            if (adgMod::learn_cb_model->CalculateCB(level, meta->file_size)) {
-                adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
-                ScheduleLearning(&adgMod::LearnedIndexData::FileLearn,
-                                 new adgMod::MetaAndSelf{nullptr, 0, meta, model, level}, level);
+            adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
+            if (adgMod::learn_cb_model->CalculateCB(level, meta->file_size, model)) {
+                prepare_queue_mutex.Unlock();
+                uint64_t cost = adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{nullptr, 0, meta, model, level});
+                if (cost != 0) adgMod::learn_cb_model->AddLearnCost(level, cost, meta->file_size);
+                prepare_queue_mutex.Lock();
+//                ScheduleLearning(&adgMod::LearnedIndexData::FileLearn,
+//                                 new adgMod::MetaAndSelf{nullptr, 0, meta, model, level}, level);
             }
             learning_prepare.pop();
         }
@@ -808,8 +814,8 @@ class PosixEnv : public Env {
         while (learning_prepare.empty()) {
             preparing_queue_cv.Wait();
         }
-        prepare_queue_mutex.Unlock();
-        SleepForMicroseconds(adgMod::learn_trigger_time);
+        //prepare_queue_mutex.Unlock();
+        //SleepForMicroseconds(adgMod::learn_trigger_time);
     }
   }
 
@@ -874,8 +880,10 @@ class PosixEnv : public Env {
   bool started_learn_thread_ GUARDED_BY(background_learn_mutex_);
   std::priority_queue<BackgroundWorkItem> background_learn_queue_ GUARDED_BY(background_learn_mutex_);
 
+    typedef std::pair<uint64_t, std::pair<int, FileMetaData*>> LearnParam;
+
   port::Mutex prepare_queue_mutex;
-  std::queue<std::pair<uint64_t, std::pair<int, FileMetaData*>>> learning_prepare;
+  std::queue<LearnParam> learning_prepare;
   bool preparing_thread_started;
   port::CondVar preparing_queue_cv;
 

@@ -115,7 +115,7 @@ namespace adgMod {
         delete vas;
     }
 
-    void LearnedIndexData::FileLearn(void *arg) {
+    uint64_t LearnedIndexData::FileLearn(void *arg) {
         Stats* instance = Stats::GetInstance();
         bool entered = false;
         instance->StartTimer(11);
@@ -145,6 +145,7 @@ namespace adgMod {
         }
         if (!fresh_write) delete mas->meta;
         delete mas;
+        return entered ? time.second - time.first : 0;
     }
 
     bool LearnedIndexData::Learned() {
@@ -233,7 +234,30 @@ namespace adgMod {
     }
 
     void LearnedIndexData::ReportStats() {
-        printf("%d %d %lu %lu %lu\n", level, served, string_segments.size(), cost, size);
+        double neg_gain, pos_gain;
+        if (num_neg_model == 0 || num_neg_baseline == 0) {
+            neg_gain = 0;
+        } else {
+            neg_gain = ((double) time_neg_baseline / num_neg_baseline - (double) time_neg_model / num_neg_model) * num_neg_model;
+        }
+        if (num_pos_model == 0 || num_pos_baseline == 0) {
+            pos_gain = 0;
+        } else {
+            pos_gain = ((double) time_pos_baseline / num_pos_baseline - (double) time_pos_model / num_pos_model) * num_pos_model;
+        }
+
+        printf("%d %d %lu %lu %lu %lu\n", level, served, string_segments.size(), cost, size, file_size);
+        printf("\tPredicted: %lu %lu %lu %lu %d %d %d %d %d %lf\n", time_neg_baseline_p, time_neg_model_p, time_pos_baseline_p, time_pos_model_p,
+                num_neg_baseline_p, num_neg_model_p, num_pos_baseline_p, num_pos_model_p, num_files_p, gain_p);
+        printf("\tActual: %lu %lu %lu %lu %d %d %d %d %f\n", time_neg_baseline, time_neg_model, time_pos_baseline, time_pos_model,
+               num_neg_baseline, num_neg_model, num_pos_baseline, num_pos_model, pos_gain + neg_gain);
+    }
+
+    void LearnedIndexData::FillCBAStat(bool positive, bool model, uint64_t time) {
+        int& num_to_update = positive ? (model ? num_pos_model : num_pos_baseline) : (model ? num_neg_model : num_neg_baseline);
+        uint64_t& time_to_update =  positive ? (model ? time_pos_model : time_pos_baseline) : (model ? time_neg_model : time_neg_baseline);
+        time_to_update += time;
+        num_to_update += 1;
     }
 
 

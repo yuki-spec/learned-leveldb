@@ -292,7 +292,9 @@ void DBImpl::DeleteObsoleteFiles() {
               assert(iter != adgMod::file_stats.end());
               adgMod::FileStats& file_stat = iter->second;
               file_stat.Finish();
-              adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos, file_stat.size);
+              if (file_stat.end - file_stat.start >= 000 * adgMod::learn_trigger_time && (true || number > adgMod::file_data->watermark)) {
+                  adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos, file_stat.size);
+              }
               adgMod::file_stats_mutex.Unlock();
           }
 
@@ -991,11 +993,12 @@ Status DBImpl::FinishCompactionOutputFile(CompactionState* compact,
 
   uint32_t dummy;
   FileMetaData* meta = new FileMetaData();
+  adgMod::Stats* instance = adgMod::Stats::GetInstance();
   meta->number = output->number;
   meta->file_size = output->file_size;
   meta->smallest = output->smallest;
   meta->largest = output->largest;
-  env_->PrepareLearning(__rdtscp(&dummy), level, meta);
+  env_->PrepareLearning((__rdtscp(&dummy) - instance->initial_time) / adgMod::reference_frequency, level, meta);
 
   if (s.ok() && current_entries > 0) {
     // Verify that the table is usable

@@ -84,6 +84,16 @@ namespace adgMod {
         mutable int served;
         uint64_t cost;
 
+        int num_neg_model = 0, num_pos_model = 0, num_neg_baseline = 0, num_pos_baseline = 0;
+        uint64_t time_neg_model = 0, time_pos_model = 0, time_neg_baseline = 0, time_pos_baseline = 0;
+
+        int num_neg_model_p = 0, num_pos_model_p = 0, num_neg_baseline_p = 0, num_pos_baseline_p = 0, num_files_p = 0;
+        uint64_t time_neg_model_p = 0, time_pos_model_p = 0, time_neg_baseline_p = 0, time_pos_baseline_p = 0;
+        double gain_p = 0;
+        uint64_t file_size = 0;
+
+
+
 
         explicit LearnedIndexData(int allowed_seek) : error(adgMod::model_error), learned(false), aborted(false), learning(false),
             learned_not_atomic(false), allowed_seek(allowed_seek), current_seek(0), filled(false), is_level(false), level(0), served(0), cost(0) {};
@@ -96,11 +106,13 @@ namespace adgMod {
         bool Learned(Version* version, int v_count, int level);
         bool Learned(Version* version, int v_count, FileMetaData* meta, int level);
         static void Learn(void* arg);
-        static void FileLearn(void* arg);
+        static uint64_t FileLearn(void* arg);
         bool FillData(Version* version, FileMetaData* meta);
         void WriteModel(const string& filename);
         void ReadModel(const string& filename);
         void ReportStats();
+
+        void FillCBAStat(bool positive, bool model, uint64_t time);
     };
 
 

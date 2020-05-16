@@ -152,14 +152,16 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
 Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
                        uint64_t file_size, const Slice& k, void* arg,
                        void (*handle_result)(void*, const Slice&, const Slice&), int level,
-                       FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version, bool* model) {
+                       FileMetaData* meta, uint64_t lower, uint64_t upper, bool learned, Version* version,
+                       adgMod::LearnedIndexData** model, bool* file_learned) {
   Cache::Handle* handle = nullptr;
   adgMod::Stats* instance = adgMod::Stats::GetInstance();
 
   if ((adgMod::MOD == 6 || adgMod::MOD == 7)) {
-      if (learned || adgMod::file_data->Learned(version, meta, level)) {
-          assert(model != nullptr);
-          *model = true;
+      *model = adgMod::file_data->GetModel(meta->number);
+      assert(file_learned != nullptr);
+      *file_learned = (*model)->Learned();
+      if (learned || *file_learned) {
           LevelRead(options, file_number, file_size, k, arg, handle_result, level, meta, lower, upper, learned, version);
           return Status::OK();
       }
@@ -177,7 +179,9 @@ Status TableCache::Get(const ReadOptions& options, uint64_t file_number,
       s = t->InternalGet(options, k, arg, handle_result, level, meta, lower, upper, learned, version);
       cache_->Release(handle);
   }
+#ifdef RECORD_LEVEL_INFO
   adgMod::levelled_counters[2].Increment(level);
+#endif
   return s;
 }
 
@@ -309,9 +313,11 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
         instance->PauseTimer(2);
 #endif
         if (lower > model->MaxPosition()) return;
+#ifdef RECORD_LEVEL_INFO
         adgMod::levelled_counters[1].Increment(level);
     } else {
         adgMod::levelled_counters[0].Increment(level);
+#endif
     }
 
 
@@ -335,16 +341,20 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
 
     // Check Filter Block
     uint64_t block_offset = i * adgMod::block_size;
-//    instance->StartTimer(15);
+#ifdef INTERNAL_TIMER
+    instance->StartTimer(15);
+#endif
     if ((level == 0 || level == 1 || level == 2) && filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
-//        auto time = instance->PauseTimer(15, true);
-//        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+#ifdef INTERNAL_TIMER
+        auto time = instance->PauseTimer(15, true);
+        adgMod::levelled_counters[9].Increment(level, time.second - time.first);
+#endif
         cache_->Release(cache_handle);
         return;
     }
-//    auto time = instance->PauseTimer(15, true);
-//    adgMod::levelled_counters[9].Increment(level, time.second - time.first);
 #ifdef INTERNAL_TIMER
+    auto time = instance->PauseTimer(15, true);
+    adgMod::levelled_counters[9].Increment(level, time.second - time.first);
     instance->StartTimer(5);
 #endif
 

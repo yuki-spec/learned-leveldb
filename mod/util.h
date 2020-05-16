@@ -50,6 +50,7 @@ namespace adgMod {
     extern bool fresh_write;
     extern bool reopen;
     extern uint64_t learn_trigger_time;
+    extern int policy;
 
     extern int file_allowed_seek;
     extern int level_allowed_seek;

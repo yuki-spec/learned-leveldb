@@ -119,7 +119,8 @@ int main(int argc, char *argv[]) {
             ("change_file_load", "enable level learning", cxxopts::value<bool>(change_file_load)->default_value("false"))
             ("change_level_learning", "load file model", cxxopts::value<bool>(change_level_learning)->default_value("false"))
             ("change_file_learning", "enable file learning", cxxopts::value<bool>(change_file_learning)->default_value("false"))
-            ("p,pause", "pause between operation", cxxopts::value<bool>(pause)->default_value("false"));
+            ("p,pause", "pause between operation", cxxopts::value<bool>(pause)->default_value("false"))
+            ("policy", "learn policy", cxxopts::value<int>(adgMod::policy)->default_value("0"));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -177,7 +178,10 @@ int main(int argc, char *argv[]) {
     }
     
     for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
-        system("sudo fstrim -a -v");
+        if (num_mix != 0) {
+            system("sudo fstrim -a -v");
+        }
+
         db_location = db_location_copy;
         std::uniform_int_distribution<uint64_t > uniform_dist_file(0, (uint64_t) keys.size() - 1);
         std::uniform_int_distribution<uint64_t > uniform_dist_file2(0, (uint64_t) keys.size() - 1);
@@ -200,6 +204,7 @@ int main(int argc, char *argv[]) {
         if (fresh_write && iteration == 0) {
             string command = "rm -rf " + db_location;
             system(command.c_str());
+            system("sudo fstrim -a -v");
             system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
             cout << "delete and trim complete" << endl;
 
