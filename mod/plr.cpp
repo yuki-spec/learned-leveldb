@@ -143,7 +143,7 @@ PLR::PLR(double gamma) {
 }
 
 std::vector<Segment>&
-PLR::train(std::deque<string>& keys, bool file) {
+PLR::train(std::vector<string>& keys, bool file) {
     GreedyPLR plr(this->gamma);
     int count = 0;
     size_t size = keys.size();

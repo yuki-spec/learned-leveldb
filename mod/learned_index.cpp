@@ -71,6 +71,7 @@ namespace adgMod {
         }
 
         learned.store(true);
+        //string_keys.clear();
         return true;
     }
 
@@ -140,7 +141,7 @@ namespace adgMod {
             self->cost = time.second - time.first;
             learn_counter_mutex.Lock();
             events[1].push_back(new LearnEvent(time, 1, self->level, true));
-            levelled_counters[6].Increment(mas->level, time.second - time.first);
+            levelled_counters[11].Increment(mas->level, time.second - time.first);
             learn_counter_mutex.Unlock();
         }
         if (!fresh_write) delete mas->meta;
@@ -185,7 +186,7 @@ namespace adgMod {
     }
 
     bool LearnedIndexData::FillData(Version *version, FileMetaData *meta) {
-        if (filled) return true;
+        //if (filled) return true;
 
         if (version->FillData(adgMod::read_options, meta, this)) {
             filled = true;
@@ -279,7 +280,7 @@ namespace adgMod {
         return model->FillData(version, meta);
     }
 
-    std::deque<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
+    std::vector<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
         return file_learned_index_data[meta->number]->string_keys;
     }
 
@@ -311,8 +312,8 @@ namespace adgMod {
 
         for (size_t i = 0; i < file_learned_index_data.size(); ++i) {
             auto pointer = file_learned_index_data[i];
-            if (i > watermark && pointer != nullptr && pointer->cost != 0) {
-                printf("FileModel %lu ", i);
+            if (pointer != nullptr && pointer->cost != 0) {
+                printf("FileModel %lu %d ", i, i > watermark);
                 pointer->ReportStats();
             }
         }

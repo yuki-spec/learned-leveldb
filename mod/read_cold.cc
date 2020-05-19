@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <fstream>
 #include "../db/version_set.h"
+#include <cmath>
+#include <random>
 
 using namespace leveldb;
 using namespace adgMod;
@@ -84,8 +86,8 @@ int main(int argc, char *argv[]) {
     int num_operations, num_iteration, num_mix;
     float test_num_segments_base;
     float num_pair_step;
-    string db_location, profiler_out, input_filename, distribution_filename;
-    bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false, pause;
+    string db_location, profiler_out, input_filename, distribution_filename, ycsb_filename;
+    bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false, pause, use_ycsb = false;
     bool change_level_load, change_file_load, change_level_learning, change_file_learning;
     int load_type;
     string db_location_copy;
@@ -120,7 +122,8 @@ int main(int argc, char *argv[]) {
             ("change_level_learning", "load file model", cxxopts::value<bool>(change_level_learning)->default_value("false"))
             ("change_file_learning", "enable file learning", cxxopts::value<bool>(change_file_learning)->default_value("false"))
             ("p,pause", "pause between operation", cxxopts::value<bool>(pause)->default_value("false"))
-            ("policy", "learn policy", cxxopts::value<int>(adgMod::policy)->default_value("0"));
+            ("policy", "learn policy", cxxopts::value<int>(adgMod::policy)->default_value("0"))
+            ("YCSB", "use YCSB trace", cxxopts::value<string>(ycsb_filename)->default_value(""));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -143,6 +146,7 @@ int main(int argc, char *argv[]) {
 
     vector<string> keys;
     vector<uint64_t> distribution;
+    vector<bool> ycsb_is_write;
     //keys.reserve(100000000000 / adgMod::value_size);
     if (!input_filename.empty()) {
         ifstream input(input_filename);
@@ -160,6 +164,18 @@ int main(int argc, char *argv[]) {
         uint64_t index;
         while (input >> index) {
             distribution.push_back(index);
+        }
+    }
+
+    if (!ycsb_filename.empty()) {
+        use_ycsb = true;
+        use_distribution = true;
+        ifstream input(ycsb_filename);
+        uint64_t index;
+        int is_write;
+        while (input >> is_write >> index) {
+            distribution.push_back(index);
+            ycsb_is_write.push_back(is_write == 1);
         }
     }
 
@@ -269,6 +285,7 @@ int main(int argc, char *argv[]) {
             adgMod::db->WaitForBackground();
             if (adgMod::MOD == 6 || adgMod::MOD == 7) {
                 Version* current = adgMod::db->versions_->current();
+
                 for (int i = 1; i < config::kNumLevels; ++i) {
                     LearnedIndexData::Learn(new VersionAndSelf{current, adgMod::db->version_count, current->learned_index_data_[i].get(), i});
                 }
@@ -342,10 +359,15 @@ int main(int argc, char *argv[]) {
             }
 
 
-            if ((i % mix_base) < num_mix) {
-                uint64_t index = use_distribution ? distribution[i] : uniform_dist_file(e1) % (keys.size() - 1);
-                index = load_type == 0 ? write_i : index;
-                write_i = (write_i + 1) % keys.size();
+            if (use_ycsb ? ycsb_is_write[i] : (i % mix_base) < num_mix) {
+                uint64_t index;
+                if (use_distribution) {
+                    index = distribution[i];
+                } else if (load_type == 0) {
+                    index = write_i++ % keys.size();
+                } else {
+                    index = uniform_dist_file(e1) % (keys.size() - 1);
+                }
 
                 instance->StartTimer(10);
                 status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
@@ -455,5 +477,21 @@ int main(int argc, char *argv[]) {
         double stdev = std::sqrt(std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0) / time.size());
 
         printf("Timer %d MEAN: %lu, STDDEV: %f\n", s, (uint64_t) mean, stdev);
+    }
+
+    if (num_iteration > 1) {
+        cout << "Data Without the First Item" << endl;
+        for (int s = 0; s < times.size(); ++s) {
+            vector<uint64_t>& time = times[s];
+            vector<double> diff(time.size() - 1);
+            if (time.empty()) continue;
+
+            double sum = std::accumulate(time.begin() + 1, time.end(), 0.0);
+            double mean = sum / (time.size() - 1);
+            std::transform(time.begin() + 1, time.end(), diff.begin(), [mean] (double x) { return x - mean; });
+            double stdev = std::sqrt(std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0) / time.size());
+
+            printf("Timer %d MEAN: %lu, STDDEV: %f\n", s, (uint64_t) mean, stdev);
+        }
     }
 }

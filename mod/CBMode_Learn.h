@@ -17,8 +17,10 @@ class CBModel_Learn {
 private:
     std::vector<Counter> negative_lookups_time;
     std::vector<Counter> positive_lookups_time;
+
 //    std::queue<int> num_positive_lookups_file;
 //    std::queue<int> num_negative_lookups_file;
+
     Counter num_positive_lookups_file;
     Counter num_negative_lookups_file;
     Counter file_sizes;

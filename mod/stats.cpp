@@ -8,6 +8,7 @@
 #include <iostream>
 #include "plr.h"
 #include "util.h"
+#include <x86intrin.h>
 
 using std::stoull;
 
@@ -27,6 +28,7 @@ namespace adgMod {
         levelled_counters[8].name = "FalseTime";
         levelled_counters[9].name = "FilteredLookup";
         levelled_counters[10].name = "PutWait";
+        levelled_counters[11].name = "FileLearn";
     }
 
     Stats* Stats::GetInstance() {

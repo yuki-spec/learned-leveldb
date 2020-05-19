@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <x86intrin.h>
 
 #include <atomic>
 #include <cerrno>
@@ -840,7 +841,8 @@ class PosixEnv : public Env {
 
 
  private:
-   friend class TableCache;
+
+  friend class TableCache;
 
   void BackgroundThreadMain();
 

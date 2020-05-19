@@ -15,6 +15,7 @@
 #include "Counter.h"
 #include "event.h"
 #include "CBMode_Learn.h"
+#include <x86intrin.h>
 
 
 using std::string;

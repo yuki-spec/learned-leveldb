@@ -38,6 +38,7 @@
 #include "util/mutexlock.h"
 #include "mod/stats.h"
 #include "mod/Vlog.h"
+#include <x86intrin.h>
 
 namespace leveldb {
 

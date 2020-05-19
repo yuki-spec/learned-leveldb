@@ -486,12 +486,12 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
         return s;
       }
 
-      adgMod::learn_cb_model->AddLookupData(level, saver.state == kFound, file_learned, temp.second - temp.first);
+
+#ifdef RECORD_LEVEL_INFO
+        adgMod::learn_cb_model->AddLookupData(level, saver.state == kFound, file_learned, temp.second - temp.first);
         if (model != nullptr) {
             model->FillCBAStat(saver.state == kFound, file_learned, temp.second - temp.first);
         }
-#ifdef RECORD_LEVEL_INFO
-
 #endif
       switch (saver.state) {
         case kNotFound: {

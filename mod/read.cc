@@ -10,6 +10,8 @@
 #include "cxxopts.hpp"
 #include <unistd.h>
 #include <fstream>
+#include <cmath>
+#include <random>
 
 #ifdef PROFILER
 #include <gperftools/profiler.h>

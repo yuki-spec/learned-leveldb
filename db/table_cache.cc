@@ -344,7 +344,7 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
 #ifdef INTERNAL_TIMER
     instance->StartTimer(15);
 #endif
-    if ((level == 0 || level == 1 || level == 2) && filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
+    if (filter != nullptr && !filter->KeyMayMatch(block_offset, k)) {
 #ifdef INTERNAL_TIMER
         auto time = instance->PauseTimer(15, true);
         adgMod::levelled_counters[9].Increment(level, time.second - time.first);

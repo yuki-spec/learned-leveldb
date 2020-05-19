@@ -77,7 +77,7 @@ namespace adgMod {
 
 
     public:
-        std::deque<std::string> string_keys;
+        std::vector<std::string> string_keys;
         AccumulatedNumEntriesArray num_entries_accumulated;
 
         int level;
@@ -126,7 +126,7 @@ namespace adgMod {
 
         bool Learned(Version* version, FileMetaData* meta, int level);
         bool FillData(Version* version, FileMetaData* meta);
-        std::deque<std::string>& GetData(FileMetaData* meta);
+        std::vector<std::string>& GetData(FileMetaData* meta);
         std::pair<uint64_t, uint64_t> GetPosition(const Slice& key, int file_num);
         AccumulatedNumEntriesArray* GetAccumulatedArray(int file_num);
         LearnedIndexData* GetModel(int number);

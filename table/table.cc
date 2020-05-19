@@ -295,8 +295,11 @@ uint64_t Table::ApproximateOffsetOf(const Slice& key) const {
 }
 
 void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data) {
+    //data->string_keys.clear();
+    //data->num_entries_accumulated.array.clear();
   Status status;
   Block::Iter* index_iter = dynamic_cast<Block::Iter*>(rep_->index_block->NewIterator(rep_->options.comparator));
+  //uint64_t num_points = 0;
   for (uint32_t i = 0; i < index_iter->num_restarts_; ++i) {
     index_iter->SeekToRestartPoint(i);
     index_iter->ParseNextKey();
@@ -309,6 +312,7 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
         ParseInternalKey(block_iter->key(), &parsed_key);
         data->string_keys.emplace_back(parsed_key.user_key.data(), parsed_key.user_key.size());
     }
+    //num_points += num_entries_this_block;
 
     if (!adgMod::block_num_entries_recorded) {
         adgMod::block_num_entries = num_entries_this_block;
@@ -326,6 +330,7 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
     }
     delete block_iter;
   }
+  //data->num_entries_accumulated.Add(num_points, "");
   delete index_iter;
 }
 

@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "util.h"
 #include <cassert>
+#include <x86intrin.h>
 
 
 namespace adgMod {
