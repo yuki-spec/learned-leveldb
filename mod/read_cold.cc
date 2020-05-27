@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     string db_location, profiler_out, input_filename, distribution_filename, ycsb_filename;
     bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false, pause, use_ycsb = false;
     bool change_level_load, change_file_load, change_level_learning, change_file_learning;
-    int load_type;
+    int load_type, insert_bound;
     string db_location_copy;
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
@@ -123,7 +123,8 @@ int main(int argc, char *argv[]) {
             ("change_file_learning", "enable file learning", cxxopts::value<bool>(change_file_learning)->default_value("false"))
             ("p,pause", "pause between operation", cxxopts::value<bool>(pause)->default_value("false"))
             ("policy", "learn policy", cxxopts::value<int>(adgMod::policy)->default_value("0"))
-            ("YCSB", "use YCSB trace", cxxopts::value<string>(ycsb_filename)->default_value(""));
+            ("YCSB", "use YCSB trace", cxxopts::value<string>(ycsb_filename)->default_value(""))
+            ("insert", "insert new value", cxxopts::value<int>(insert_bound)->default_value("0"));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -144,9 +145,10 @@ int main(int argc, char *argv[]) {
 
    // adgMod::file_learning_enabled = false;
 
+
     vector<string> keys;
     vector<uint64_t> distribution;
-    vector<bool> ycsb_is_write;
+    vector<int> ycsb_is_write;
     //keys.reserve(100000000000 / adgMod::value_size);
     if (!input_filename.empty()) {
         ifstream input(input_filename);
@@ -155,7 +157,12 @@ int main(int argc, char *argv[]) {
             string the_key = generate_key(key);
             keys.push_back(std::move(the_key));
         }
-        adgMod::key_size = (int) keys.front().size();
+        //adgMod::key_size = (int) keys.front().size();
+    } else {
+        std::uniform_int_distribution<uint64_t> udist_key(0, 999999999999999);
+        for (int i = 0; i < 10000000; ++i) {
+            keys.push_back(generate_key(to_string(udist_key(e2))));
+        }
     }
 
     if (!distribution_filename.empty()) {
@@ -175,16 +182,16 @@ int main(int argc, char *argv[]) {
         int is_write;
         while (input >> is_write >> index) {
             distribution.push_back(index);
-            ycsb_is_write.push_back(is_write == 1);
+            ycsb_is_write.push_back(is_write);
         }
     }
-
+    bool copy_out = num_mix != 0 || use_ycsb;
 
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
     vector<vector<size_t>> times(20);
     string values(1024 * 1024, '0');
 
-    if (num_mix != 0) {
+    if (copy_out) {
         system("sync; echo 3 | sudo tee /proc/sys/vm/drop_caches");
     }
 
@@ -194,7 +201,7 @@ int main(int argc, char *argv[]) {
     }
     
     for (size_t iteration = 0; iteration < num_iteration; ++iteration) {
-        if (num_mix != 0) {
+        if (copy_out) {
             system("sudo fstrim -a -v");
         }
 
@@ -310,7 +317,7 @@ int main(int argc, char *argv[]) {
 
 
 
-        if (num_mix != 0) {
+        if (copy_out) {
             string db_location_mix = db_location + "_mix";
             string remove_command = "rm -rf " + db_location_mix;
             string copy_command = "cp -r " + db_location + " " + db_location_mix;
@@ -358,36 +365,69 @@ int main(int argc, char *argv[]) {
                 start_new_event = false;
             }
 
-
-            if (use_ycsb ? ycsb_is_write[i] : (i % mix_base) < num_mix) {
-                uint64_t index;
-                if (use_distribution) {
-                    index = distribution[i];
-                } else if (load_type == 0) {
-                    index = write_i++ % keys.size();
+            bool write = use_ycsb ? ycsb_is_write[i] > 0 : (i % mix_base) < num_mix;
+            if (write) {
+                if (input_filename.empty()) {
+                    instance->StartTimer(10);
+                    status = db->Put(write_options, generate_key(to_string(distribution[i])), {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
+                    instance->PauseTimer(10);
                 } else {
-                    index = uniform_dist_file(e1) % (keys.size() - 1);
-                }
+                    uint64_t index;
+                    if (use_distribution) {
+                        index = distribution[i];
+                    } else if (load_type == 0) {
+                        index = write_i++ % keys.size();
+                    } else {
+                        index = uniform_dist_file(e1) % (keys.size() - 1);
+                    }
 
-                instance->StartTimer(10);
-                status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
-                instance->PauseTimer(10);
-                assert(status.ok() && "Mix Put Error");
-                //cout << index << endl;
+                    instance->StartTimer(10);
+                    if (use_ycsb && ycsb_is_write[i] == 2) {
+                        status = db->Put(write_options, generate_key(to_string(10000000000 + index)), {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
+                    } else {
+                        status = db->Put(write_options, keys[index], {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
+                    }
+                    instance->PauseTimer(10);
+                    assert(status.ok() && "Mix Put Error");
+                    //cout << index << endl;
+                }
             } else {
                 string value;
-                uint64_t index = use_distribution ? distribution[i] : uniform_dist_file2(e2) % (keys.size() - 1);
-                const string& key = keys[index];
-                instance->StartTimer(4);
-                status = db->Get(read_options, key, &value);
-                instance->PauseTimer(4);
+                if (input_filename.empty()) {
+                    instance->StartTimer(4);
+                    status = db->Get(read_options, generate_key(to_string(distribution[i])), &value);
+                    instance->PauseTimer(4);
+                    if (!status.ok()) {
+                        cout << distribution[i] << " Not Found" << endl;
+                        //assert(status.ok() && "File Get Error");
+                    }
+                } else {
+                    uint64_t index = use_distribution ? distribution[i] : uniform_dist_file2(e2) % (keys.size() - 1);
+                    const string& key = keys[index];
+                    instance->StartTimer(4);
+                    if (insert_bound != 0 && index > insert_bound) {
+                        status = db->Get(read_options, generate_key(to_string(10000000000 + index)), &value);
+                    } else {
+                        status = db->Get(read_options, key, &value);
+                    }
+                    instance->PauseTimer(4);
 
-                //cout << "Get " << key << " : " << value << endl;
-                if (!status.ok()) {
-                    cout << key << " Not Found" << endl;
-                    //assert(status.ok() && "File Get Error");
+                    //cout << "Get " << key << " : " << value << endl;
+                    if (!status.ok()) {
+                        cout << key << " Not Found" << endl;
+                        //assert(status.ok() && "File Get Error");
+                    }
                 }
             }
+
+#ifdef RECORD_LEVEL_INFO
+//            if (i < 1100) {
+//                if (write) num_write += 1;
+//                else num_read += 1;
+//            }
+#endif
+
+
             if (pause) {
                 if ((i + 1) % (num_operations / 10000) == 0) ::usleep(800000);
             }
@@ -459,7 +499,7 @@ int main(int argc, char *argv[]) {
                 it.second.end, it.second.num_lookup_pos, it.second.num_lookup_neg, it.second.size, it.first < file_data->watermark ? 0 : 1);
         }
 
-
+        adgMod::learn_cb_model->Report();
 
 
         delete db;

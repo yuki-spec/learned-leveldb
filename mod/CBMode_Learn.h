@@ -38,7 +38,8 @@ public:
     void AddLookupData(int level, bool positive, bool model, uint64_t value);
     void AddFileData(int level, uint64_t num_negative, uint64_t num_positive, uint64_t size);
     void AddLearnCost(int level, uint64_t cost, uint64_t size);
-    bool CalculateCB(int level, uint64_t file_size, adgMod::LearnedIndexData* model);
+    double CalculateCB(int level, uint64_t file_size);
+    void Report();
 };
 
 #endif //LEVELDB_CBMODE_LEARN_H

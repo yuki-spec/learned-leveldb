@@ -784,39 +784,51 @@ class PosixEnv : public Env {
 
   void PrepareLearn() {
     adgMod::Stats* instance = adgMod::Stats::GetInstance();
+    std::priority_queue<std::pair<double, LearnParam>> learn_pq;
+    bool wait_for_time = false;
+    int64_t time_diff = 1000000;
     prepare_queue_mutex.Lock();
     while (true) {
-
-
-        uint32_t dummy;
-        uint64_t time_start = (__rdtscp(&dummy) - instance->initial_time) / adgMod::reference_frequency;// - adgMod::learn_trigger_time * 1000;
-
-        while (true) {
-            if (learning_prepare.empty()) break;
-
-            auto top = learning_prepare.front();
-            int level = top.second.first;
-            //if (top.first + adgMod::learn_trigger_time * 0 > time_start) break;
-
-            FileMetaData* meta = top.second.second;
-
-            adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
-            if (adgMod::learn_cb_model->CalculateCB(level, meta->file_size, model)) {
-                prepare_queue_mutex.Unlock();
-                uint64_t cost = adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{nullptr, 0, meta, model, level});
-                if (cost != 0) adgMod::learn_cb_model->AddLearnCost(level, cost, meta->file_size);
-                prepare_queue_mutex.Lock();
-//                ScheduleLearning(&adgMod::LearnedIndexData::FileLearn,
-//                                 new adgMod::MetaAndSelf{nullptr, 0, meta, model, level}, level);
-            }
-            learning_prepare.pop();
-        }
 
         while (learning_prepare.empty()) {
             preparing_queue_cv.Wait();
         }
-        //prepare_queue_mutex.Unlock();
-        //SleepForMicroseconds(adgMod::learn_trigger_time);
+
+        uint32_t dummy;
+        uint64_t time_start = (__rdtscp(&dummy) - instance->initial_time) / adgMod::reference_frequency;// - adgMod::learn_trigger_time * 1000;
+
+        while (!learning_prepare.empty()) {
+            auto front = learning_prepare.front();
+            int level = front.second.first;
+            uint64_t wait_time = 100;
+            time_diff = front.first + adgMod::learn_trigger_time * wait_time - time_start;
+            if (time_diff > 0) {
+                wait_for_time = true;
+                break;
+            }
+
+            learning_prepare.pop();
+            double score = adgMod::learn_cb_model->CalculateCB(level, front.second.second->file_size);
+            if (score > CBModel_Learn::const_size_to_cost) learn_pq.push(std::make_pair(score, front));
+        }
+
+        while (!learn_pq.empty()) {
+            auto& top = learn_pq.top().second;
+            int level = top.second.first;
+            FileMetaData* meta = top.second.second;
+            adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(meta->number);
+            prepare_queue_mutex.Unlock();
+            adgMod::LearnedIndexData::FileLearn(new adgMod::MetaAndSelf{nullptr, 0, meta, model, level});
+            prepare_queue_mutex.Lock();
+            learn_pq.pop();
+        }
+
+        if (wait_for_time) {
+            prepare_queue_mutex.Unlock();
+            SleepForMicroseconds((int) (time_diff / 1000));
+            prepare_queue_mutex.Lock();
+            wait_for_time = false;
+        }
     }
   }
 

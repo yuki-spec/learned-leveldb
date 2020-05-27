@@ -87,7 +87,7 @@ namespace adgMod {
         self->level = vas->level;
 
         Version* c = db->GetCurrentVersion();
-        if (db->version_count == vas->v_count){
+        if (db->version_count == vas->v_count) {
             entered = true;
             if (vas->version->FillLevel(adgMod::read_options, vas->level)) {
                 self->filled = true;
@@ -144,6 +144,15 @@ namespace adgMod {
             levelled_counters[11].Increment(mas->level, time.second - time.first);
             learn_counter_mutex.Unlock();
         }
+
+
+//        if (fresh_write) {
+//            self->WriteModel(adgMod::db->versions_->dbname_ + "/" + to_string(mas->meta->number) + ".fmodel");
+//            self->string_keys.clear();
+//            self->num_entries_accumulated.array.clear();
+//        }
+
+
         if (!fresh_write) delete mas->meta;
         delete mas;
         return entered ? time.second - time.first : 0;
@@ -189,7 +198,7 @@ namespace adgMod {
         //if (filled) return true;
 
         if (version->FillData(adgMod::read_options, meta, this)) {
-            filled = true;
+            //filled = true;
             return true;
         }
         return false;
@@ -235,30 +244,30 @@ namespace adgMod {
     }
 
     void LearnedIndexData::ReportStats() {
-        double neg_gain, pos_gain;
-        if (num_neg_model == 0 || num_neg_baseline == 0) {
-            neg_gain = 0;
-        } else {
-            neg_gain = ((double) time_neg_baseline / num_neg_baseline - (double) time_neg_model / num_neg_model) * num_neg_model;
-        }
-        if (num_pos_model == 0 || num_pos_baseline == 0) {
-            pos_gain = 0;
-        } else {
-            pos_gain = ((double) time_pos_baseline / num_pos_baseline - (double) time_pos_model / num_pos_model) * num_pos_model;
-        }
+//        double neg_gain, pos_gain;
+//        if (num_neg_model == 0 || num_neg_baseline == 0) {
+//            neg_gain = 0;
+//        } else {
+//            neg_gain = ((double) time_neg_baseline / num_neg_baseline - (double) time_neg_model / num_neg_model) * num_neg_model;
+//        }
+//        if (num_pos_model == 0 || num_pos_baseline == 0) {
+//            pos_gain = 0;
+//        } else {
+//            pos_gain = ((double) time_pos_baseline / num_pos_baseline - (double) time_pos_model / num_pos_model) * num_pos_model;
+//        }
 
-        printf("%d %d %lu %lu %lu %lu\n", level, served, string_segments.size(), cost, size, file_size);
-        printf("\tPredicted: %lu %lu %lu %lu %d %d %d %d %d %lf\n", time_neg_baseline_p, time_neg_model_p, time_pos_baseline_p, time_pos_model_p,
-                num_neg_baseline_p, num_neg_model_p, num_pos_baseline_p, num_pos_model_p, num_files_p, gain_p);
-        printf("\tActual: %lu %lu %lu %lu %d %d %d %d %f\n", time_neg_baseline, time_neg_model, time_pos_baseline, time_pos_model,
-               num_neg_baseline, num_neg_model, num_pos_baseline, num_pos_model, pos_gain + neg_gain);
+        printf("%d %d %lu %lu %lu\n", level, served, string_segments.size(), cost, size);//, file_size);
+//        printf("\tPredicted: %lu %lu %lu %lu %d %d %d %d %d %lf\n", time_neg_baseline_p, time_neg_model_p, time_pos_baseline_p, time_pos_model_p,
+//                num_neg_baseline_p, num_neg_model_p, num_pos_baseline_p, num_pos_model_p, num_files_p, gain_p);
+//        printf("\tActual: %lu %lu %lu %lu %d %d %d %d %f\n", time_neg_baseline, time_neg_model, time_pos_baseline, time_pos_model,
+//               num_neg_baseline, num_neg_model, num_pos_baseline, num_pos_model, pos_gain + neg_gain);
     }
 
     void LearnedIndexData::FillCBAStat(bool positive, bool model, uint64_t time) {
-        int& num_to_update = positive ? (model ? num_pos_model : num_pos_baseline) : (model ? num_neg_model : num_neg_baseline);
-        uint64_t& time_to_update =  positive ? (model ? time_pos_model : time_pos_baseline) : (model ? time_neg_model : time_neg_baseline);
-        time_to_update += time;
-        num_to_update += 1;
+//        int& num_to_update = positive ? (model ? num_pos_model : num_pos_baseline) : (model ? num_neg_model : num_neg_baseline);
+//        uint64_t& time_to_update =  positive ? (model ? time_pos_model : time_pos_baseline) : (model ? time_neg_model : time_neg_baseline);
+//        time_to_update += time;
+//        num_to_update += 1;
     }
 
 
@@ -281,7 +290,8 @@ namespace adgMod {
     }
 
     std::vector<std::string>& FileLearnedIndexData::GetData(FileMetaData *meta) {
-        return file_learned_index_data[meta->number]->string_keys;
+        auto* model = GetModel(meta->number);
+        return model->string_keys;
     }
 
     bool FileLearnedIndexData::Learned(Version* version, FileMetaData* meta, int level) {
@@ -290,7 +300,8 @@ namespace adgMod {
     }
 
     AccumulatedNumEntriesArray* FileLearnedIndexData::GetAccumulatedArray(int file_num) {
-        return &file_learned_index_data[file_num]->num_entries_accumulated;
+        auto* model = GetModel(file_num);
+        return &model->num_entries_accumulated;
     }
 
     std::pair<uint64_t, uint64_t> FileLearnedIndexData::GetPosition(const Slice &key, int file_num) {

@@ -66,6 +66,7 @@ namespace adgMod {
         std::atomic<bool> learning;
         int allowed_seek;
         int current_seek;
+    public:
         bool filled;
         bool is_level;
 
@@ -84,13 +85,13 @@ namespace adgMod {
         mutable int served;
         uint64_t cost;
 
-        int num_neg_model = 0, num_pos_model = 0, num_neg_baseline = 0, num_pos_baseline = 0;
-        uint64_t time_neg_model = 0, time_pos_model = 0, time_neg_baseline = 0, time_pos_baseline = 0;
-
-        int num_neg_model_p = 0, num_pos_model_p = 0, num_neg_baseline_p = 0, num_pos_baseline_p = 0, num_files_p = 0;
-        uint64_t time_neg_model_p = 0, time_pos_model_p = 0, time_neg_baseline_p = 0, time_pos_baseline_p = 0;
-        double gain_p = 0;
-        uint64_t file_size = 0;
+//        int num_neg_model = 0, num_pos_model = 0, num_neg_baseline = 0, num_pos_baseline = 0;
+//        uint64_t time_neg_model = 0, time_pos_model = 0, time_neg_baseline = 0, time_pos_baseline = 0;
+//
+//        int num_neg_model_p = 0, num_pos_model_p = 0, num_neg_baseline_p = 0, num_pos_baseline_p = 0, num_files_p = 0;
+//        uint64_t time_neg_model_p = 0, time_pos_model_p = 0, time_neg_baseline_p = 0, time_pos_baseline_p = 0;
+//        double gain_p = 0;
+//        uint64_t file_size = 0;
 
 
 
@@ -111,7 +112,6 @@ namespace adgMod {
         void WriteModel(const string& filename);
         void ReadModel(const string& filename);
         void ReportStats();
-
         void FillCBAStat(bool positive, bool model, uint64_t time);
     };
 

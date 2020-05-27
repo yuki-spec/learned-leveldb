@@ -295,6 +295,7 @@ uint64_t Table::ApproximateOffsetOf(const Slice& key) const {
 }
 
 void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data) {
+    if (data->filled) return;
     //data->string_keys.clear();
     //data->num_entries_accumulated.array.clear();
   Status status;
@@ -331,6 +332,7 @@ void Table::FillData(const ReadOptions& options, adgMod::LearnedIndexData* data)
     delete block_iter;
   }
   //data->num_entries_accumulated.Add(num_points, "");
+  data->filled = true;
   delete index_iter;
 }
 

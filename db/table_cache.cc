@@ -367,9 +367,9 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
     Slice entries;
     s = file->Read(block_offset + pos_block_lower * adgMod::entry_size, read_size, &entries, scratch);
     assert(s.ok());
+
 #ifdef INTERNAL_TIMER
-    instance->PauseTimer(5);
-    instance->StartTimer(3);
+    bool first_search = true;
 #endif
 
 
@@ -381,6 +381,15 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
         const char* key_ptr = DecodeEntry(entries.data() + (mid - pos_block_lower) * adgMod::entry_size,
                 entries.data() + read_size, &shared, &non_shared, &value_length);
         assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
+
+#ifdef INTERNAL_TIMER
+        if (first_search) {
+            first_search = false;
+            instance->PauseTimer(5);
+            instance->StartTimer(3);
+        }
+#endif
+
         Slice mid_key(key_ptr, non_shared);
         int comp = tf->table->rep_->options.comparator->Compare(mid_key, k);
         if (comp < 0) {
@@ -390,12 +399,18 @@ void TableCache::LevelRead(const ReadOptions &options, uint64_t file_number,
         }
     }
 
+
+
     uint32_t shared, non_shared, value_length;
     const char* key_ptr = DecodeEntry(entries.data() + (left - pos_block_lower) * adgMod::entry_size,
             entries.data() + read_size, &shared, &non_shared, &value_length);
     assert(key_ptr != nullptr && shared == 0 && "Entry Corruption");
 #ifdef INTERNAL_TIMER
-    instance->PauseTimer(3);
+    if (!first_search) {
+        instance->PauseTimer(3);
+    } else {
+        instance->PauseTimer(5);
+    }
 #endif
     Slice key(key_ptr, non_shared), value(key_ptr + non_shared, value_length);
     handle_result(arg, key, value);

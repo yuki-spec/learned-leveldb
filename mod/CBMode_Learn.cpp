@@ -24,8 +24,8 @@ void CBModel_Learn::AddLearnCost(int level, uint64_t cost, uint64_t size) {
     learn_sizes.Increment(level, size);
 }
 
-bool CBModel_Learn::CalculateCB(int level, uint64_t file_size, adgMod::LearnedIndexData* model) {
-    if (adgMod::policy == 2) return false;
+double CBModel_Learn::CalculateCB(int level, uint64_t file_size) {
+    if (adgMod::policy == 2) return 0;
 
     int num_pos[2] = {0, 0}, num_neg[2] = {0, 0}, num_files = 0, num_learn = 0;
     uint64_t time_pos[2] = {0, 0}, time_neg[2] = {0, 0}, num_neg_lookups_file, num_pos_lookups_file, size_sum, cost_sum, learn_size_sum;
@@ -45,18 +45,18 @@ bool CBModel_Learn::CalculateCB(int level, uint64_t file_size, adgMod::LearnedIn
         num_pos_lookups_file = num_positive_lookups_file.counts[level];
         size_sum = file_sizes.counts[level];
     }
-    num_learn = learn_costs.nums[level];
-    cost_sum = learn_costs.counts[level];
-    learn_size_sum = learn_sizes.counts[level];
+//    num_learn = learn_costs.nums[level];
+//    cost_sum = learn_costs.counts[level];
+//    learn_size_sum = learn_sizes.counts[level];
 
-    if (num_files < file_average_limit[level]) return true;
+    if (num_files < file_average_limit[level]) return const_size_to_cost + 1;
     double average_pos_lookups = (double) num_pos_lookups_file / num_files;
     double average_neg_lookups = (double) num_neg_lookups_file / num_files;
     double average_pos_time[2] = {0, 0}, average_neg_time[2] = {0, 0};
 
     for (int i = 0; i < 2; ++i) {
         if (num_pos[i] + num_neg[i] < lookup_average_limit) {
-            return false;
+            return 0;
         }
 
         if (num_pos[i] < 500) {
@@ -77,30 +77,40 @@ bool CBModel_Learn::CalculateCB(int level, uint64_t file_size, adgMod::LearnedIn
     double pos_gain = (average_pos_time[0] - average_pos_time[1]) * average_pos_lookups;
     double neg_gain = (average_neg_time[0] - average_neg_time[1]) * average_neg_lookups;
 
-    model->num_pos_baseline_p = num_pos[0];
-    model->num_pos_model_p = num_pos[1];
-    model->num_neg_baseline_p = num_neg[0];
-    model->num_neg_model_p = num_neg[1];
-    model->time_pos_baseline_p = time_pos[0];
-    model->time_pos_model_p = time_pos[1];
-    model->time_neg_baseline_p = time_neg[0];
-    model->time_neg_model_p = time_neg[1];
-    model->file_size = file_size;
-    model->gain_p = pos_gain + neg_gain;
-    //std::cout << model->gain_p << std::endl;
-    model->num_files_p = num_files;
+//    model->num_pos_baseline_p = num_pos[0];
+//    model->num_pos_model_p = num_pos[1];
+//    model->num_neg_baseline_p = num_neg[0];
+//    model->num_neg_model_p = num_neg[1];
+//    model->time_pos_baseline_p = time_pos[0];
+//    model->time_pos_model_p = time_pos[1];
+//    model->time_neg_baseline_p = time_neg[0];
+//    model->time_neg_model_p = time_neg[1];
+//    model->file_size = file_size;
+//    model->gain_p = pos_gain + neg_gain;
+//    //std::cout << model->gain_p << std::endl;
+//    model->num_files_p = num_files;
 
-    if (adgMod::policy == 1) return true;
-    if (adgMod::policy == 2) return false;
+    if (adgMod::policy == 1) return const_size_to_cost + 1;
+    if (adgMod::policy == 2) return 0;
 
 //    fprintf(stdout, "%f %lu %d %f %f %f %f %f %f\n", pos_gain + neg_gain, file_size * const_size_to_cost, level,
 //             average_pos_time[0], average_pos_time[1], average_pos_lookups, average_neg_time[0], average_neg_time[1], average_neg_lookups);
-    return pos_gain + neg_gain > (double) size_sum / num_files * const_size_to_cost;//(num_learn >= 20 ? (double) cost_sum / learn_size_sum : const_size_to_cost);
+    return (pos_gain + neg_gain) / size_sum * num_files;//(num_learn >= 20 ? (double) cost_sum / learn_size_sum : const_size_to_cost);
 }
 
 
 
+void CBModel_Learn::Report() {
+    negative_lookups_time[0].name = "BaselineNegative";
+    negative_lookups_time[1].name = "LLSMNegative";
+    positive_lookups_time[0].name = "BaselinePositive";
+    positive_lookups_time[1].name = "LLSMPositive";
 
+    negative_lookups_time[0].Report();
+    negative_lookups_time[1].Report();
+    positive_lookups_time[0].Report();
+    positive_lookups_time[1].Report();
+}
 
 
 

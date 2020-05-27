@@ -52,6 +52,8 @@ namespace adgMod {
     extern bool reopen;
     extern uint64_t learn_trigger_time;
     extern int policy;
+    extern std::atomic<int> num_read;
+    extern std::atomic<int> num_write;
 
     extern int file_allowed_seek;
     extern int level_allowed_seek;

@@ -450,7 +450,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
         }
     }
 #ifdef INTERNAL_TIMER
-    instance->PauseTimer(0);
+    auto temp2 = instance->PauseTimer(0);
 #endif
     for (uint32_t i = 0; i < num_files; ++i) {
       if (last_file_read != nullptr && stats->seek_file == nullptr) {
@@ -489,9 +489,9 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k,
 
 #ifdef RECORD_LEVEL_INFO
         adgMod::learn_cb_model->AddLookupData(level, saver.state == kFound, file_learned, temp.second - temp.first);
-        if (model != nullptr) {
-            model->FillCBAStat(saver.state == kFound, file_learned, temp.second - temp.first);
-        }
+//        if (model != nullptr) {
+//            model->FillCBAStat(saver.state == kFound, file_learned, temp.second - temp.first);
+//        }
 #endif
       switch (saver.state) {
         case kNotFound: {
@@ -1748,8 +1748,9 @@ bool Version::FillLevel(const ReadOptions &options, int level) {
 
     for (int j = 0; j < files_[level].size(); ++j) {
         FileMetaData* file = files_[level][j];
-        adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[level].size();
-        adgMod::file_data->FillData(this, file);
+        //adgMod::test_num_file_segments = adgMod::test_num_level_segments / (uint32_t) files_[level].size();
+        bool rt = adgMod::file_data->FillData(this, file);
+        assert(rt);
         auto& file_data = adgMod::file_data->GetData(file);
         data->string_keys.insert(data->string_keys.end(), file_data.begin(), file_data.end());
         //file_data.clear();
@@ -1757,13 +1758,14 @@ bool Version::FillLevel(const ReadOptions &options, int level) {
 
         uint64_t current_total = data->num_entries_accumulated.NumEntries();
         const Slice& largest_key = file->largest.user_key();
-        data->num_entries_accumulated.Add(current_total + adgMod::file_data->GetAccumulatedArray(file->number)->NumEntries(), string(largest_key.data(), largest_key.size()));
+        data->num_entries_accumulated.Add(current_total + file_data.size(), string(largest_key.data(), largest_key.size()));
         //adgMod::file_data->GetAccumulatedArray(file->number)->array.clear();
     }
     return true;
 }
 
 void Version::WriteLevelModel() {
+    //return;
     for (int i = 0; i < config::kNumLevels; ++i) {
         learned_index_data_[i]->WriteModel(vset_->dbname_ + "/" + to_string(i) + ".model");
         for (FileMetaData* file_meta : files_[i]) {

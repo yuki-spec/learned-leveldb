@@ -290,10 +290,10 @@ void DBImpl::DeleteObsoleteFiles() {
           if (!adgMod::fresh_write) {
               adgMod::file_stats_mutex.Lock();
               auto iter = adgMod::file_stats.find(number);
-              assert(iter != adgMod::file_stats.end());
+              //assert(iter != adgMod::file_stats.end());
               adgMod::FileStats& file_stat = iter->second;
               file_stat.Finish();
-              if (file_stat.end - file_stat.start >= 000 * adgMod::learn_trigger_time && (true || number > adgMod::file_data->watermark)) {
+              if (file_stat.end - file_stat.start >= 100 * adgMod::learn_trigger_time) {
                   adgMod::learn_cb_model->AddFileData(file_stat.level, file_stat.num_lookup_neg, file_stat.num_lookup_pos, file_stat.size);
               }
               adgMod::file_stats_mutex.Unlock();
@@ -1302,24 +1302,26 @@ Status DBImpl::Get(const ReadOptions& options, const Slice& key,
     instance->StartTimer(14);
 #endif
     if (mem->Get(lkey, value, &s)) {
-        //adgMod::levelled_counters[3].Increment(7);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(14);
 #endif
+#ifdef RECORD_LEVEL_INFO
+        adgMod::levelled_counters[3].Increment(7);
+#endif
         // Done
     } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
-        //adgMod::levelled_counters[3].Increment(7);
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(14);
+#endif
+#ifdef RECORD_LEVEL_INFO
+        adgMod::levelled_counters[3].Increment(7);
 #endif
         // Done
     } else {
 #ifdef INTERNAL_TIMER
         instance->PauseTimer(14);
 #endif
-        //instance->StartTimer(6);
         s = current->Get(options, lkey, value, &stats);
-        //instance->PauseTimer(6);
     }
 
     if (adgMod::MOD >= 7 && s.ok()) {

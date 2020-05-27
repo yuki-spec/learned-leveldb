@@ -31,11 +31,13 @@ namespace adgMod {
     bool restart_read = false;
     bool fresh_write = false;
     bool reopen = false;
-    uint64_t learn_trigger_time = 20000;
+    uint64_t learn_trigger_time = 500000;
     int policy = 0;
+    std::atomic<int> num_read(0);
+    std::atomic<int> num_write(0);
 
     int file_allowed_seek = 10;
-    int level_allowed_seek = file_allowed_seek * 100;
+    int level_allowed_seek = 1;
     float reference_frequency = 2.6;
     bool block_num_entries_recorded = false;
     bool level_learning_enabled = false;
