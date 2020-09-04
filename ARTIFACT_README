@@ -1,7 +1,7 @@
 Artifacts of Paper #475
 
 We have provided a machine from CloudLab to reproduce our experiments. Please see the login
-credentials from hotcrp.
+credentials from hotcrp. We use a c220g2 machine in Cloudlab Wisconsin.
 
 After logging on to the machine, run `scripts/run_all_expr.sh` to run the artifact and everything
 is done. We have already set up the whole experiment environment and necessary data. The
