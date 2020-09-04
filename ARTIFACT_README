@@ -3,14 +3,26 @@ Artifacts of Paper #475
 We have provided a machine from CloudLab to reproduce our experiments. Please see the login
 credentials from hotcrp.
 
+After logging on to the machine, run `scripts/run_all_expr.sh` to run the artifact and everything
+is done. We have already set up the whole experiment environment and necessary data.
+
+
+
+
+
+Instructions in detail if you want to setup by yourself:
+
 We have already set up the testing environment in the home directory. If you want to setup
 by yourself, please follow these steps after logging on to the machine:
 ```
 cd ~
+rm -rf learned-leveldb/
+rm -rf build/
+rm -rf evaluation/
 git clone git@bitbucket.org:daiyifandanny/learned-leveldb.git
 mkdir build
 mkdir evaluation
-cd ~/build
+cd build
 cmake ../learned-leveldb -DCMAKE_BUILD_TYPE=RELEASE -DNDEBUG_SWITCH=ON
 make -j
 cd ~
@@ -37,6 +49,12 @@ We leave out experiments for Section 5.3 (Read-Write Mix Workload) and Section 5
 - A full reproduction of Section 5.3 needs more than one day and manual code changes to switch
   to different versions. The performance on mix workloads can be represented by YCSB.
 - Section 5.5 needs a different set of machine configuration that is hard to provide access to.
+
+
+
+
+
+Instructions in more detail if you want to do single testing by yourself:
 
 If you want to run any of the single tests by yourself, please use the application "read_cold".
 This is also what we use during the experiments. Some of the important options is listed below.
