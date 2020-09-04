@@ -4,7 +4,9 @@ We have provided a machine from CloudLab to reproduce our experiments. Please se
 credentials from hotcrp.
 
 After logging on to the machine, run `scripts/run_all_expr.sh` to run the artifact and everything
-is done. We have already set up the whole experiment environment and necessary data.
+is done. We have already set up the whole experiment environment and necessary data. The
+parsed results are printed out to stdout and also written to files:
+~/evaluation/expr_{exp_name}.txt
 
 
 
