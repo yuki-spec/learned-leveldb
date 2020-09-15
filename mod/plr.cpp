@@ -6,6 +6,8 @@
 #include <vector>
 
 
+// Code modified from https://github.com/RyanMarcus/plr
+
 double
 get_slope(struct point p1, struct point p2) {
     return (p2.y - p1.y) / (p2.x - p1.x);
