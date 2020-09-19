@@ -129,7 +129,7 @@ Status TableCache::FindTable(uint64_t file_number, uint64_t file_size,
 
 Iterator* TableCache::NewIterator(const ReadOptions& options,
                                   uint64_t file_number, uint64_t file_size,
-                                  Table** tableptr) {
+                                  Table** tableptr, bool range) {
   if (tableptr != nullptr) {
     *tableptr = nullptr;
   }
@@ -140,8 +140,15 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
     return NewErrorIterator(s);
   }
 
-  Table* table = reinterpret_cast<TableAndFile*>(cache_->Value(handle))->table;
-  Iterator* result = table->NewIterator(options);
+  TableAndFile* tf = reinterpret_cast<TableAndFile*>(cache_->Value(handle));
+  Table* table = tf->table;
+  Iterator* result = nullptr;
+  if (range) {
+    result = table->NewIterator(options, file_number, tf->file);
+  } else {
+    result = table->NewIterator(options);
+  }
+  
   result->RegisterCleanup(&UnrefEntry, cache_, handle);
   if (tableptr != nullptr) {
     *tableptr = table;

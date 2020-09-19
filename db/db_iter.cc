@@ -13,6 +13,7 @@
 #include "util/logging.h"
 #include "util/mutexlock.h"
 #include "util/random.h"
+#include "mod/util.h"
 
 namespace leveldb {
 
@@ -67,7 +68,22 @@ class DBIter : public Iterator {
   }
   virtual Slice value() const {
     assert(valid_);
-    return (direction_ == kForward) ? iter_->value() : saved_value_;
+    Slice vaddr = (direction_ == kForward) ? iter_->value() : saved_value_;
+    if (adgMod::MOD >= 7) {
+#ifdef INTERNAL_TIMER
+      adgMod::Stats* instance = adgMod::Stats::GetInstance();
+      instance->StartTimer(12);
+#endif
+      uint64_t value_address = DecodeFixed64(vaddr.data());
+      uint32_t value_size = DecodeFixed32(vaddr.data() + sizeof(uint64_t));
+      Slice value = adgMod::db->vlog->ReadRecord2(value_address, value_size);
+#ifdef INTERNAL_TIMER
+      instance->PauseTimer(12);
+#endif
+      return value;
+    } else {
+      return vaddr;
+    }
   }
   virtual Status status() const {
     if (status_.ok()) {

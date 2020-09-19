@@ -39,10 +39,14 @@ public:
 private:
     friend class Table;
     friend class TableCache;
+    friend class LearnedIterator;
 
     class Iter;
 
-    uint32_t NumRestarts() const;
+    uint32_t NumRestarts() const {
+        assert(size_ >= sizeof(uint32_t));
+        return DecodeFixed32(data_ + size_ - sizeof(uint32_t));
+    }
 
     const char *data_;
     size_t size_;

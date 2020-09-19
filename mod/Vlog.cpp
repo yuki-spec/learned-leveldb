@@ -46,6 +46,15 @@ string VLog::ReadRecord(uint64_t address, uint32_t size) {
     return result;
 }
 
+Slice VLog::ReadRecord2(uint64_t address, uint32_t size) {
+    if (address >= vlog_size) return string(buffer.c_str() + address - vlog_size, size);
+
+    static char scratch[4096];
+    Slice value;
+    reader->Read(address, size, &value, scratch);
+    return value;
+}
+
 void VLog::Flush() {
     if (buffer.empty()) return;
 

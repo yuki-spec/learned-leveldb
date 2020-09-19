@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     string db_location, profiler_out, input_filename, distribution_filename, ycsb_filename;
     bool print_single_timing, print_file_info, evict, unlimit_fd, use_distribution = false, pause, use_ycsb = false;
     bool change_level_load, change_file_load, change_level_learning, change_file_learning;
-    int load_type, insert_bound;
+    int load_type, insert_bound, length_range;
     string db_location_copy;
 
     cxxopts::Options commandline_options("leveldb read test", "Testing leveldb read performance.");
@@ -124,7 +124,8 @@ int main(int argc, char *argv[]) {
             ("p,pause", "pause between operation", cxxopts::value<bool>(pause)->default_value("false"))
             ("policy", "learn policy", cxxopts::value<int>(adgMod::policy)->default_value("0"))
             ("YCSB", "use YCSB trace", cxxopts::value<string>(ycsb_filename)->default_value(""))
-            ("insert", "insert new value", cxxopts::value<int>(insert_bound)->default_value("0"));
+            ("insert", "insert new value", cxxopts::value<int>(insert_bound)->default_value("0"))
+            ("range", "use range query and specify length", cxxopts::value<int>(length_range)->default_value("0"));
     auto result = commandline_options.parse(argc, argv);
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
@@ -335,6 +336,7 @@ int main(int argc, char *argv[]) {
         cout << "Starting up" << endl;
         status = DB::Open(options, db_location, &db);
         adgMod::db->WaitForBackground();
+        Iterator* db_iter = length_range == 0 ? nullptr : db->NewIterator(read_options);
         assert(status.ok() && "Open Error");
 //            for (int s = 12; s < 20; ++s) {
 //                instance->ResetTimer(s);
@@ -365,7 +367,9 @@ int main(int argc, char *argv[]) {
                 start_new_event = false;
             }
 
-            bool write = use_ycsb ? ycsb_is_write[i] > 0 : (i % mix_base) < num_mix;
+            bool write = use_ycsb ? ycsb_is_write[i] == 1 || ycsb_is_write[i] == 2 : (i % mix_base) < num_mix;
+            length_range = use_ycsb && ycsb_is_write[i] > 2 ? ycsb_is_write[i] - 100 : length_range;
+
             if (write) {
                 if (input_filename.empty()) {
                     instance->StartTimer(10);
@@ -391,6 +395,32 @@ int main(int argc, char *argv[]) {
                     assert(status.ok() && "Mix Put Error");
                     //cout << index << endl;
                 }
+            } else if (length_range != 0) {
+                // Seek
+                if (input_filename.empty()) {
+                    instance->StartTimer(4);
+                    db_iter->Seek(generate_key(to_string(distribution[i])));
+                    instance->PauseTimer(4);
+                } else {
+                    uint64_t index = use_distribution ? distribution[i] : uniform_dist_file2(e2) % (keys.size() - 1);
+                    index = index >= length_range ? index - length_range : 0;
+                    const string& key = keys[index];
+                    instance->StartTimer(4);
+                    db_iter->Seek(key);
+                    instance->PauseTimer(4);
+                }
+                
+                // Range
+                instance->StartTimer(17);
+                for (int r = 0; r < length_range; ++r) {
+                    if (!db_iter->Valid()) break;
+                    Slice key = db_iter->key();
+                    string value = db_iter->value().ToString();
+                    // cout << key.ToString() << value << endl;
+                    // value.clear();
+                    db_iter->Next();
+                }
+                instance->PauseTimer(17);
             } else {
                 string value;
                 if (input_filename.empty()) {
@@ -419,14 +449,6 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
-
-#ifdef RECORD_LEVEL_INFO
-//            if (i < 1100) {
-//                if (write) num_write += 1;
-//                else num_read += 1;
-//            }
-#endif
-
 
             if (pause) {
                 if ((i + 1) % (num_operations / 10000) == 0) ::usleep(800000);
@@ -501,7 +523,7 @@ int main(int argc, char *argv[]) {
 
         adgMod::learn_cb_model->Report();
 
-
+        delete db_iter;
         delete db;
     }
 

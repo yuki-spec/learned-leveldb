@@ -51,7 +51,7 @@ class LEVELDB_EXPORT Table {
   // Returns a new iterator over the table contents.
   // The result of NewIterator() is initially invalid (caller must
   // call one of the Seek methods on the iterator before using it).
-  Iterator* NewIterator(const ReadOptions&) const;
+  Iterator* NewIterator(const ReadOptions&, int file_num = 0, RandomAccessFile* file = nullptr) const;
 
   // Given a key, return an approximate byte offset in the file where
   // the data for that key begins (or would begin if the key were
@@ -61,8 +61,11 @@ class LEVELDB_EXPORT Table {
   // be close to the file length.
   uint64_t ApproximateOffsetOf(const Slice& key) const;
 
+  static Iterator* BlockReader(void*, const ReadOptions&, const Slice&);
+
  private:
   friend class TableCache;
+  friend class LearnedIterator;
 
 
     struct Rep {
@@ -79,8 +82,7 @@ class LEVELDB_EXPORT Table {
         BlockHandle metaindex_handle;  // Handle to metaindex_block: saved from footer
         Block* index_block;
     };
-
-  static Iterator* BlockReader(void*, const ReadOptions&, const Slice&);
+  
 
   explicit Table(Rep* rep) : rep_(rep) {}
 

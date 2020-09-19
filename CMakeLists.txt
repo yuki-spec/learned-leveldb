@@ -298,9 +298,9 @@ endif(HAVE_CRC32C)
 if(HAVE_SNAPPY)
   target_link_libraries(leveldb snappy)
 endif(HAVE_SNAPPY)
-if(HAVE_TCMALLOC)
-  target_link_libraries(leveldb tcmalloc)
-endif(HAVE_TCMALLOC)
+# if(HAVE_TCMALLOC)
+#   target_link_libraries(leveldb tcmalloc)
+# endif(HAVE_TCMALLOC)
 
 # Needed by port_stdcxx.h
 find_package(Threads REQUIRED)
@@ -410,7 +410,7 @@ if(LEVELDB_BUILD_BENCHMARKS)
         "${PROJECT_SOURCE_DIR}/util/testharness.h"
         "${PROJECT_SOURCE_DIR}/util/testutil.cc"
         "${PROJECT_SOURCE_DIR}/util/testutil.h"
-
+        
         "${bench_file}"
     )
     target_link_libraries("${bench_target_name}" leveldb)

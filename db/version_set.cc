@@ -224,10 +224,22 @@ static Iterator* GetFileIterator(void* arg, const ReadOptions& options,
   }
 }
 
+static Iterator* GetFileIteratorRange(void* arg, const ReadOptions& options,
+                                 const Slice& file_value) {
+  TableCache* cache = reinterpret_cast<TableCache*>(arg);
+  if (file_value.size() != 16) {
+    return NewErrorIterator(
+        Status::Corruption("FileReader invoked with unexpected value"));
+  } else {
+    return cache->NewIterator(options, DecodeFixed64(file_value.data()),
+                              DecodeFixed64(file_value.data() + 8), nullptr, true);
+  }
+}
+
 Iterator* Version::NewConcatenatingIterator(const ReadOptions& options,
                                             int level) const {
   return NewTwoLevelIterator(
-      new LevelFileNumIterator(vset_->icmp_, &files_[level]), &GetFileIterator,
+      new LevelFileNumIterator(vset_->icmp_, &files_[level]), &GetFileIteratorRange,
       vset_->table_cache_, options);
 }
 
@@ -236,7 +248,7 @@ void Version::AddIterators(const ReadOptions& options,
   // Merge all level zero files together since they may overlap
   for (size_t i = 0; i < files_[0].size(); i++) {
     iters->push_back(vset_->table_cache_->NewIterator(
-        options, files_[0][i]->number, files_[0][i]->file_size));
+        options, files_[0][i]->number, files_[0][i]->file_size, nullptr, true));
   }
 
   // For levels > 0, we can use a concatenating iterator that sequentially

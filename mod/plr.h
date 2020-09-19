@@ -18,10 +18,11 @@ struct line {
 
 class Segment {
 public:
-    Segment(uint64_t _x, double _k, double _b) : x(_x), k(_k), b(_b) {}
+    Segment(uint64_t _x, double _k, double _b, uint64_t _x2) : x(_x), k(_k), b(_b), x2(_x2) {}
     uint64_t x;
     double k;
     double b;
+    uint64_t x2;
 };
 
 double get_slope(struct point p1, struct point p2);

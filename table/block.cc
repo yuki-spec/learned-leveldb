@@ -16,11 +16,7 @@
 #include "util/logging.h"
 
 namespace leveldb {
-
-inline uint32_t Block::NumRestarts() const {
-  assert(size_ >= sizeof(uint32_t));
-  return DecodeFixed32(data_ + size_ - sizeof(uint32_t));
-}
+  
 
 Block::Block(const BlockContents& contents)
     : data_(contents.data.data()),

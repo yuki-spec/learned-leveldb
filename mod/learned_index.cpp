@@ -30,10 +30,16 @@ namespace adgMod {
             else left = mid;
         }
 
+        if (target_int > string_segments[left].x2) {
+            assert(left != string_segments.size() - 2);
+            ++left;
+            target_int = string_segments[left].x;
+        }
+
         double result = target_int * string_segments[left].k + string_segments[left].b;
         uint64_t lower = result - error > 0 ? (uint64_t) std::floor(result - error) : 0;
         uint64_t upper = (uint64_t) std::ceil(result + error);
-        if (lower >= size) return std::make_pair(size, size);
+        assert(lower < size); // return std::make_pair(size, size);
         upper = upper < size ? upper : size - 1;
 //                printf("%s %s %s\n", string_keys[lower].c_str(), string(target_x.data(), target_x.size()).c_str(), string_keys[upper].c_str());
 //                assert(target_x >= string_keys[lower] && target_x <= string_keys[upper]);
@@ -63,7 +69,7 @@ namespace adgMod {
 
         std::vector<Segment> segs = plr.train(string_keys, !is_level);
         if (segs.empty()) return false;
-        segs.push_back((Segment) {temp, 0, 0});
+        segs.push_back((Segment) {temp, 0, 0, 0});
         string_segments = std::move(segs);
 
         for (auto& str: string_segments) {
@@ -211,7 +217,7 @@ namespace adgMod {
         output_file.precision(15);
         output_file << adgMod::block_num_entries << " " << adgMod::block_size << " " << adgMod::entry_size << "\n";
         for (Segment& item: string_segments) {
-            output_file << item.x << " " << item.k << " " << item.b << "\n";
+            output_file << item.x << " " << item.k << " " << item.b << " " << item.x2 << "\n";
         }
         output_file << "StartAcc" << " " << min_key << " " << max_key << " " << size << " " << level << " " << cost << "\n";
         for (auto& pair: num_entries_accumulated.array) {
@@ -227,10 +233,11 @@ namespace adgMod {
         while (true) {
             string x;
             double k, b;
+            uint64_t x2;
             input_file >> x;
             if (x == "StartAcc") break;
-            input_file >> k >> b;
-            string_segments.emplace_back(atoll(x.c_str()), k, b);
+            input_file >> k >> b >> x2;
+            string_segments.emplace_back(atoll(x.c_str()), k, b, x2);
         }
         input_file >> min_key >> max_key >> size >> level >> cost;
         while (true) {

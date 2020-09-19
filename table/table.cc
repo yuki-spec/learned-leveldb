@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include "leveldb/table.h"
-
 #include "leveldb/cache.h"
 #include "leveldb/comparator.h"
 #include "leveldb/env.h"
@@ -17,6 +16,7 @@
 #include "util/coding.h"
 #include "mod/stats.h"
 #include "mod/learned_index.h"
+#include "mod/LearnedIterator.h"
 #include "../db/version_set.h"
 
 namespace leveldb {
@@ -199,7 +199,12 @@ Iterator* Table::BlockReader(void* arg, const ReadOptions& options,
   return iter;
 }
 
-Iterator* Table::NewIterator(const ReadOptions& options) const {
+Iterator* Table::NewIterator(const ReadOptions& options, int file_num, RandomAccessFile* file) const {
+  if (file != nullptr && (adgMod::MOD == 6 || adgMod::MOD == 7)) {
+    adgMod::LearnedIndexData* model = adgMod::file_data->GetModel(file_num);
+    if (model->Learned()) return new LearnedIterator(const_cast<Table*>(this), file, model);
+  }
+
   return NewTwoLevelIterator(
       rep_->index_block->NewIterator(rep_->options.comparator),
       &Table::BlockReader, const_cast<Table*>(this), options);
