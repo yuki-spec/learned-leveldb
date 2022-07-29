@@ -310,9 +310,9 @@ int main(int argc, char *argv[]) {
                 ifstream input(input_filename);
                 //string key;
                 char *key = new char[key_size];
-                n = input.read(&key, key_size);
+                n = input.read(key, key_size);
                 while (input) {
-                    input.read(&key, key_size);
+                    input.read(key, key_size);
                     string the_key = my_generate_key(key, key_size);
                     keys.push_back(std::move(the_key));
                 }
