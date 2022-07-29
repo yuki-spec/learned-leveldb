@@ -157,7 +157,8 @@ int main(int argc, char *argv[]) {
         ifstream input(input_filename);
         char *key = new char[key_size];
         input.read(key, key_size);
-        while (input) {
+        //while (input)
+        for (int i = 0; i < 20000000; ++i) {
             input.read(key, key_size);
             string the_key = my_generate_key(key, key_size);
             keys.push_back(std::move(the_key));
@@ -314,7 +315,7 @@ int main(int argc, char *argv[]) {
                 //string key;
                 char *key = new char[key_size];
                 input.read(key, key_size);
-                while (input) {
+                for (int i = 0; i < 20000000; ++i) {
                     input.read(key, key_size);
                     string the_key = my_generate_key(key, key_size);
                     keys.push_back(std::move(the_key));
