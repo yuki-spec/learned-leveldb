@@ -127,6 +127,8 @@ int main(int argc, char *argv[]) {
             ("insert", "insert new value", cxxopts::value<int>(insert_bound)->default_value("0"))
             ("range", "use range query and specify length", cxxopts::value<int>(length_range)->default_value("0"));
     auto result = commandline_options.parse(argc, argv);
+    std::cout << "key size:" << key_size << std::endl;
+    std::cout << "input_file:" << input_filename << std::endl;
     if (result.count("help")) {
         printf("%s", commandline_options.help().c_str());
         exit(0);
@@ -373,7 +375,8 @@ int main(int argc, char *argv[]) {
             if (write) {
                 if (input_filename.empty()) {
                     instance->StartTimer(10);
-                    status = db->Put(write_options, generate_key(to_string(distribution[i])), {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
+					if (use_distribution)
+                    	status = db->Put(write_options, generate_key(to_string(distribution[i])), {values.data() + uniform_dist_value(e3), (uint64_t) adgMod::value_size});
                     instance->PauseTimer(10);
                 } else {
                     uint64_t index;
@@ -399,7 +402,8 @@ int main(int argc, char *argv[]) {
                 // Seek
                 if (input_filename.empty()) {
                     instance->StartTimer(4);
-                    db_iter->Seek(generate_key(to_string(distribution[i])));
+					if (use_distribution)
+                    	db_iter->Seek(generate_key(to_string(distribution[i])));
                     instance->PauseTimer(4);
                 } else {
                     uint64_t index = use_distribution ? distribution[i] : uniform_dist_file2(e2) % (keys.size() - 1);
@@ -425,9 +429,10 @@ int main(int argc, char *argv[]) {
                 string value;
                 if (input_filename.empty()) {
                     instance->StartTimer(4);
-                    status = db->Get(read_options, generate_key(to_string(distribution[i])), &value);
+					if (use_distribution)
+                    	status = db->Get(read_options, generate_key(to_string(distribution[i])), &value);
                     instance->PauseTimer(4);
-                    if (!status.ok()) {
+                    if (!status.ok() && use_distribution) {
                         cout << distribution[i] << " Not Found" << endl;
                         //assert(status.ok() && "File Get Error");
                     }

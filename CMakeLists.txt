@@ -76,14 +76,14 @@ include(CheckCXXSourceCompiles)
 #list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety)
 if (NDEBUG_SWITCH)
   add_definitions(-DNDEBUG)
-  list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety -O3)
+  list(APPEND CMAKE_REQUIRED_FLAGS  -O3)
 else (NDEBUG_SWITCH)
-  list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety)
+  list(APPEND CMAKE_REQUIRED_FLAGS  )
 endif(NDEBUG_SWITCH)
 
 
 set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
-list(APPEND CMAKE_REQUIRED_FLAGS -Werror -Wthread-safety)
+list(APPEND CMAKE_REQUIRED_FLAGS  )
 check_cxx_source_compiles("
 struct __attribute__((lockable)) Lock {
   void Acquire() __attribute__((exclusive_lock_function()));
@@ -289,7 +289,7 @@ endif(BUILD_SHARED_LIBS)
 if(HAVE_CLANG_THREAD_SAFETY)
   target_compile_options(leveldb
     PUBLIC
-      -Werror -Wthread-safety)
+       )
 endif(HAVE_CLANG_THREAD_SAFETY)
 
 if(HAVE_CRC32C)
