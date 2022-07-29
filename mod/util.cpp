@@ -84,6 +84,11 @@ namespace adgMod {
         return std::move(result);
     }
 
+    string my_generate_key(const char *key, int size) {
+        string the_key(key, size);
+        return the_key;
+    }
+
     string generate_value(uint64_t value) {
         string value_string = to_string(value);
         string result = string(value_size - value_string.length(), '0') + value_string;

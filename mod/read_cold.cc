@@ -306,11 +306,19 @@ int main(int argc, char *argv[]) {
             //keys.reserve(100000000000 / adgMod::value_size);
             if (!input_filename.empty()) {
                 ifstream input(input_filename);
-                string key;
-                while (input >> key) {
-                    string the_key = generate_key(key);
+                //string key;
+                char *key = new char[key_size];
+                n = input.read(&key, key_size);
+                while (input) {
+                    input.read(&key, key_size);
+                    string the_key = my_generate_key(key, key_size);
                     keys.push_back(std::move(the_key));
                 }
+                delete [] key;
+                //while (input >> key) {
+                //    string the_key = generate_key(key);
+                //    keys.push_back(std::move(the_key));
+                //}
                 adgMod::key_size = (int) keys.front().size();
             }
             fresh_write = false;
