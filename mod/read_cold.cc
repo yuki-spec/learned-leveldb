@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
         char *key = new char[key_size];
         input.read(key, key_size);
         //while (input)
-        for (int i = 0; i < 20000000; ++i) {
+        for (int i = 0; i < 10000; ++i) {
             input.read(key, key_size);
             string the_key = my_generate_key(key, key_size);
             keys.push_back(std::move(the_key));
@@ -290,7 +290,7 @@ int main(int argc, char *argv[]) {
             instance->PauseTimer(9, true);
             cout << "Put Complete" << endl;
 
-            keys.clear();
+            // keys.clear();
 
             if (print_file_info && iteration == 0) db->PrintFileInfo();
             adgMod::db->WaitForBackground();
@@ -311,8 +311,8 @@ int main(int argc, char *argv[]) {
 
             //keys.reserve(100000000000 / adgMod::value_size);
             if (!input_filename.empty()) {
-                ifstream input(input_filename);
-                //string key;
+                /* ifstream input(input_filename);
+                string key;
                 char *key = new char[key_size];
                 input.read(key, key_size);
                 for (int i = 0; i < 20000000; ++i) {
@@ -326,7 +326,7 @@ int main(int argc, char *argv[]) {
                 //    keys.push_back(std::move(the_key));
                 //}
                 adgMod::key_size = (int) keys.front().size();
-            }
+            } */
             fresh_write = false;
         }
 
@@ -449,6 +449,7 @@ int main(int argc, char *argv[]) {
                         //assert(status.ok() && "File Get Error");
                     }
                 } else {
+                    
                     uint64_t index = use_distribution ? distribution[i] : uniform_dist_file2(e2) % (keys.size() - 1);
                     const string& key = keys[index];
                     instance->StartTimer(4);
