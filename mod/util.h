@@ -79,6 +79,7 @@ namespace adgMod {
     uint64_t ExtractInteger(const char* pos, size_t size);
 //bool SearchNumEntriesArray(const std::vector<uint64_t>& num_entries_array, const uint64_t position, size_t* index, uint64_t* relative_position);
     string generate_key(const string& key);
+    string my_generate_key(const char *key, int key_size);
     string generate_value(uint64_t value);
     uint64_t SliceToInteger(const Slice& slice);
     int compare(const Slice& slice, const string& string);
