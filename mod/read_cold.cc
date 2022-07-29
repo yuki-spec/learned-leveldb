@@ -155,12 +155,15 @@ int main(int argc, char *argv[]) {
     //keys.reserve(100000000000 / adgMod::value_size);
     if (!input_filename.empty()) {
         ifstream input(input_filename);
-        string key;
-        while (input >> key) {
-            string the_key = generate_key(key);
+        char *key = new char[key_size];
+        input.read(key, key_size);
+        while (input) {
+            input.read(key, key_size);
+            string the_key = my_generate_key(key, key_size);
             keys.push_back(std::move(the_key));
         }
-        //adgMod::key_size = (int) keys.front().size();
+        delete [] key;
+                //adgMod::key_size = (int) keys.front().size();
     } else {
         std::uniform_int_distribution<uint64_t> udist_key(0, 999999999999999);
         for (int i = 0; i < 10000000; ++i) {
